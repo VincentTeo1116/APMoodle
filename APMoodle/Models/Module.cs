@@ -21,5 +21,23 @@ namespace APMoodle.Models
         [Phone]
         [MaxLength(10)]
         public string Code { get; set; } = string.Empty;
+
+        [MaxLength(500)]
+        public string? ModulePic { get; set; }  // Google Drive URL
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime StartDate { get; set; } // Start date of the module
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime EndDate { get; set; } // End date of the module
+
+        [Required]
+        public int LecturerID { get; set; }
+
+        // Navigation property
+        [ForeignKey("LecturerID")]
+        public Lecturer? Lecturer { get; set; }
     }
 }

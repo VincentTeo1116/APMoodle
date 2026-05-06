@@ -36,6 +36,11 @@ namespace APMoodle.Models
         [MaxLength(10)]
         public string Gender { get; set; } = string.Empty;  // "Male", "Female", "Other"
 
+        [Required]
+        [Phone]
+        [MaxLength(20)]
+        public string Status { get; set; } = string.Empty;
+
         [MaxLength(500)]
         public string? ProfilePic { get; set; }  // Google Drive URL
     }
