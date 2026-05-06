@@ -9,12 +9,12 @@ namespace APMoodle.Models
         public int QuestionID { get; set; }
 
         [Required]
-        [MaxLength(1)]
-        public string CorrectAnswer { get; set; } = "A";  // A, B, C, or D
-
-        [Required]
         [MaxLength(500)]
         public string QuestionText { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(1)]
+        public string CorrectAnswer { get; set; } = "A";  // A, B, C, or D
 
         [Required]
         [MaxLength(200)]

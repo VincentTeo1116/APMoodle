@@ -20,11 +20,11 @@ namespace APMoodle.Models
         [MaxLength(50)]
         public string Theme { get; set; } = string.Empty;
 
-        // Foreign key to Lecturer (who created the quiz)
-        public int CreatedBy { get; set; }
+        // Foreign key to teaching material (belongs to which material)
+        public int MaterialID { get; set; }
 
-        [ForeignKey("CreatedBy")]
-        public Lecturer? Lecturer { get; set; }
+        [ForeignKey("MaterialID")]
+        public Material? Material { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
