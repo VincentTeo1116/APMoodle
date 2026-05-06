@@ -4,29 +4,90 @@
     ViewData["Title"] = "Database Connection Test";
 }
 
-<h2>Database Connection Test</h2>
+<div class="container">
+    <h1>Database Connection Test</h1>
+    <hr />
 
-@if (Model.ErrorMessage != null)
-{
-    <div style="color: red; padding: 10px; border: 1px solid red; margin: 10px 0;">
-        <strong>Error:</strong> @Model.ErrorMessage
-    </div>
-}
-else
-{
-    <div style="color: green; padding: 10px; border: 1px solid green; margin: 10px 0;">
-        <strong>Success!</strong> Database connected successfully.
-    </div>
-}
+    @if (Model.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">
+            <strong>❌ Error:</strong> @Model.ErrorMessage
+        </div>
+    }
+    else if (Model.ConnectionSuccessful)
+    {
+        <div class="alert alert-success">
+            <strong>✅ Database Connected Successfully!</strong>
+            <p>Your Supabase database is online and accessible.</p>
+        </div>
 
-<h3>Test Results:</h3>
-<ul>
-    <li>Students: @Model.StudentCount</li>
-    <li>Lecturers: @Model.LecturerCount</li>
-    <li>Admins: @Model.AdminCount</li>
-    <li>Modules: @Model.ModuleCount</li>
-    <li>Materials: @Model.MaterialCount</li>
-    <li>Quizzes: @Model.QuizCount</li>
-    <li>Questions: @Model.QuestionCount</li>
-    <li>Announcements: @Model.AnnouncementCount</li>
-</ul>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h4>Database Statistics</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-info text-white mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Students</h5>
+                                <h2>@Model.StudentCount</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Lecturers</h5>
+                                <h2>@Model.LecturerCount</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-warning text-white mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Modules</h5>
+                                <h2>@Model.ModuleCount</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-secondary text-white mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Quizzes</h5>
+                                <h2>@Model.QuizCount</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-dark text-white mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Questions</h5>
+                                <h2>@Model.QuestionCount</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-danger text-white mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Announcements</h5>
+                                <h2>@Model.AnnouncementCount</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <strong>⚠️ Database connection check passed but no data found.</strong>
+        </div>
+    }
+
+    <div class="mt-3">
+        <a href="/" class="btn btn-primary">Back to Home</a>
+        <a href="/TestDB" class="btn btn-secondary">Refresh</a>
+    </div>
+</div>

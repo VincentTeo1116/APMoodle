@@ -14,6 +14,9 @@ namespace APMoodle.Pages
         }
 
         public string? ErrorMessage { get; set; }
+        public bool ConnectionSuccessful { get; set; }
+        
+        // Counts for display
         public int StudentCount { get; set; }
         public int LecturerCount { get; set; }
         public int AdminCount { get; set; }
@@ -32,23 +35,27 @@ namespace APMoodle.Pages
                 
                 if (!canConnect)
                 {
-                    ErrorMessage = "Cannot connect to database. Please check your connection string.";
+                    ErrorMessage = "Cannot connect to database. Please check your connection string and make sure Supabase is running.";
+                    ConnectionSuccessful = false;
                     return;
                 }
 
-                // Get counts from each table
-                StudentCount = await _context.Students.CountAsync();
-                LecturerCount = await _context.Lecturers.CountAsync();
-                AdminCount = await _context.Admins.CountAsync();
-                ModuleCount = await _context.Modules.CountAsync();
-                MaterialCount = await _context.Materials.CountAsync();
-                QuizCount = await _context.Quizzes.CountAsync();
-                QuestionCount = await _context.Questions.CountAsync();
-                AnnouncementCount = await _context.Announcements.CountAsync();
+                ConnectionSuccessful = true;
+
+                // Get counts from each table (use try-catch for tables that might not exist yet)
+                try { StudentCount = await _context.Students.CountAsync(); } catch { StudentCount = 0; }
+                try { LecturerCount = await _context.Lecturers.CountAsync(); } catch { LecturerCount = 0; }
+                try { AdminCount = await _context.Admins.CountAsync(); } catch { AdminCount = 0; }
+                try { ModuleCount = await _context.Modules.CountAsync(); } catch { ModuleCount = 0; }
+                try { MaterialCount = await _context.Materials.CountAsync(); } catch { MaterialCount = 0; }
+                try { QuizCount = await _context.Quizzes.CountAsync(); } catch { QuizCount = 0; }
+                try { QuestionCount = await _context.Questions.CountAsync(); } catch { QuestionCount = 0; }
+                try { AnnouncementCount = await _context.Announcements.CountAsync(); } catch { AnnouncementCount = 0; }
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
+                ConnectionSuccessful = false;
             }
         }
     }
