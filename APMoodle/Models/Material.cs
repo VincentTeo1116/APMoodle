@@ -28,5 +28,8 @@ namespace APMoodle.Models
         public Module? Module { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation properties
+        public List<Quiz>? Quizzes { get; set; }
     }
 }

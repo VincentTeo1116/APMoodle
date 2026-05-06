@@ -31,5 +31,6 @@ namespace APMoodle.Models
         // Navigation properties
         public List<Question>? Questions { get; set; }
         public List<Result>? Results { get; set; }
+        public List<Session>? Sessions { get; set; }
     }
 }

@@ -32,6 +32,10 @@ namespace APMoodle.Models
         [MaxLength(200)]
         public string Option4 { get; set; } = string.Empty;
 
+        // Foreign key to Quiz
+        [Required]
+        public int QuizID { get; set; }
+
         [ForeignKey("QuizID")]
         public Quiz? Quiz { get; set; }
 

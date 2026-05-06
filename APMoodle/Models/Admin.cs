@@ -40,5 +40,8 @@ namespace APMoodle.Models
 
         [MaxLength(500)]
         public string? ProfilePic { get; set; }  // Google Drive URL
+
+        // Navigation properties
+        public List<Announcement>? Announcements { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace APMoodle.Models
         public int CreatedBy { get; set; }
 
         [ForeignKey("CreatedBy")]
-        public Admin? Admin { get; set; }
+        public Admin? Creator { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

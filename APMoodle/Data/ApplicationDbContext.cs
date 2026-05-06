@@ -26,7 +26,7 @@ namespace APMoodle.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ========== Student Configuration ==========
+            // Student Configuration
             modelBuilder.Entity<Student>(entity =>
             {
                 entity.HasKey(s => s.StudentID);
@@ -45,7 +45,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // ========== Lecturer Configuration ==========
+            // Lecturer Configuration 
             modelBuilder.Entity<Lecturer>(entity =>
             {
                 entity.HasKey(l => l.LecturerID);
@@ -65,7 +65,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // ========== Admin Configuration ==========
+            // Admin Configuration 
             modelBuilder.Entity<Admin>(entity =>
             {
                 entity.HasKey(a => a.AdminID);
@@ -84,7 +84,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // ========== Module Configuration ==========
+            // Module Configuration
             modelBuilder.Entity<Module>(entity =>
             {
                 entity.HasKey(m => m.ModuleID);
@@ -107,7 +107,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // ========== Material Configuration ==========
+            // Material Configuration
             modelBuilder.Entity<Material>(entity =>
             {
                 entity.HasKey(m => m.MaterialID);
@@ -122,7 +122,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // ========== Quiz Configuration ==========
+            // Quiz Configuration
             modelBuilder.Entity<Quiz>(entity =>
             {
                 entity.HasKey(q => q.QuizID);
@@ -147,7 +147,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // ========== Question Configuration ==========
+            // Question Configuration
             modelBuilder.Entity<Question>(entity =>
             {
                 entity.HasKey(q => q.QuestionID);
@@ -170,7 +170,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // ========== Session Configuration ==========
+            // Session Configuration
             modelBuilder.Entity<Session>(entity =>
             {
                 entity.HasKey(s => s.SessionID);
@@ -194,7 +194,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // ========== Result Configuration ==========
+            // Result Configuration
             modelBuilder.Entity<Result>(entity =>
             {
                 entity.HasKey(r => r.ResultID);
@@ -214,7 +214,7 @@ namespace APMoodle.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // ========== Announcement Configuration ==========
+            // Announcement Configuration
             modelBuilder.Entity<Announcement>(entity =>
             {
                 entity.HasKey(a => a.AnnouncementID);

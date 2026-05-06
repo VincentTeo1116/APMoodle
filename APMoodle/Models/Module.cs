@@ -17,13 +17,11 @@ namespace APMoodle.Models
         public string ModuleCode { get; set; } = string.Empty;
 
         [Required]
-        [EmailAddress]
-        [MaxLength(300)]
+        [MaxLength(1000)]
         public string Description { get; set; } = string.Empty;
 
         [Required]
-        [Phone]
-        [MaxLength(10)]
+        [MaxLength(20)]
         public string InvitationCode { get; set; } = string.Empty;
 
         [MaxLength(500)]
@@ -43,5 +41,8 @@ namespace APMoodle.Models
         // Navigation property
         [ForeignKey("LecturerID")]
         public Lecturer? Lecturer { get; set; }
+
+        // Navigation properties
+        public List<Material>? Materials { get; set; }
     }
 }
