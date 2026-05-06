@@ -15,22 +15,24 @@ namespace APMoodle.Models
         [MaxLength(1000)]
         public string Description { get; set; } = string.Empty;
 
-        [Required]
-        [MaxLength(50)]
-        public string FileName { get; set; } = string.Empty;
-
         [MaxLength(500)]
-        public string? FilePath { get; set; }  // Link to file or video
+        public string? FileURL { get; set; }  // Link to Google Drive or local file
+
+        public string? Content { get; set; }  // For text-based materials
 
         // Foreign key to Module
+        [Required]
         public int ModuleID { get; set; }
+
         [ForeignKey("ModuleID")]
         public Module? Module { get; set; }
 
         // Foreign key to Lecturer (who uploaded)
-        public int UploadedBy { get; set; }
-        [ForeignKey("UploadedBy")]
-        public Lecturer? Lecturer { get; set; }
+        [Required]
+        public int UploadedByLecturerID { get; set; }
+
+        [ForeignKey("UploadedByLecturerID")]
+        public Lecturer? Uploader { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

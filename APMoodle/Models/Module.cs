@@ -13,6 +13,10 @@ namespace APMoodle.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
+        [MaxLength(20)]
+        public string ModuleCode { get; set; } = string.Empty;
+
+        [Required]
         [EmailAddress]
         [MaxLength(300)]
         public string Description { get; set; } = string.Empty;

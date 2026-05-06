@@ -33,6 +33,10 @@ namespace APMoodle.Models
         public DateTime RegisteredDate { get; set; } = DateTime.UtcNow;
 
         [Required]
+        [MaxLength(100)]
+        public string Department { get; set; } = string.Empty;
+
+        [Required]
         [MaxLength(10)]
         public string Gender { get; set; } = string.Empty;  // "Male", "Female", "Other"
 

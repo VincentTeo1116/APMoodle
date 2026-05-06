@@ -30,9 +30,6 @@ namespace APMoodle.Models
         public DateTime DOB { get; set; }  // Date of Birth
 
         [Required]
-        public DateTime RegisteredDate { get; set; } = DateTime.UtcNow;
-
-        [Required]
         [MaxLength(10)]
         public string Gender { get; set; } = string.Empty;  // "Male", "Female", "Other"
 
