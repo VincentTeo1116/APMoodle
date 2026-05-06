@@ -24,7 +24,7 @@ namespace APMoodle.Models
         [Required]
         [Phone]
         [MaxLength(10)]
-        public string Code { get; set; } = string.Empty;
+        public string InvitationCode { get; set; } = string.Empty;
 
         [MaxLength(500)]
         public string? ModulePic { get; set; }  // Google Drive URL
