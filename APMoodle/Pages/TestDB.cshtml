@@ -1,0 +1,32 @@
+﻿@page
+@model APMoodle.Pages.TestDBModel
+@{
+    ViewData["Title"] = "Database Connection Test";
+}
+
+<h2>Database Connection Test</h2>
+
+@if (Model.ErrorMessage != null)
+{
+    <div style="color: red; padding: 10px; border: 1px solid red; margin: 10px 0;">
+        <strong>Error:</strong> @Model.ErrorMessage
+    </div>
+}
+else
+{
+    <div style="color: green; padding: 10px; border: 1px solid green; margin: 10px 0;">
+        <strong>Success!</strong> Database connected successfully.
+    </div>
+}
+
+<h3>Test Results:</h3>
+<ul>
+    <li>Students: @Model.StudentCount</li>
+    <li>Lecturers: @Model.LecturerCount</li>
+    <li>Admins: @Model.AdminCount</li>
+    <li>Modules: @Model.ModuleCount</li>
+    <li>Materials: @Model.MaterialCount</li>
+    <li>Quizzes: @Model.QuizCount</li>
+    <li>Questions: @Model.QuestionCount</li>
+    <li>Announcements: @Model.AnnouncementCount</li>
+</ul>
