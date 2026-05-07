@@ -15,7 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Register email service
 builder.Services.AddScoped<IEmailService, EmailService>();
-// builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 // builder.Services.AddScoped<IQuizService, QuizService>();
 // builder.Services.AddScoped<IAuthService, AuthService>();
 

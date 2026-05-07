@@ -11,16 +11,26 @@ namespace APMoodle.Data
         }
 
         // DbSets for all tables
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Lecturer> Lecturers { get; set; }
-        public DbSet<Admin> Admins { get; set; }
-        public DbSet<Module> Modules { get; set; }
-        public DbSet<Material> Materials { get; set; }
-        public DbSet<Quiz> Quizzes { get; set; }
-        public DbSet<Question> Questions { get; set; }
-        public DbSet<Session> Sessions { get; set; }
-        public DbSet<Result> Results { get; set; }
-        public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<Student> Students { get; set; } = null!;
+
+        public DbSet<Lecturer> Lecturers { get; set; } = null!;
+
+        public DbSet<Admin> Admins { get; set; } = null!;
+
+        public DbSet<Module> Modules { get; set; } = null!;
+
+        public DbSet<Material> Materials { get; set; } = null!;
+
+        public DbSet<Quiz> Quizzes { get; set; } = null!;
+
+        public DbSet<Question> Questions { get; set; } = null!;
+
+        public DbSet<Session> Sessions { get; set; } = null!;
+
+        public DbSet<Result> Results { get; set; } = null!;
+
+        public DbSet<Announcement> Announcements { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +47,7 @@ namespace APMoodle.Data
                 entity.Property(s => s.Gender).HasMaxLength(10).IsRequired();
                 entity.Property(s => s.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
                 entity.Property(s => s.ProfilePic).HasMaxLength(500);
+                entity.HasIndex(s => s.StudentCode).IsUnique();
                 
                 // Relationships
                 entity.HasMany(s => s.Sessions)
@@ -57,6 +68,7 @@ namespace APMoodle.Data
                 entity.Property(l => l.Gender).HasMaxLength(10).IsRequired();
                 entity.Property(l => l.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
                 entity.Property(l => l.ProfilePic).HasMaxLength(500);
+                entity.HasIndex(l => l.LecturerCode).IsUnique();
                 
                 // Relationships
                 entity.HasMany(l => l.Modules)
@@ -76,6 +88,7 @@ namespace APMoodle.Data
                 entity.Property(a => a.Gender).HasMaxLength(10).IsRequired();
                 entity.Property(a => a.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
                 entity.Property(a => a.ProfilePic).HasMaxLength(500);
+                entity.HasIndex(a => a.AdminCode).IsUnique();
                 
                 // Relationships
                 entity.HasMany(a => a.Announcements)

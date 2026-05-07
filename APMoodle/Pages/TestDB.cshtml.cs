@@ -16,7 +16,6 @@ namespace APMoodle.Pages
         public string? ErrorMessage { get; set; }
         public bool ConnectionSuccessful { get; set; }
         
-        // Counts for display
         public int StudentCount { get; set; }
         public int LecturerCount { get; set; }
         public int AdminCount { get; set; }
@@ -30,27 +29,26 @@ namespace APMoodle.Pages
         {
             try
             {
-                // Test if database can be connected
                 var canConnect = await _context.Database.CanConnectAsync();
                 
                 if (!canConnect)
                 {
-                    ErrorMessage = "Cannot connect to database. Please check your connection string and make sure Supabase is running.";
+                    ErrorMessage = "Cannot connect to database.";
                     ConnectionSuccessful = false;
                     return;
                 }
 
                 ConnectionSuccessful = true;
 
-                // Get counts from each table (use try-catch for tables that might not exist yet)
-                try { StudentCount = await _context.Students.CountAsync(); } catch { StudentCount = 0; }
-                try { LecturerCount = await _context.Lecturers.CountAsync(); } catch { LecturerCount = 0; }
-                try { AdminCount = await _context.Admins.CountAsync(); } catch { AdminCount = 0; }
-                try { ModuleCount = await _context.Modules.CountAsync(); } catch { ModuleCount = 0; }
-                try { MaterialCount = await _context.Materials.CountAsync(); } catch { MaterialCount = 0; }
-                try { QuizCount = await _context.Quizzes.CountAsync(); } catch { QuizCount = 0; }
-                try { QuestionCount = await _context.Questions.CountAsync(); } catch { QuestionCount = 0; }
-                try { AnnouncementCount = await _context.Announcements.CountAsync(); } catch { AnnouncementCount = 0; }
+                // Safe null checks with null-forgiving operator
+                StudentCount = await _context.Students!.CountAsync();
+                LecturerCount = await _context.Lecturers!.CountAsync();
+                AdminCount = await _context.Admins!.CountAsync();
+                ModuleCount = await _context.Modules!.CountAsync();
+                MaterialCount = await _context.Materials!.CountAsync();
+                QuizCount = await _context.Quizzes!.CountAsync();
+                QuestionCount = await _context.Questions!.CountAsync();
+                AnnouncementCount = await _context.Announcements!.CountAsync();
             }
             catch (Exception ex)
             {

@@ -4,7 +4,8 @@ namespace APMoodle.Services.Interfaces
     {
         Task<bool> SendEmailAsync(string toEmail, string subject, string body);
         Task<bool> SendRegistrationPendingEmailAsync(string toEmail, string userName);
-        Task<bool> SendAccountApprovedEmailAsync(string toEmail, string userName, string password);
+        Task<bool> SendAccountApprovedEmailAsync(string toEmail, string userName, string generatedPassword);
+        Task<bool> SendAccountRejectedEmailAsync(string toEmail, string userName, string reason);
         Task<bool> SendCredentialsEmailAsync(string toEmail, string userName, string password, string role);
         Task<bool> SendPasswordResetEmailAsync(string toEmail, string userName, string resetLink);
     }

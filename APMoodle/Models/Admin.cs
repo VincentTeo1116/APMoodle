@@ -9,6 +9,10 @@ namespace APMoodle.Models
         public int AdminID { get; set; }
 
         [Required]
+        [MaxLength(10)]
+        public string AdminCode { get; set; } = string.Empty;
+
+        [Required]
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
@@ -26,8 +30,8 @@ namespace APMoodle.Models
         public string Password { get; set; } = string.Empty;  // Store hashed password
 
         [Required]
-        [DataType(DataType.Date)]
-        public DateTime DOB { get; set; }  // Date of Birth
+        [Column(TypeName = "date")]
+        public DateOnly DOB { get; set; }  // Date of Birth
 
         [Required]
         [MaxLength(10)]
