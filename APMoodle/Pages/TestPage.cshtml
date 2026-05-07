@@ -1,4 +1,58 @@
 ﻿@page
-@model MyApp.Namespace.TestPageModel
+@model APMoodle.Pages.TestPageModel
 @{
+     Layout = null;
+    ViewData["Title"] = "Test Pages";
 }
+
+
+<link rel="stylesheet" href="~/css/test.css" />
+
+<div class="login-wrapper">
+
+    <!-- LEFT SIDE -->
+    <div class="login-left">
+        <div class="logo-box">
+            <img src="~/images/logo.png" alt="Logo" />
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="login-right">
+
+        <!-- Toggle -->
+        <div class="toggle-box">
+            <button type="button" class="active" id="loginTab">Login</button>
+            <button type="button" id="registerTab">Register</button>
+        </div>
+
+        <h2>WELCOME BACK !</h2>
+
+        <form method="post">
+
+            <label>USER ID</label>
+            <input type="text" name="UserId" placeholder="Enter User ID" required />
+
+            <label>PASSWORD</label>
+            <div class="password-box">
+                <input type="password" name="Password" id="password" placeholder="Enter Password" required />
+            </div>
+
+            <div class="forgot">
+                <a href="#">FORGET PASSWORD ?</a>
+            </div>
+
+            <button type="submit" class="btn-login">SIGN IN</button>
+
+        </form>
+
+        <div class="register-text">
+            DON’T HAVE ACCOUNT YET ?
+            <a href="#">JOIN US NOW !</a>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/js/test.js"></script>

@@ -1,28 +1,37 @@
+document.addEventListener("DOMContentLoaded", function () {
 
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
+
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+
+    // if elements not exist, stop
+    if (!loginTab || !registerTab) return;
+
+    // LOGIN CLICK
+    loginTab.addEventListener("click", function () {
+
+        loginTab.classList.add("active");
+        registerTab.classList.remove("active");
+
+        if (loginForm) loginForm.style.display = "block";
+        if (registerForm) registerForm.style.display = "none";
+    });
+
+    // REGISTER CLICK → redirect to register page
+    registerTab.addEventListener("click", function () {
+
+        window.location.href = "/Register";
+    });
+
+});
+
+// PASSWORD TOGGLE
 function togglePassword() {
-    var pass = document.getElementById("password");
+    const pass = document.getElementById("password");
 
-    if (pass.type === "password") {
-        pass.type = "text";
-    } else {
-        pass.type = "password";
-    }
+    if (!pass) return;
+
+    pass.type = pass.type === "password" ? "text" : "password";
 }
-
-// LOGIN TAB
-document.getElementById("loginTab").addEventListener("click", function () {
-    this.classList.add("active");
-    document.getElementById("registerTab").classList.remove("active");
-
-    document.getElementById("loginForm").style.display = "block";
-    document.getElementById("registerForm").style.display = "none";
-});
-
-// REGISTER TAB
-document.getElementById("registerTab").addEventListener("click", function () {
-    this.classList.add("active");
-    document.getElementById("loginTab").classList.remove("active");
-
-    document.getElementById("loginForm").style.display = "none";
-    document.getElementById("registerForm").style.display = "block";
-});

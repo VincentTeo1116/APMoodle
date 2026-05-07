@@ -1,5 +1,4 @@
-
-/* GLOBAL */
+/* ───────────────── GLOBAL ───────────────── */
 body {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
@@ -8,24 +7,24 @@ body {
     align-items: center;
     justify-content: center;
 
-    /* MODERN BLUE + PURPLE GRADIENT */
-    background: radial-gradient(circle at top left, #6366f1, transparent),
-                radial-gradient(circle at bottom right, #06b6d4, transparent),
-                radial-gradient(circle at center, #8b5cf6, transparent),
-                #0b1220;
+    background:
+        radial-gradient(circle at top left, #6366f1, transparent),
+        radial-gradient(circle at bottom right, #06b6d4, transparent),
+        radial-gradient(circle at center, #8b5cf6, transparent),
+        #0b1220;
 
     overflow: hidden;
 }
 
-/* WRAPPER (GLASS CARD) */
+/* ───────────────── WRAPPER ───────────────── */
 .login-wrapper {
     width: 1000px;
     height: 600px;
     display: flex;
+
     border-radius: 20px;
     overflow: hidden;
 
-    /* FIXED GLASS BALANCE */
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
@@ -35,7 +34,7 @@ body {
     box-shadow: 0 30px 80px rgba(0,0,0,0.5);
 }
 
-/* LEFT SIDE */
+/* ───────────────── LEFT ───────────────── */
 .login-left {
     flex: 1;
     display: flex;
@@ -48,35 +47,41 @@ body {
     position: relative;
 }
 
-/* glow effect */
 .login-left::after {
     content: "";
     position: absolute;
+
     width: 300px;
     height: 300px;
+
     background: rgba(99, 102, 241, 0.25);
+
     border-radius: 50%;
+
     top: -80px;
     left: -80px;
+
     filter: blur(40px);
 }
 
-/* LOGO */
+/* ───────────────── LOGO ───────────────── */
 .logo-box img {
     width: 180px;
     filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
 }
 
-/* RIGHT SIDE */
+/* ───────────────── RIGHT ───────────────── */
 .login-right {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     padding: 40px;
 
     background: rgba(255, 255, 255, 0.10);
+
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
 }
@@ -89,63 +94,88 @@ body {
 
 /* TITLE */
 h2 {
-    margin-bottom: 25px;
+    margin-bottom: -1px;
+
     font-size: 38px;
     font-weight: 700;
+
     color: #ffffff;
+
     text-align: center;
     letter-spacing: 2px;
 }
 
-/* ─── TOGGLE ─── */
+/* ───────────────── TOGGLE ───────────────── */
 .toggle-box {
-  display: flex;
-  background: rgba(255, 255, 255, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.40);
-  border-radius: 30px;
-  padding: 5px;
-  margin-bottom: -10px;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
+
+    background: rgba(255,255,255,0.10);
+
+    border: 1px solid rgba(255,255,255,0.20);
+
+    border-radius: 30px;
+
+    padding: 5px;
+
+    margin-bottom: -25px;
 }
 
 .toggle-box button {
-  border: none;
-  padding: 10px 25px;
-  cursor: pointer;
-  background: transparent;
-  border-radius: 25px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
-  transition: 0.3s;
+    border: none;
+    background: transparent;
+
+    padding: 10px 25px;
+
+    border-radius: 25px;
+
+    font-weight: 600;
+
+    color: rgba(255,255,255,0.75);
+
+    cursor: pointer;
+
+    transition: 0.3s;
 }
 
 .toggle-box .active {
-  background: linear-gradient(135deg, #6366f1, #06b6d4);
-  color: white;
-  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, #6366f1, #06b6d4);
+
+    color: white;
+
+    box-shadow: 0 5px 15px rgba(99,102,241,0.4);
 }
 
-/* LABEL */
+/* ───────────────── LABEL ───────────────── */
 label {
     display: block;
+
     margin-top: 12px;
+
     font-size: 13px;
     font-weight: 600;
+
     color: #cbd5e1;
 }
 
-/* INPUT */
+/* ───────────────── INPUT ───────────────── */
 input {
     width: 100%;
+
     padding: 12px 14px;
+
     margin-top: 6px;
+
     border-radius: 30px;
 
-    background: rgba(255, 255, 255, 0.10);
-    border: 1px solid rgba(255, 255, 255, 0.20);
+    background: rgba(255,255,255,0.10);
+
+    border: 1px solid rgba(255,255,255,0.20);
 
     color: white;
+
     outline: none;
+
     transition: 0.3s;
 }
 
@@ -155,7 +185,49 @@ input::placeholder {
 
 input:focus {
     border-color: #06b6d4;
+
     box-shadow: 0 0 0 3px rgba(6,182,212,0.25);
+}
+
+/* DATE INPUT*/
+input[type="date"] {
+    color-scheme: dark;
+}
+
+/* SELECT */
+select {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    margin-top: 6px;
+
+    border-radius: 30px;
+
+    background: rgba(255,255,255,0.10);
+
+    border: 1px solid rgba(255,255,255,0.20);
+
+    color: white;
+
+    outline: none;
+
+    appearance: none;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+select:focus {
+    border-color: #06b6d4;
+
+    box-shadow: 0 0 0 3px rgba(6,182,212,0.25);
+}
+
+select option {
+    background: #0f172a;
+    color: white;
 }
 
 /* PASSWORD */
@@ -165,57 +237,61 @@ input:focus {
 
 .eye {
     position: absolute;
+
     right: 12px;
     top: 50%;
+
     transform: translateY(-50%);
+
     cursor: pointer;
+
     color: #94a3b8;
-}
-
-/* FORGOT */
-.forgot {
-    text-align: right;
-    margin-top: 6px;
-}
-
-.forgot a {
-    font-size: 12px;
-    color: #fb7185;
-    text-decoration: none;
 }
 
 /* BUTTON */
 .btn-login {
     width: 100%;
+
     margin-top: 18px;
+
     padding: 12px;
+
     border: none;
     border-radius: 12px;
 
     background: linear-gradient(135deg, #6366f1, #06b6d4);
+
     color: white;
 
     font-size: 15px;
     font-weight: 600;
+
     cursor: pointer;
+
     transition: 0.3s;
 }
 
 .btn-login:hover {
     transform: translateY(-2px);
+
     box-shadow: 0 15px 30px rgba(99,102,241,0.4);
 }
 
 /* REGISTER TEXT */
 .register-text {
-    margin-top: 18px;
+    margin-top: -13px;
+
     font-size: 13px;
+
     text-align: center;
+
     color: #cbd5e1;
 }
 
 .register-text a {
     color: #38bdf8;
+
     font-weight: 600;
+
     text-decoration: none;
 }
