@@ -5,7 +5,10 @@
     ViewData["Title"] = "Register";
 }
 
-<link rel="stylesheet" href="~/css/login.css" />
+<link rel="stylesheet" href="~/css/register.css" />
+
+<!-- FLATPICKR (Apple-style calendar) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <div class="login-wrapper">
 
@@ -33,9 +36,9 @@
             <label>FULL NAME</label>
             <input type="text" name="FullName" placeholder="Enter Full Name" required />
 
-            <!-- DOB -->
+            <!-- DOB (CUSTOM CALENDAR) -->
             <label>DATE OF BIRTH</label>
-            <input type="date" name="Dob" required />
+            <input type="text" id="dob" name="Dob" placeholder="Select Date of Birth" required />
 
             <!-- CONTACT -->
             <label>CONTACT NUMBER</label>
@@ -66,4 +69,5 @@
 
 </div>
 
-<script src="~/js/login.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="~/js/register.js"></script>
