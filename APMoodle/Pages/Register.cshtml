@@ -1,0 +1,69 @@
+﻿@page
+@model APMoodle.Page.RegisterModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Register";
+}
+
+<link rel="stylesheet" href="~/css/login.css" />
+
+<div class="login-wrapper">
+
+    <!-- LEFT SIDE -->
+    <div class="login-left">
+        <div class="logo-box">
+            <img src="~/images/logo.png" alt="Logo" />
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="login-right">
+
+        <!-- Toggle -->
+        <div class="toggle-box">
+            <button type="button" id="loginTab">Login</button>
+            <button type="button" class="active" id="registerTab">Register</button>
+        </div>
+
+        <h2>CREATE ACCOUNT</h2>
+
+        <form method="post">
+
+            <!-- FULL NAME -->
+            <label>FULL NAME</label>
+            <input type="text" name="FullName" placeholder="Enter Full Name" required />
+
+            <!-- DOB -->
+            <label>DATE OF BIRTH</label>
+            <input type="date" name="Dob" required />
+
+            <!-- CONTACT -->
+            <label>CONTACT NUMBER</label>
+            <input type="text" name="Contact" placeholder="Enter Contact Number" required />
+
+            <!-- EMAIL -->
+            <label>EMAIL</label>
+            <input type="email" name="Email" placeholder="Enter Email" required />
+
+            <!-- GENDER -->
+            <label>GENDER</label>
+            <select name="Gender" required>
+                <option value="">-- Select Gender --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <button type="submit" class="btn-login">REGISTER</button>
+
+        </form>
+
+        <div class="register-text">
+            ALREADY HAVE ACCOUNT?
+            <a href="#">SIGN IN</a>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/js/login.js"></script>

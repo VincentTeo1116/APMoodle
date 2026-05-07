@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle\\APMoodle.csproj": {}
+    "C:\\Users\\Max\\Desktop\\APMoodle\\APMoodle\\APMoodle.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle\\APMoodle.csproj": {
+    "C:\\Users\\Max\\Desktop\\APMoodle\\APMoodle\\APMoodle.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle\\APMoodle.csproj",
+        "projectUniqueName": "C:\\Users\\Max\\Desktop\\APMoodle\\APMoodle\\APMoodle.csproj",
         "projectName": "APMoodle",
-        "projectPath": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle\\APMoodle.csproj",
-        "packagesPath": "C:\\Users\\Vincent\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle\\obj\\",
+        "projectPath": "C:\\Users\\Max\\Desktop\\APMoodle\\APMoodle\\APMoodle.csproj",
+        "packagesPath": "C:\\Users\\Max\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Max\\Desktop\\APMoodle\\APMoodle\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Vincent\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Max\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
