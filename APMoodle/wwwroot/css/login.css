@@ -1,5 +1,4 @@
-
-/* GLOBAL */
+/* ───────────────── GLOBAL ───────────────── */
 body {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
@@ -8,24 +7,24 @@ body {
     align-items: center;
     justify-content: center;
 
-    /* MODERN BLUE + PURPLE GRADIENT */
-    background: radial-gradient(circle at top left, #6366f1, transparent),
-                radial-gradient(circle at bottom right, #06b6d4, transparent),
-                radial-gradient(circle at center, #8b5cf6, transparent),
-                #0b1220;
+    background:
+        radial-gradient(circle at top left, #6366f1, transparent),
+        radial-gradient(circle at bottom right, #06b6d4, transparent),
+        radial-gradient(circle at center, #8b5cf6, transparent),
+        #0b1220;
 
     overflow: hidden;
 }
 
-/* WRAPPER (GLASS CARD) */
+/* ───────────────── WRAPPER ───────────────── */
 .login-wrapper {
     width: 1000px;
     height: 600px;
     display: flex;
+
     border-radius: 20px;
     overflow: hidden;
 
-    /* FIXED GLASS BALANCE */
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
@@ -33,9 +32,22 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.25);
 
     box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    
+    animation: fadeInUp 0.8s ease-out;
 }
 
-/* LEFT SIDE */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ───────────────── LEFT ───────────────── */
 .login-left {
     flex: 1;
     display: flex;
@@ -48,37 +60,70 @@ body {
     position: relative;
 }
 
-/* glow effect */
 .login-left::after {
     content: "";
     position: absolute;
+
     width: 300px;
     height: 300px;
+
     background: rgba(99, 102, 241, 0.25);
+
     border-radius: 50%;
+
     top: -80px;
     left: -80px;
+
     filter: blur(40px);
+    
+    animation: pulse 4s ease-in-out infinite;
 }
 
-/* LOGO */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+/* ───────────────── LOGO ───────────────── */
 .logo-box img {
     width: 180px;
     filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
+    transition: all 0.4s ease;
 }
 
-/* RIGHT SIDE */
+.logo-box img:hover {
+    transform: scale(1.05) rotate(2deg);
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
+}
+
+/* ───────────────── RIGHT ───────────────── */
 .login-right {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+
     padding: 40px;
 
     background: rgba(255, 255, 255, 0.10);
+
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
+    overflow-y: auto;
+    max-height: 100vh;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.login-right::-webkit-scrollbar {
+    display: none;
 }
 
 /* FORM */
@@ -89,124 +134,261 @@ body {
 
 /* TITLE */
 h2 {
-    margin-bottom: 25px;
+    margin-bottom: -1px;
     font-size: 38px;
     font-weight: 700;
     color: #ffffff;
     text-align: center;
     letter-spacing: 2px;
+    
+    animation: slideInLeft 0.6s ease-out;
 }
 
-/* ─── TOGGLE ─── */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ───────────────── TOGGLE ───────────────── */
 .toggle-box {
-  display: flex;
-  background: rgba(255, 255, 255, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.40);
-  border-radius: 30px;
-  padding: 5px;
-  margin-bottom: -10px;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 30px;
+    padding: 5px;
+    margin-bottom: -25px;
 }
 
 .toggle-box button {
-  border: none;
-  padding: 10px 25px;
-  cursor: pointer;
-  background: transparent;
-  border-radius: 25px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
-  transition: 0.3s;
+    border: none;
+    background: transparent;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.toggle-box button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.toggle-box button:hover::before {
+    left: 100%;
+}
+
+.toggle-box button:hover {
+    color: white;
+    transform: translateY(-2px);
 }
 
 .toggle-box .active {
-  background: linear-gradient(135deg, #6366f1, #06b6d4);
-  color: white;
-  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    color: white;
+    box-shadow: 0 5px 15px rgba(99,102,241,0.4);
+    animation: glowPulse 2s ease-in-out infinite;
 }
 
-/* LABEL */
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 5px 15px rgba(99,102,241,0.4);
+    }
+    50% {
+        box-shadow: 0 8px 25px rgba(99,102,241,0.6);
+    }
+}
+
+/* ALERT MESSAGES */
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    padding: 12px 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    font-size: 13px;
+    width: 100%;
+    max-width: 330px;
+    box-sizing: border-box;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.alert-error {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    padding: 12px 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    font-size: 13px;
+    width: 100%;
+    max-width: 330px;
+    box-sizing: border-box;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* ───────────────── LABEL ───────────────── */
 label {
     display: block;
     margin-top: 12px;
     font-size: 13px;
     font-weight: 600;
     color: #cbd5e1;
+    transition: all 0.3s ease;
 }
 
-/* INPUT */
+/* ───────────────── INPUT ───────────────── */
 input {
     width: 100%;
     padding: 12px 14px;
     margin-top: 6px;
     border-radius: 30px;
-
-    background: rgba(255, 255, 255, 0.10);
-    border: 1px solid rgba(255, 255, 255, 0.20);
-
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.20);
     color: white;
     outline: none;
-    transition: 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
 }
 
 input::placeholder {
     color: rgba(255,255,255,0.55);
+    transition: all 0.3s ease;
+}
+
+input:hover {
+    background: rgba(255,255,255,0.15);
+    transform: translateY(-1px);
 }
 
 input:focus {
     border-color: #06b6d4;
-    box-shadow: 0 0 0 3px rgba(6,182,212,0.25);
+    box-shadow: 0 0 0 4px rgba(6,182,212,0.25);
+    background: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
 }
 
-/* PASSWORD */
+input:focus::placeholder {
+    opacity: 0;
+    transform: translateX(10px);
+}
+
+/* ───────────────── PASSWORD BOX ───────────────── */
 .password-box {
     position: relative;
+    width: 100%;
 }
 
 .eye {
     position: absolute;
-    right: 12px;
+    right: 14px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
     color: #94a3b8;
+    transition: all 0.3s ease;
+    font-size: 18px;
 }
 
-/* FORGOT */
+.eye:hover {
+    color: #06b6d4;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* ───────────────── FORGOT PASSWORD ───────────────── */
 .forgot {
     text-align: right;
-    margin-top: 6px;
+    margin-top: 8px;
 }
 
 .forgot a {
     font-size: 12px;
-    color: #fb7185;
+    color: #94a3b8;
     text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-/* BUTTON */
+.forgot a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    transition: width 0.3s ease;
+}
+
+.forgot a:hover {
+    color: #06b6d4;
+}
+
+.forgot a:hover::after {
+    width: 100%;
+}
+
+/* ───────────────── BUTTON ───────────────── */
 .btn-login {
     width: 100%;
     margin-top: 18px;
     padding: 12px;
     border: none;
     border-radius: 12px;
-
     background: linear-gradient(135deg, #6366f1, #06b6d4);
     color: white;
-
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-login::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
 }
 
 .btn-login:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(99,102,241,0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(99,102,241,0.5);
 }
 
-/* REGISTER TEXT */
+.btn-login:hover::before {
+    left: 100%;
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+/* ───────────────── REGISTER LINK ───────────────── */
 .register-text {
     margin-top: 18px;
     font-size: 13px;
@@ -218,4 +400,55 @@ input:focus {
     color: #38bdf8;
     font-weight: 600;
     text-decoration: none;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.register-text a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    transition: width 0.3s ease;
+}
+
+.register-text a:hover {
+    color: #6366f1;
+    transform: translateX(5px);
+}
+
+.register-text a:hover::after {
+    width: 100%;
+}
+
+/* Animation for form fields - staggered entrance */
+form > label,
+form > input,
+form > .password-box,
+.forgot,
+.btn-login,
+.register-text {
+    animation: fadeInUp 0.5s ease-out backwards;
+}
+
+form > label:nth-child(1) { animation-delay: 0.1s; }
+form > input:nth-child(2) { animation-delay: 0.2s; }
+form > label:nth-child(3) { animation-delay: 0.2s; }
+form > .password-box { animation-delay: 0.3s; }
+.forgot { animation-delay: 0.4s; }
+.btn-login { animation-delay: 0.5s; }
+.register-text { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
