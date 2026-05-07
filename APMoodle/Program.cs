@@ -1,13 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using APMoodle.Data;
+using APMoodle.Services;
+using APMoodle.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register email service
+builder.Services.AddScoped<IEmailService, EmailService>();
+// builder.Services.AddScoped<IStudentService, StudentService>();
+// builder.Services.AddScoped<IQuizService, QuizService>();
+// builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Session import
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -42,26 +56,16 @@ using (var scope = app.Services.CreateScope())
         
         if (canConnect)
         {
-            Console.WriteLine("✅ Database connected successfully!");
-            
-            // Display counts
-            Console.WriteLine($"- Students: {await dbContext.Students.CountAsync()}");
-            Console.WriteLine($"- Lecturers: {await dbContext.Lecturers.CountAsync()}");
-            Console.WriteLine($"- Admins: {await dbContext.Admins.CountAsync()}");
-            Console.WriteLine($"- Modules: {await dbContext.Modules.CountAsync()}");
-            Console.WriteLine($"- Materials: {await dbContext.Materials.CountAsync()}");
-            Console.WriteLine($"- Quizzes: {await dbContext.Quizzes.CountAsync()}");
-            Console.WriteLine($"- Questions: {await dbContext.Questions.CountAsync()}");
-            Console.WriteLine($"- Announcements: {await dbContext.Announcements.CountAsync()}");
+            Console.WriteLine("Database connected successfully!");
         }
         else
         {
-            Console.WriteLine("❌ Fail to connect to database!");
+            Console.WriteLine("Fail to connect to database!");
         }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Error: {ex}");
+        Console.WriteLine($"Error: {ex}");
     }
 }
 
