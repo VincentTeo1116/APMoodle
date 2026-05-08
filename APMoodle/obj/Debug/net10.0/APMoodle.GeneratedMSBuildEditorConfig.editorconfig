@@ -19,57 +19,57 @@ build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
 build_property.RootNamespace = APMoodle
 build_property.RootNamespace = APMoodle
-build_property.ProjectDir = C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\APMoodle\
+build_property.ProjectDir = C:\Users\Max\Desktop\APMoodle\APMoodle\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\APMoodle
+build_property.MSBuildProjectDirectory = C:\Users\Max\Desktop\APMoodle\APMoodle
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/Error.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/Index.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/Login.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/Privacy.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/Register.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/TestDB.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/TestDB.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVzdERCLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/TestPage.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/TestPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVzdFBhZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/_ViewImports.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/_ViewStart.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/APMoodle/Pages/Shared/_Layout.cshtml]
+[C:/Users/Max/Desktop/APMoodle/APMoodle/Pages/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-1dxqbqp1re

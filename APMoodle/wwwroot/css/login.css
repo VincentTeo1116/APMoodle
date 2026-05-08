@@ -397,7 +397,7 @@ input:focus::placeholder {
 }
 
 .register-text a {
-    color: #38bdf8;
+    /* color: #38bdf8; */
     font-weight: 600;
     text-decoration: none;
     position: relative;
