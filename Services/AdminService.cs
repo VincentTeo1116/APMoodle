@@ -14,15 +14,25 @@ namespace APMoodle.Services
             _context = context;
         }
 
+        public async Task<Admin?> GetAdminByIdAsync(int id)
+        {
+            return await _context.Admins.FindAsync(id);
+        }
+
+        public async Task<Admin?> GetAdminByCodeAsync(string adminCode)
+        {
+            return await _context.Admins.FirstOrDefaultAsync(a => a.AdminCode == adminCode);
+        }
+
+        public async Task<Admin?> GetAdminByEmailAsync(string email)
+        {
+            return await _context.Admins.FirstOrDefaultAsync(a => a.Email == email);
+        }
+
         public async Task<Admin?> GetAdminByCodeOrEmailAsync(string userId)
         {
             return await _context.Admins
                 .FirstOrDefaultAsync(a => a.AdminCode == userId || a.Email == userId);
-        }
-
-        public async Task<Admin?> GetAdminByIdAsync(int id)
-        {
-            return await _context.Admins.FindAsync(id);
         }
     }
 }

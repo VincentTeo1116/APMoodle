@@ -18,8 +18,8 @@ namespace APMoodle.Services.Interfaces
         Task<bool> StudentExistsAsync(string email);
         
         // Generate custom code
-        Task<string> GenerateNextStudentCodeAsync();  // NEW
-        
+        Task<string> GenerateNextStudentCodeAsync(); 
+
         // Statistics
         Task<int> GetTotalCountAsync();
         Task<int> GetPendingCountAsync();

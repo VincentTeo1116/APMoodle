@@ -4,8 +4,10 @@ namespace APMoodle.Services.Interfaces
 {
     public interface ILecturerService
     {
-        Task<Lecturer?> GetLecturerByCodeOrEmailAsync(string userId);
         Task<Lecturer?> GetLecturerByIdAsync(int id);
+        Task<Lecturer?> GetLecturerByCodeAsync(string lecturerCode);
+        Task<Lecturer?> GetLecturerByEmailAsync(string email);
+        Task<Lecturer?> GetLecturerByCodeOrEmailAsync(string userId);
         Task<bool> LecturerExistsAsync(string email);
     }
 }

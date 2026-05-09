@@ -19,16 +19,6 @@ namespace APMoodle.Services
             return await _context.Students!.FindAsync(id);
         }
 
-        public async Task<Student?> GetStudentByEmailAsync(string email)
-        {
-            return await _context.Students!.FirstOrDefaultAsync(s => s.Email == email);
-        }
-
-        public async Task<Student?> GetStudentByCodeAsync(string studentCode)
-        {
-            return await _context.Students!.FirstOrDefaultAsync(s => s.StudentCode == studentCode);
-        }
-
         public async Task<List<Student>> GetAllStudentsAsync()
         {
             return await _context.Students!.ToListAsync();
@@ -38,6 +28,16 @@ namespace APMoodle.Services
         {
             return await _context.Students
                 .FirstOrDefaultAsync(s => s.StudentCode == userId || s.Email == userId);
+        }
+
+        public async Task<Student?> GetStudentByCodeAsync(string studentCode)
+        {
+            return await _context.Students.FirstOrDefaultAsync(s => s.StudentCode == studentCode);
+        }
+
+        public async Task<Student?> GetStudentByEmailAsync(string email)
+        {
+            return await _context.Students.FirstOrDefaultAsync(s => s.Email == email);
         }
 
         public async Task<string> GenerateNextStudentCodeAsync()

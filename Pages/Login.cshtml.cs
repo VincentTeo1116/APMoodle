@@ -45,51 +45,70 @@ namespace APMoodle.Pages
                 return Page();
             }
 
-            // Try to login as Student
-            var student = await _studentService.GetStudentByCodeOrEmailAsync(Input.UserId);
-            if (student != null && student.Status == "Active")
-            {
-                if (VerifyPassword(Input.Password, student.Password))
-                {
-                    // Set session variables
-                    HttpContext.Session.SetString("UserID", student.StudentID.ToString());
-                    HttpContext.Session.SetString("UserCode", student.StudentCode);
-                    HttpContext.Session.SetString("UserName", student.Name);
-                    HttpContext.Session.SetString("UserRole", "student");
-                    HttpContext.Session.SetString("UserEmail", student.Email);
+            string userId = Input.UserId.Trim();
+            string password = Input.Password;
 
+            // Try to extract role from userId (supports both code and email formats)
+            string? role = GetRoleFromInput(userId);
+            string? extractedCode = ExtractCodeFromInput(userId);
+
+            if (role != null && extractedCode != null)
+            {
+                // Login by prefix (User Code or Email)
+                switch (role)
+                {
+                    case "student":
+                        var student = await _studentService.GetStudentByCodeAsync(extractedCode);
+                        if (student != null && student.Status == "Active" && VerifyPassword(password, student.Password))
+                        {
+                            SetSession(student.StudentID.ToString(), student.StudentCode, student.Name, "student", student.Email);
+                            return RedirectToPage("/Student/Dashboard");
+                        }
+                        break;
+
+                    case "lecturer":
+                        var lecturer = await _lecturerService.GetLecturerByCodeAsync(extractedCode);
+                        if (lecturer != null && lecturer.Status == "Active" && VerifyPassword(password, lecturer.Password))
+                        {
+                            SetSession(lecturer.LecturerID.ToString(), lecturer.LecturerCode, lecturer.Name, "lecturer", lecturer.Email);
+                            return RedirectToPage("/Lecturer/Dashboard");
+                        }
+                        break;
+
+                    case "admin":
+                        var admin = await _adminService.GetAdminByCodeAsync(extractedCode);
+                        if (admin != null && VerifyPassword(password, admin.Password))
+                        {
+                            SetSession(admin.AdminID.ToString(), admin.AdminCode, admin.Name, "admin", admin.Email);
+                            return RedirectToPage("/Admin/Dashboard");
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                // Login by regular email (no prefix) - check all tables
+                // Check Student
+                var student = await _studentService.GetStudentByEmailAsync(userId);
+                if (student != null && student.Status == "Active" && VerifyPassword(password, student.Password))
+                {
+                    SetSession(student.StudentID.ToString(), student.StudentCode, student.Name, "student", student.Email);
                     return RedirectToPage("/Student/Dashboard");
                 }
-            }
 
-            // Try to login as Lecturer
-            var lecturer = await _lecturerService.GetLecturerByCodeOrEmailAsync(Input.UserId);
-            if (lecturer != null && lecturer.Status == "Active")
-            {
-                if (VerifyPassword(Input.Password, lecturer.Password))
+                // Check Lecturer
+                var lecturer = await _lecturerService.GetLecturerByEmailAsync(userId);
+                if (lecturer != null && lecturer.Status == "Active" && VerifyPassword(password, lecturer.Password))
                 {
-                    HttpContext.Session.SetString("UserID", lecturer.LecturerID.ToString());
-                    HttpContext.Session.SetString("UserCode", lecturer.LecturerCode);
-                    HttpContext.Session.SetString("UserName", lecturer.Name);
-                    HttpContext.Session.SetString("UserRole", "lecturer");
-                    HttpContext.Session.SetString("UserEmail", lecturer.Email);
-
+                    SetSession(lecturer.LecturerID.ToString(), lecturer.LecturerCode, lecturer.Name, "lecturer", lecturer.Email);
                     return RedirectToPage("/Lecturer/Dashboard");
                 }
-            }
 
-            // Try to login as Admin
-            var admin = await _adminService.GetAdminByCodeOrEmailAsync(Input.UserId);
-            if (admin != null)
-            {
-                if (VerifyPassword(Input.Password, admin.Password))
+                // Check Admin
+                var admin = await _adminService.GetAdminByEmailAsync(userId);
+                if (admin != null && VerifyPassword(password, admin.Password))
                 {
-                    HttpContext.Session.SetString("UserID", admin.AdminID.ToString());
-                    HttpContext.Session.SetString("UserCode", admin.AdminCode);
-                    HttpContext.Session.SetString("UserName", admin.Name);
-                    HttpContext.Session.SetString("UserRole", "admin");
-                    HttpContext.Session.SetString("UserEmail", admin.Email);
-
+                    SetSession(admin.AdminID.ToString(), admin.AdminCode, admin.Name, "admin", admin.Email);
                     return RedirectToPage("/Admin/Dashboard");
                 }
             }
@@ -100,15 +119,54 @@ namespace APMoodle.Pages
             return Page();
         }
 
+        private string? GetRoleFromInput(string input)
+        {
+            string upperInput = input.ToUpper();
+            
+            if (upperInput.StartsWith("ST"))
+                return "student";
+            if (upperInput.StartsWith("LT"))
+                return "lecturer";
+            if (upperInput.StartsWith("AD"))
+                return "admin";
+            
+            return null;
+        }
+
+        private string? ExtractCodeFromInput(string input)
+        {
+            // Remove everything after @ if present (email format)
+            string code = input.Contains('@') ? input.Substring(0, input.IndexOf('@')) : input;
+            
+            // Verify it has the correct format (starts with ST/LT/AD)
+            string upperCode = code.ToUpper();
+            if (upperCode.StartsWith("ST") || upperCode.StartsWith("LT") || upperCode.StartsWith("AD"))
+            {
+                return code;
+            }
+            
+            return null;
+        }
+
+        private void SetSession(string userId, string userCode, string userName, string role, string email)
+        {
+            HttpContext.Session.SetString("UserID", userId);
+            HttpContext.Session.SetString("UserCode", userCode);
+            HttpContext.Session.SetString("UserName", userName);
+            HttpContext.Session.SetString("UserRole", role);
+            HttpContext.Session.SetString("UserEmail", email);
+        }
+
         private bool VerifyPassword(string inputPassword, string storedPassword)
         {
-            // If password is stored as BCrypt hash
+            if (string.IsNullOrEmpty(storedPassword))
+                return false;
+
             if (storedPassword.StartsWith("$2"))
             {
                 return BCrypt.Net.BCrypt.Verify(inputPassword, storedPassword);
             }
             
-            // Plain text comparison (for development)
             return inputPassword == storedPassword;
         }
     }
