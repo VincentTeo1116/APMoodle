@@ -41,7 +41,7 @@ body {
 }
 
 .nav-link-login {
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #74290e, #E29578);
     color: white !important;
     border-radius: 5px;
     padding: 10px 24px !important;
@@ -50,21 +50,30 @@ body {
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
-    box-shadow: 0 4px 12px rgba(34, 146, 180, 0.3);
+    box-shadow: 0 4px 12px rgba(162, 85, 18, 0.3);
     letter-spacing: 0.5px;
 }
 
 .nav-link-login:hover {
     transform: translateY(-1px);
     border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(34, 146, 180, 0.3);
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    box-shadow: 0 8px 20px rgba(162, 85, 18, 0.3);
+    background: linear-gradient(135deg, #74290e, #E29578);
     color: white !important;
 }
 
 .nav-link-login:active {
     transform: translateY(1px);
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+.nav-item {
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
 }
 
 /* Container for the expandable menu */
@@ -77,7 +86,7 @@ body {
 
 /* Menu button styling */
 .btn-expand-menu {
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #f8b9a2, #ed9f83);
     width: 50px;
     height: 50px;
     margin-top: 120px;
@@ -92,8 +101,8 @@ body {
 }
 
 .btn-expand-menu:hover {
-    background: linear-gradient(135deg, #025b63, #2a8f98);
-    transform: scale(1.02);
+    background: linear-gradient(135deg, #f19a7b, #ed9f83);
+    transform: scale(1.05);
 }
 
 /* Hamburger icon bars */
@@ -126,12 +135,12 @@ body {
     top: 0;
     width: 260px;
     height: 100vh;
-    background: linear-gradient(180deg, #013D42, #0a5a60);
+    background: linear-gradient(135deg, #f5b9a5, #eeab93);
     backdrop-filter: blur(10px);
     transition: left 0.3s ease;
     z-index: 999;
     box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
-    border-right: 1px solid rgba(190, 227, 219, 0.2);
+    border-right: 1px solid rgba(255, 232, 164, 0.3);
 }
 
 .expandable-vertical-menu.open .menu-panel {
@@ -146,7 +155,7 @@ body {
 .menu-panel .menu-item {
     display: block;
     padding: 14px 24px;
-    color: #EDF6F9;
+    color: #9e4525;
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -154,8 +163,8 @@ body {
 }
 
 .menu-panel .menu-item:hover {
-    background: rgba(190, 227, 219, 0.15);
-    border-left-color: #BEE3DB;
+    background: rgba(255, 234, 219, 0.35);
+    border-left-color: #ddb9ac;
     padding-left: 30px;
 }
 
@@ -171,10 +180,12 @@ body {
     right: 0;
     text-align: center;
     font-size: 12px;
-    color: rgba(190, 227, 219, 0.6);
-    border-bottom: 1px solid rgba(190, 227, 219, 0.1);
+    color: #752c12;
+    border-bottom: 1px solid #9e4525;
     padding-top: 15px;
     margin-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 /* Menu footer */
@@ -185,10 +196,12 @@ body {
     right: 0;
     text-align: center;
     font-size: 12px;
-    color: rgba(190, 227, 219, 0.6);
-    border-top: 1px solid rgba(190, 227, 219, 0.1);
+    color: #471908;
+    border-top: 1px solid #471908;
     padding-top: 15px;
     margin-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 /* Overlay when menu is open */

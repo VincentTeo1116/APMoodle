@@ -3,13 +3,13 @@
     var lecturerLayout = "Lecturer Portal";
     var studentLayout = "Student Portal";
 
-    // Get session values
     var userId = Context.Session.GetString("UserID");
     var userRole = Context.Session.GetString("UserRole") ?? "Guest";
     var userName = Context.Session.GetString("UserName") ?? "User";
     
-    // Determine if user is logged in
     var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
+    
+    Console.WriteLine($"DEBUG - UserID: {userId}, Role: {userRole}, isLoggedIn: {isLoggedIn}");
 }
 
 <!DOCTYPE html>
@@ -32,21 +32,21 @@
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" title="Main navigation">
                     <ul class="navbar-nav flex-grow-1">
 
-                        <!-- CENTER: Shows Portal Name based on role -->
+                        <!-- Shows Portal Name based on role -->
                         <li class="nav-item" style="position: absolute; left: 50%; transform: translateX(-50%);">
                             <a class="nav-link text-dark fw-bold" href="/">
-                                @if (userRole == "Admin")
+                                @if (userRole == "admin")
                                 {
                                     @adminLayout
                                 }
-                                else if (userRole == "Lecturer")
+                                else if (userRole == "lecturer")
                                 {
                                     @lecturerLayout
                                 }
-                                else if (userRole == "Student")
+                                else if (userRole == "student")
                                 {
                                     @studentLayout
                                 }
@@ -57,11 +57,11 @@
                             </a>
                         </li>
 
-                        <!-- RIGHT SIDE: Only show Logout button (NO portal name here) -->
+                        <!-- Only show Logout button -->
                         @if (isLoggedIn)
                         {
                             <li class="nav-login">
-                                <a class="nav-link-login" href="/Logout" title="Click here to logout" style="background: #dc3545;">Logout</a>
+                                <a class="nav-link-login" href="/Logout" title="Click here to logout" style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
                             </li>
                         }
                         else
@@ -79,7 +79,7 @@
         @if (isLoggedIn)
         {
             <nav>
-                <div class="expandable-vertical-menu" id="expandableMenu">
+                <div class="expandable-vertical-menu" id="expandableMenu" title="Click to expand menu">
                     <div class="btn-expand-menu" id="menuToggle">
                         <div class="expandable-menu-bar"></div>
                         <div class="expandable-menu-bar"></div>
@@ -92,7 +92,7 @@
                         <div class="menu-links" style="margin-top: 70px;">
                             <a href="/" class="menu-item"><span>🏠</span> Home</a>
                             <a href="/TestDB" class="menu-item"><span>🗄️</span> Test Database</a>
-                            <a href="/ModuleOverview" class="menu-item"><span>📚</span> Module Overview</a>
+                            <a href="/ModuleOverview" class="menu-item"><span>📚</span> Module</a>
                             <a href="/Student/Dashboard" class="menu-item"><span>📊</span> Dashboard</a>
                             <a href="/Profile" class="menu-item"><span>👤</span> Profile</a>
                             <a href="/Settings" class="menu-item"><span>⚙️</span> Settings</a>
