@@ -60,6 +60,11 @@
                         <!-- Only show Logout button -->
                         @if (isLoggedIn)
                         {
+                            <li class="nav-item">
+                                <a class="nav-profile" href="/Profile" title="Click here to view your profile">
+                                    <img src="~/img/profileIcon.png" alt="Profile" class="profile-icon" />
+                                </a>
+                            </li>
                             <li class="nav-login">
                                 <a class="nav-link-login" href="/Logout" title="Click here to logout" style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
                             </li>

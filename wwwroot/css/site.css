@@ -221,3 +221,18 @@ body {
 .menu-overlay.show {
     display: block;
 }
+
+.profile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+    margin-top: 5px;
+    margin-right: auto;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
