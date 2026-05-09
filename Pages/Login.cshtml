@@ -29,16 +29,24 @@
 
         <form method="post">
 
-            <label>USER ID</label>
-            <input type="text" name="UserId" placeholder="Enter User ID" required />
+            @if (!string.IsNullOrEmpty(Model.Message))
+            {
+                <div class="alert-error">
+                    ❌ @Model.Message
+                </div>
+            }
 
-            <label>PASSWORD</label>
+            <label>User ID or Email</label>
+            <input type="text" name="Input.UserId" placeholder="Enter User ID or Email" required />
+
+            <label>Password</label>
             <div class="password-box">
-                <input type="password" name="Password" id="password" placeholder="Enter Password" required />
+                <input type="password" name="Input.Password" id="password" placeholder="Enter Password" required />
+                <span class="eye" onclick="togglePassword()">👁️</span>
             </div>
 
             <div class="forgot">
-                <a href="#">FORGET PASSWORD ?</a>
+                <a href="/ForgotPassword">FORGOT PASSWORD?</a>
             </div>
 
             <button type="submit" class="btn-login">SIGN IN</button>

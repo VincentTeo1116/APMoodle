@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var adminLayout = "Admin Portal";
+    var lecturerLayout = "Lecturer Portal";
+    var studentLayout = "Student Portal";
+    
+    // Check if user is authenticated safely
+    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -27,9 +36,48 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/TestDB">Check Database</a>
                         </li>
-                        <li class="nav-login">
-                            <a class="nav-link-login" href="/Login" title="Click here to login or register">Login/Register</a>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    if (User.IsInRole("Admin"))
+                                    {
+                                        @adminLayout
+                                    }
+                                    else if (User.IsInRole("Lecturer"))
+                                    {
+                                        @lecturerLayout
+                                    }
+                                    else if (User.IsInRole("Student"))
+                                    {
+                                        @studentLayout
+                                    }
+                                    else
+                                    {
+                                        @:Dashboard
+                                    }
+                                }
+                                else
+                                {
+                                    @:Dashboard
+                                }
+                            </a>
                         </li>
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-login">
+                                <a class="nav-link-login" href="/Login" title="Click here to login or register">Login/Register</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- LOGOUT BUTTON (Shows when logged in) -->
+                            <li class="nav-login">
+                                <a class="nav-link-login" href="/Logout" title="Click here to logout" style="background: #dc3545;">Logout</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

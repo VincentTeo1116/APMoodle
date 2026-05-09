@@ -508,9 +508,6 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\scopedcss\bundle\APMoodle.styles.css
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\scopedcss\projectbundle\APMoodle.bundle.scp.css
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\f1dt1zakz7-{0}-27frcaww4f-27frcaww4f.gz
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\yfovsumc9s-{0}-077bhqdohq-077bhqdohq.gz
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\th5zepmf5h-{0}-b9sayid5wm-b9sayid5wm.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\n3po2tipob-{0}-a0hh7me4p2-a0hh7me4p2.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\k07w7by2h5-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\q21kzi3adk-{0}-1ym2wpya9u-1ym2wpya9u.gz
@@ -587,5 +584,9 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.pdb
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.genruntimeconfig.cache
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\ref\APMoodle.dll
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\7fn454ijv2-{0}-mdgha2y4md-mdgha2y4md.gz
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\il4441f83z-{0}-mdgha2y4md-mdgha2y4md.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\f1dt1zakz7-{0}-32f2a7z88x-32f2a7z88x.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\yfovsumc9s-{0}-7g4jij568k-7g4jij568k.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\th5zepmf5h-{0}-gcrphw5rh7-gcrphw5rh7.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\7fn454ijv2-{0}-k33e0xtznx-k33e0xtznx.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\il4441f83z-{0}-k33e0xtznx-k33e0xtznx.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\BCrypt.Net-Next.dll

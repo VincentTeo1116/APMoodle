@@ -8,6 +8,7 @@ namespace APMoodle.Services.Interfaces
         Task<Student?> GetStudentByIdAsync(int id);
         Task<Student?> GetStudentByEmailAsync(string email);
         Task<Student?> GetStudentByCodeAsync(string studentCode); 
+        Task<Student?> GetStudentByCodeOrEmailAsync(string userId);
         Task<List<Student>> GetAllStudentsAsync();
         Task<bool> CreateStudentAsync(Student student);
         Task<bool> UpdateStudentAsync(Student student);

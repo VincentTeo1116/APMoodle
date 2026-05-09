@@ -34,6 +34,12 @@ namespace APMoodle.Services
             return await _context.Students!.ToListAsync();
         }
 
+        public async Task<Student?> GetStudentByCodeOrEmailAsync(string userId)
+        {
+            return await _context.Students
+                .FirstOrDefaultAsync(s => s.StudentCode == userId || s.Email == userId);
+        }
+
         public async Task<string> GenerateNextStudentCodeAsync()
         {
             var lastStudent = await _context.Students!
@@ -67,7 +73,7 @@ namespace APMoodle.Services
                 {
                     student.StudentCode = await GenerateNextStudentCodeAsync();
                 }
-                
+
                 _context.Students!.Add(student);
                 await _context.SaveChangesAsync();
                 return true;
@@ -99,7 +105,7 @@ namespace APMoodle.Services
             {
                 var student = await _context.Students!.FindAsync(id);
                 if (student == null) return false;
-                
+
                 _context.Students.Remove(student);
                 await _context.SaveChangesAsync();
                 return true;

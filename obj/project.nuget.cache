@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "BiE2pOQ3XdQ=",
+  "dgSpecHash": "E/tzl8/1oj4=",
   "success": true,
   "projectFilePath": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Vincent\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\Vincent\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",
     "C:\\Users\\Vincent\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Vincent\\.nuget\\packages\\mailkit\\4.16.0\\mailkit.4.16.0.nupkg.sha512",
