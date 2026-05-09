@@ -1,7 +1,14 @@
 ﻿@page
 @model APMoodle.Pages.ModuleOverviewModel
 @{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Module Overview";
 }
+
+<head>
+    <title>@ViewData["Title"] - APMoodle</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
 
 <div>
     <h1>Module Overview</h1>

@@ -2,13 +2,19 @@
     var adminLayout = "Admin Portal";
     var lecturerLayout = "Lecturer Portal";
     var studentLayout = "Student Portal";
+
+    // Get session values
+    var userId = Context.Session.GetString("UserID");
+    var userRole = Context.Session.GetString("UserRole") ?? "Guest";
+    var userName = Context.Session.GetString("UserName") ?? "User";
     
-    // Check if user is authenticated safely
-    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+    // Determine if user is logged in
+    var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
 }
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,73 +22,91 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
+
 <body>
     <header>
         <nav class="custom-navbar navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">APMoodle</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/TestDB">Check Database</a>
-                        </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/">
-                                @if (User.Identity.IsAuthenticated)
+                        <!-- CENTER: Shows Portal Name based on role -->
+                        <li class="nav-item" style="position: absolute; left: 50%; transform: translateX(-50%);">
+                            <a class="nav-link text-dark fw-bold" href="/">
+                                @if (userRole == "Admin")
                                 {
-                                    if (User.IsInRole("Admin"))
-                                    {
-                                        @adminLayout
-                                    }
-                                    else if (User.IsInRole("Lecturer"))
-                                    {
-                                        @lecturerLayout
-                                    }
-                                    else if (User.IsInRole("Student"))
-                                    {
-                                        @studentLayout
-                                    }
-                                    else
-                                    {
-                                        @:Dashboard
-                                    }
+                                    @adminLayout
+                                }
+                                else if (userRole == "Lecturer")
+                                {
+                                    @lecturerLayout
+                                }
+                                else if (userRole == "Student")
+                                {
+                                    @studentLayout
                                 }
                                 else
                                 {
-                                    @:Dashboard
+                                    @:Guest Portal
                                 }
                             </a>
                         </li>
 
-                        @if (!User.Identity.IsAuthenticated)
+                        <!-- RIGHT SIDE: Only show Logout button (NO portal name here) -->
+                        @if (isLoggedIn)
                         {
                             <li class="nav-login">
-                                <a class="nav-link-login" href="/Login" title="Click here to login or register">Login/Register</a>
+                                <a class="nav-link-login" href="/Logout" title="Click here to logout" style="background: #dc3545;">Logout</a>
                             </li>
                         }
                         else
                         {
-                            <!-- Logout Button (Shows when logged in) -->
                             <li class="nav-login">
-                                <a class="nav-link-login" href="/Logout" title="Click here to logout" style="background: #dc3545;">Logout</a>
+                                <a class="nav-link-login" href="/Login" title="Click here to login or register">Login/Register</a>
                             </li>
                         }
                     </ul>
                 </div>
             </div>
         </nav>
+        
+        <!-- Sidebar Menu (only for logged in users) -->
+        @if (isLoggedIn)
+        {
+            <nav>
+                <div class="expandable-vertical-menu" id="expandableMenu">
+                    <div class="btn-expand-menu" id="menuToggle">
+                        <div class="expandable-menu-bar"></div>
+                        <div class="expandable-menu-bar"></div>
+                        <div class="expandable-menu-bar"></div>
+                    </div>
+                    <div class="menu-panel">
+                        <div class="menu-header">
+                            <h3>APMoodle</h3>
+                        </div>
+                        <div class="menu-links" style="margin-top: 70px;">
+                            <a href="/" class="menu-item"><span>🏠</span> Home</a>
+                            <a href="/TestDB" class="menu-item"><span>🗄️</span> Test Database</a>
+                            <a href="/ModuleOverview" class="menu-item"><span>📚</span> Module Overview</a>
+                            <a href="/Student/Dashboard" class="menu-item"><span>📊</span> Dashboard</a>
+                            <a href="/Profile" class="menu-item"><span>👤</span> Profile</a>
+                            <a href="/Settings" class="menu-item"><span>⚙️</span> Settings</a>
+                        </div>
+                        <div class="menu-footer">
+                            <span>APMoodle v1.0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-overlay" id="menuOverlay"></div>
+            </nav>
+        }
     </header>
+    
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -94,9 +118,11 @@
             &copy; 2026 - APMoodle - <a href="/Privacy">Privacy</a>
         </div>
     </footer>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

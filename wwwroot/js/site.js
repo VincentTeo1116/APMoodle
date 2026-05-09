@@ -2,3 +2,32 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+// Expandable Vertical Menu Toggle
+document.addEventListener('DOMContentLoaded', function () {
+    const menuToggle = document.getElementById('menuToggle');
+    const expandableMenu = document.getElementById('expandableMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    if (menuToggle && expandableMenu && menuOverlay) {
+        // Toggle menu on button click
+        menuToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            expandableMenu.classList.toggle('open');
+            menuOverlay.classList.toggle('show');
+        });
+
+        // Close menu when clicking overlay
+        menuOverlay.addEventListener('click', function () {
+            expandableMenu.classList.remove('open');
+            menuOverlay.classList.remove('show');
+        });
+
+        // Close menu when pressing ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && expandableMenu.classList.contains('open')) {
+                expandableMenu.classList.remove('open');
+                menuOverlay.classList.remove('show');
+            }
+        });
+    }
+});
