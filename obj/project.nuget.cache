@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9R5yU/0CMqw=",
+  "dgSpecHash": "BiE2pOQ3XdQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle\\APMoodle.csproj",
+  "projectFilePath": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vincent\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",
     "C:\\Users\\Vincent\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
