@@ -23,6 +23,23 @@ a[b-1dxqbqp1re] {
   border-color: #1861ac;
 }
 
+.nav-login[b-1dxqbqp1re] {
+    margin-left: auto;
+}
+
+.nav-link-login[b-1dxqbqp1re] {
+    background: #013D42;
+    border-radius: 15px;
+    padding: 5px 20px !important;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-link-login:hover[b-1dxqbqp1re] {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 230, 231, 0.4);
+}
+
 .border-top[b-1dxqbqp1re] {
   border-top: 1px solid #e5e5e5;
 }

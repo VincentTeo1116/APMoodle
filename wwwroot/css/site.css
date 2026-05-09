@@ -29,3 +29,40 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.custom-navbar {
+  background: #BEE3DB;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-login {
+    margin-left: auto;
+}
+
+.nav-link-login {
+    background: linear-gradient(135deg, #013D42, #1d767e);
+    color: white !important;
+    border-radius: 5px;
+    padding: 10px 24px !important;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(34, 146, 180, 0.3);
+    letter-spacing: 0.5px;
+}
+
+.nav-link-login:hover {
+    transform: translateY(-1px);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(34, 146, 180, 0.3);
+    background: linear-gradient(135deg, #013D42, #1d767e);
+    color: white !important;
+}
+
+.nav-link-login:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}

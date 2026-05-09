@@ -23,6 +23,23 @@ a {
   border-color: #1861ac;
 }
 
+.nav-login {
+    margin-left: auto;
+}
+
+.nav-link-login {
+    background: #013D42;
+    border-radius: 15px;
+    padding: 5px 20px !important;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-link-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 230, 231, 0.4);
+}
+
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
