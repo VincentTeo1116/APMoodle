@@ -4,7 +4,7 @@ using APMoodle.Models;
 using APMoodle.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
-namespace APMoodle.Pages
+namespace APMoodle.Pages.BackEnd
 {
     public class RegisterModel : PageModel
     {

@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // REGISTER CLICK → redirect to register page
     registerTab.addEventListener("click", function () {
 
-        window.location.href = "/Register";
+        window.location.href = "/FrontEnd/Register";
     });
 
 });

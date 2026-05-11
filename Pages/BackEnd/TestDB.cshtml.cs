@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using APMoodle.Data;
 
-namespace APMoodle.Pages
+namespace APMoodle.Pages.BackEnd
 {
     public class TestDBModel : PageModel
     {

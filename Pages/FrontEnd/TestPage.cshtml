@@ -1,5 +1,5 @@
 ﻿@page
-@model APMoodle.Pages.TestPageModel
+@model APMoodle.Pages.BackEnd.TestPageModel
 @{
      Layout = null;
     ViewData["Title"] = "Test Pages";
@@ -39,7 +39,7 @@
             </div>
 
             <div class="forgot">
-                <a href="#">FORGET PASSWORD ?</a>
+                <a href="/FrontEnd/ForgotPassword">FORGET PASSWORD ?</a>
             </div>
 
             <button type="submit" class="btn-login">SIGN IN</button>
@@ -48,7 +48,7 @@
 
         <div class="register-text">
             DON’T HAVE ACCOUNT YET ?
-            <a href="#">JOIN US NOW !</a>
+            <a href="/FrontEnd/Register">JOIN US NOW !</a>
         </div>
 
     </div>

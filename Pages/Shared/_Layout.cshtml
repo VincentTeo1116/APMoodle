@@ -9,7 +9,7 @@
     
     var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
     
-    Console.WriteLine($"DEBUG - UserID: {userId}, Role: {userRole}, isLoggedIn: {isLoggedIn}");
+    Console.WriteLine($"Current login status - UserID: {userId}, Role: {userRole}, isLoggedIn: {isLoggedIn}");
 }
 
 <!DOCTYPE html>
@@ -61,18 +61,18 @@
                         @if (isLoggedIn)
                         {
                             <li class="nav-item">
-                                <a class="nav-profile" href="/Profile" title="Click here to view your profile">
+                                <a class="nav-profile" href="/FrontEnd/Profile" title="Click here to view your profile">
                                     <img src="~/img/profileIcon.png" alt="Profile" class="profile-icon" />
                                 </a>
                             </li>
                             <li class="nav-login">
-                                <a class="nav-link-login" href="/Logout" title="Click here to logout" style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
+                                <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout" style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-login">
-                                <a class="nav-link-login" href="/Login" title="Click here to login or register">Login/Register</a>
+                                <a class="nav-link-login" href="/FrontEnd/Login" title="Click here to login or register">Login/Register</a>
                             </li>
                         }
                     </ul>
@@ -95,10 +95,10 @@
                             <h3>APMoodle</h3>
                         </div>
                         <div class="menu-links" style="margin-top: 70px;">
-                            <a href="/Student/Dashboard" class="menu-item">Dashboard</a>
-                            <a href="/TestDB" class="menu-item">Test Database</a>
-                            <a href="/ModuleOverview" class="menu-item">Module</a>
-                            <a href="/Settings" class="menu-item">Settings</a>
+                            <a href="/FrontEnd/Student/Dashboard" class="menu-item">Dashboard</a>
+                            <a href="/FrontEnd/TestDB" class="menu-item">Test Database</a>
+                            <a href="/FrontEnd/ModuleOverview" class="menu-item">Module</a>
+                            <a href="/FrontEnd/Settings" class="menu-item">Settings</a>
                         </div>
                         <div class="menu-footer">
                             <span>APMoodle v1.0</span>

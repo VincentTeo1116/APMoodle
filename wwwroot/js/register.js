@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // LOGIN CLICK → go login page
     loginTab.addEventListener("click", function () {
-        window.location.href = "/Login";
+        window.location.href = "/FrontEnd/Login";
     });
 
     // DATE PICKER

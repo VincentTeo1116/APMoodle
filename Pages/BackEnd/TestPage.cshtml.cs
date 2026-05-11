@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace APMoodle.Pages
+namespace APMoodle.Pages.BackEnd
 {
-    public class ModuleOverviewModel : PageModel
+    public class TestPageModel : PageModel
     {
         public void OnGet()
         {
