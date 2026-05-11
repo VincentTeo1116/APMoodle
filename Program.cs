@@ -5,6 +5,10 @@ using APMoodle.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Disable 
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
+builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false);
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
