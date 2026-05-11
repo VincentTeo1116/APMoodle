@@ -55,6 +55,8 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
+app.MapFallbackToPage("/FrontEnd/Index");
+
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
