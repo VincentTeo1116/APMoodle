@@ -25,7 +25,8 @@
 
 <body>
     <header>
-        <nav class="custom-navbar navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+        <nav
+            class="custom-navbar navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">APMoodle</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -66,13 +67,15 @@
                                 </a>
                             </li>
                             <li class="nav-login">
-                                <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout" style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
+                                <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout"
+                                   style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-login">
-                                <a class="nav-link-login" href="/FrontEnd/Login" title="Click here to login or register">Login/Register</a>
+                                <a class="nav-link-login" href="/FrontEnd/Login"
+                                   title="Click here to login or register">Login/Register</a>
                             </li>
                         }
                     </ul>
@@ -80,33 +83,42 @@
             </div>
         </nav>
         
-        <!-- Sidebar Menu (only for logged in users) -->
         @if (isLoggedIn)
         {
-            <nav>
-                <div class="expandable-vertical-menu" id="expandableMenu" title="Click to expand menu">
-                    <div class="btn-expand-menu" id="menuToggle">
-                        <div class="expandable-menu-bar"></div>
-                        <div class="expandable-menu-bar"></div>
-                        <div class="expandable-menu-bar"></div>
+            <div class="expandable-vertical-menu" id="expandableMenu">
+                <div class="menu-panel">
+                    <!-- Menu Links -->
+                    <div class="menu-links">
+                        <a href="/FrontEnd/Student/Dashboard" class="menu-item">
+                            <span class="menu-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="/FrontEnd/TestDB" class="menu-item">
+                            <span class="menu-icon">🗄️</span>
+                            <span>Test Database</span>
+                        </a>
+                        <a href="/FrontEnd/ModuleOverview" class="menu-item">
+                            <span class="menu-icon">📚</span>
+                            <span>Module</span>
+                        </a>
+                        <a href="/FrontEnd/Settings" class="menu-item">
+                            <span class="menu-icon">⚙️</span>
+                            <span>Settings</span>
+                        </a>
                     </div>
-                    <div class="menu-panel">
-                        <div class="menu-header">
-                            <h3>APMoodle</h3>
-                        </div>
-                        <div class="menu-links" style="margin-top: 70px;">
-                            <a href="/FrontEnd/Student/Dashboard" class="menu-item">Dashboard</a>
-                            <a href="/FrontEnd/TestDB" class="menu-item">Test Database</a>
-                            <a href="/FrontEnd/ModuleOverview" class="menu-item">Module</a>
-                            <a href="/FrontEnd/Settings" class="menu-item">Settings</a>
-                        </div>
-                        <div class="menu-footer">
-                            <span>APMoodle v1.0</span>
-                        </div>
+            
+                    <!-- Expand/Collapse Button at BOTTOM -->
+                    <div class="btn-expand-menu" id="menuToggle">
+                        <span class="expand-icon" id="expandIcon">❯</span>
+                        <span class="expand-text">Expand</span>
+                    </div>
+            
+                    <!-- Footer -->
+                    <div class="menu-footer">
+                        <span>v1.0</span>
                     </div>
                 </div>
-                <div class="menu-overlay" id="menuOverlay"></div>
-            </nav>
+            </div>
         }
     </header>
     
@@ -118,7 +130,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - APMoodle - <a href="/Privacy">Privacy</a>
+            &copy; 2026 - APMoodle - <a href="/FrontEnd/Privacy">Privacy</a>
         </div>
     </footer>
     

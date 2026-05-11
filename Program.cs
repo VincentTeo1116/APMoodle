@@ -5,7 +5,7 @@ using APMoodle.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Disable 
+// Disable file watching to avoid inotify limit
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false);
 

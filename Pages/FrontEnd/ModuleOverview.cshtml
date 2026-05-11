@@ -1,4 +1,12 @@
-﻿@page
+﻿@{
+    var userId = Context.Session.GetString("UserID");
+    var userRole = Context.Session.GetString("UserRole") ?? "Guest";
+    var userName = Context.Session.GetString("UserName") ?? "User";
+
+    var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
+}
+@page
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @model APMoodle.Pages.BackEnd.ModuleOverviewModel
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
@@ -11,6 +19,13 @@
 </head>
 
 <div>
-    <h1>Module Overview</h1>
-    <p>This is a simple module overview page.</p>
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+        <p class="path">@userRole+Dashboard > @ViewData["Title"]</p>
+    </div>
+    <div class="PageComponent">
+        @for each module in Modules{
+            
+        }
+    </div>
 </div>

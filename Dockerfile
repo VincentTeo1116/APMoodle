@@ -17,4 +17,5 @@ COPY --from=build /app/publish .
 
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
+ENV DOTNET_GCHeapHardLimit=200000000
 ENTRYPOINT ["dotnet", "APMoodle.dll"]

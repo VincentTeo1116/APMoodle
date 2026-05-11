@@ -31,3 +31,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// Toggle menu expansion
+document.addEventListener('DOMContentLoaded', function() {
+    const menuContainer = document.getElementById('expandableMenu');
+    const menuToggle = document.getElementById('menuToggle');
+    const expandIcon = document.getElementById('expandIcon');
+    
+    if (menuToggle && menuContainer) {
+        menuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menuContainer.classList.toggle('expanded');
+            
+            // Update icon text if needed
+            if (expandIcon) {
+                if (menuContainer.classList.contains('expanded')) {
+                    expandIcon.textContent = '❮';  // Collapse icon
+                } else {
+                    expandIcon.textContent = '❯';  // Expand icon
+                }
+            }
+        });
+    }
+});

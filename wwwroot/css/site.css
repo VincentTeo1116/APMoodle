@@ -34,6 +34,7 @@ body {
   background: #BEE3DB;
   font-weight: 500;
   transition: color 0.3s ease;
+  z-index: 100;
 }
 
 .nav-login {
@@ -76,152 +77,147 @@ body {
     transform: translateY(-2px);
 }
 
-/* Container for the expandable menu */
+/* Fixed sidebar - always visible */
 .expandable-vertical-menu {
     position: fixed;
     left: 0;
-    top: 70px;
-    z-index: 1000;
+    top: 55px;
+    z-index: 10;
+    width: 60px;
+    transition: width 0.3s ease;
 }
 
-/* Menu button styling */
-.btn-expand-menu {
-    background: linear-gradient(135deg, #f8b9a2, #ed9f83);
-    width: 50px;
-    height: 50px;
-    margin-top: 120px;
-    border-radius: 0 12px 12px 0;
+/* Expanded width */
+.expandable-vertical-menu.expanded {
+    width: 260px;
+}
+
+/* Menu panel - flex column for proper alignment */
+.menu-panel {
+    width: 60px;
+    background: linear-gradient(180deg, #013D42, #0a5a60);
+    backdrop-filter: blur(10px);
+    transition: width 0.3s ease;
+    min-height: calc(100vh - 55px);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
+}
+
+.expandable-vertical-menu.expanded .menu-panel {
+    width: 260px;
+}
+
+/* Hide all the text, only need the icon */
+.expandable-vertical-menu:not(.expanded) .menu-header h3 {
+    font-size: 0;
+}
+
+.expandable-vertical-menu:not(.expanded) .menu-header {
+    padding: 15px 0;
+}
+
+/* Menu links - takes remaining space (pushes button to bottom) */
+.menu-links {
+    padding: 10px 0;
+    flex: 1;
+}
+
+/* Menu items */
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #EDF6F9;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.menu-item:hover {
+    background: rgba(190, 227, 219, 0.15);
+    padding-left: 22px;
+}
+
+.menu-icon {
+    font-size: 20px;
+    min-width: 28px;
+}
+
+/* Hide text when collapsed */
+.menu-item span:not(.menu-icon) {
+    display: none;
+}
+
+.expandable-vertical-menu.expanded .menu-item span:not(.menu-icon) {
+    display: inline;
+}
+
+/* Expand/Collapse Button at BOTTOM - fixed position */
+.btn-expand-menu {
+    background: linear-gradient(135deg, #025b63, #1d767e);
+    width: 100%;
+    height: 45px;
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(190, 227, 219, 0.2);
+    border-bottom: 1px solid rgba(190, 227, 219, 0.2);
+    gap: 8px;
+    margin-top: auto;
 }
 
-.btn-expand-menu:hover {
-    background: linear-gradient(135deg, #f19a7b, #ed9f83);
-    transform: scale(1.05);
+.expandable-vertical-menu.expanded .btn-expand-menu {
+    justify-content: flex-start;
+    padding-left: 18px;
 }
 
-/* Hamburger icon bars */
-.expandable-menu-bar {
-    width: 25px;
-    height: 4px;
-    background-color: #EDF6F9;
-    margin: 3px 0;
-    border-radius: 3px;
-    transition: all 0.3s ease;
+/* Expand/Collapse icon */
+.expand-icon {
+    font-size: 16px;
+    font-weight: bold;
+    color: #EDF6F9;
+    transition: transform 0.3s ease;
+    display: inline-block;
 }
 
-/* Animated X when menu is open */
-.expandable-vertical-menu.open .expandable-menu-bar:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+/* When expanded, icon points left (collapse) */
+.expandable-vertical-menu.expanded .expand-icon {
+    transform: rotate(180deg);
 }
 
-.expandable-vertical-menu.open .expandable-menu-bar:nth-child(2) {
-    opacity: 0;
+/* Expand text */
+.expand-text {
+    color: #EDF6F9;
+    font-size: 14px;
+    display: none;
+    white-space: nowrap;
 }
 
-.expandable-vertical-menu.open .expandable-menu-bar:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
+.expandable-vertical-menu.expanded .expand-text {
+    display: inline;
 }
 
-/* Menu panel */
-.menu-panel {
-    position: fixed;
-    left: -260px;
-    top: 0;
-    width: 260px;
-    height: 100vh;
-    background: linear-gradient(135deg, #f5b9a5, #eeab93);
-    backdrop-filter: blur(10px);
-    transition: left 0.3s ease;
-    z-index: 999;
-    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
-    border-right: 1px solid rgba(255, 232, 164, 0.3);
-}
-
-.expandable-vertical-menu.open .menu-panel {
-    left: 0;
-}
-
-/* Menu links */
-.menu-panel .menu-links {
-    padding: 20px 0;
-}
-
-.menu-panel .menu-item {
-    display: block;
-    padding: 14px 24px;
-    color: #9e4525;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border-left: 3px solid transparent;
-    text-align: center;
-    font-size: 17px;
-}
-
-.menu-panel .menu-item:hover {
-    background: rgba(255, 234, 219, 0.35);
-    border-left-color: #ddb9ac;
-    padding-left: 30px;
-}
-
-.menu-panel .menu-item i {
-    margin-right: 12px;
-    font-size: 18px;
-}
-
-/* Menu header */
-.menu-header {
-    position: absolute;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 12px;
-    color: #752c12;
-    border-bottom: 1px solid #9e4525;
-    padding-top: 15px;
-    margin-top: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-/* Menu footer */
+/* Menu footer at BOTTOM (below expand button) */
 .menu-footer {
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    right: 0;
     text-align: center;
-    font-size: 12px;
-    color: #471908;
-    border-top: 1px solid #471908;
-    padding-top: 15px;
-    margin-top: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
+    font-size: 11px;
+    color: rgba(190, 227, 219, 0.5);
+    padding: 10px 0;
+    width: 100%;
 }
 
-/* Overlay when menu is open */
-.menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 998;
+.expandable-vertical-menu:not(.expanded) .menu-footer {
     display: none;
 }
 
-.menu-overlay.show {
+.expandable-vertical-menu.expanded .menu-footer {
     display: block;
 }
-
 .profile-icon {
     width: 32px;
     height: 32px;
