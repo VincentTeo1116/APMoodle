@@ -31,6 +31,8 @@ namespace APMoodle.Data
 
         public DbSet<Announcement> Announcements { get; set; } = null!;
 
+        public DbSet<Enrollment>? Enrollments { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,7 +50,7 @@ namespace APMoodle.Data
                 entity.Property(s => s.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
                 entity.Property(s => s.ProfilePic).HasMaxLength(500);
                 entity.HasIndex(s => s.StudentCode).IsUnique();
-                
+
                 // Relationships
                 entity.HasMany(s => s.Sessions)
                     .WithOne(ses => ses.Student)
@@ -69,7 +71,7 @@ namespace APMoodle.Data
                 entity.Property(l => l.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
                 entity.Property(l => l.ProfilePic).HasMaxLength(500);
                 entity.HasIndex(l => l.LecturerCode).IsUnique();
-                
+
                 // Relationships
                 entity.HasMany(l => l.Modules)
                     .WithOne(m => m.Lecturer)
@@ -89,7 +91,7 @@ namespace APMoodle.Data
                 entity.Property(a => a.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
                 entity.Property(a => a.ProfilePic).HasMaxLength(500);
                 entity.HasIndex(a => a.AdminCode).IsUnique();
-                
+
                 // Relationships
                 entity.HasMany(a => a.Announcements)
                     .WithOne(ann => ann.Creator)
@@ -107,13 +109,13 @@ namespace APMoodle.Data
                 entity.Property(m => m.Description).HasMaxLength(1000);
                 entity.Property(m => m.InvitationCode).HasMaxLength(20);
                 entity.Property(m => m.ModulePic).HasMaxLength(500);
-                
+
                 // Relationships
                 entity.HasOne(m => m.Lecturer)
                     .WithMany(l => l.Modules)
                     .HasForeignKey(m => m.LecturerID)
                     .OnDelete(DeleteBehavior.Restrict);
-                
+
                 entity.HasMany(m => m.Materials)
                     .WithOne(mat => mat.Module)
                     .HasForeignKey(mat => mat.ModuleID)
@@ -127,7 +129,7 @@ namespace APMoodle.Data
                 entity.Property(m => m.Title).HasMaxLength(200).IsRequired();
                 entity.Property(m => m.Description).HasMaxLength(1000);
                 entity.Property(m => m.FileURL).HasMaxLength(500);
-                
+
                 // Relationships
                 entity.HasOne(m => m.Module)
                     .WithMany(mod => mod.Materials)
@@ -142,18 +144,18 @@ namespace APMoodle.Data
                 entity.Property(q => q.Title).HasMaxLength(200).IsRequired();
                 entity.Property(q => q.Subject).HasMaxLength(50).IsRequired();
                 entity.Property(q => q.Theme).HasMaxLength(50).IsRequired();
-                
+
                 // Relationships
                 entity.HasOne(q => q.Material)
                     .WithMany(m => m.Quizzes)
                     .HasForeignKey(q => q.MaterialID)
                     .OnDelete(DeleteBehavior.Cascade);
-                
+
                 entity.HasMany(q => q.Questions)
                     .WithOne(qst => qst.Quiz)
                     .HasForeignKey(qst => qst.QuizID)
                     .OnDelete(DeleteBehavior.Cascade);
-                
+
                 entity.HasMany(q => q.Sessions)
                     .WithOne(s => s.Quiz)
                     .HasForeignKey(s => s.QuizID)
@@ -170,13 +172,13 @@ namespace APMoodle.Data
                 entity.Property(q => q.Option3).HasMaxLength(200).IsRequired();
                 entity.Property(q => q.Option4).HasMaxLength(200).IsRequired();
                 entity.Property(q => q.CorrectAnswer).HasMaxLength(1).IsRequired();
-                
+
                 // Relationships
                 entity.HasOne(q => q.Quiz)
                     .WithMany(qz => qz.Questions)
                     .HasForeignKey(q => q.QuizID)
                     .OnDelete(DeleteBehavior.Cascade);
-                
+
                 entity.HasMany(q => q.Results)
                     .WithOne(r => r.Question)
                     .HasForeignKey(r => r.QuestionID)
@@ -189,18 +191,18 @@ namespace APMoodle.Data
                 entity.HasKey(s => s.SessionID);
                 entity.Property(s => s.Timestamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.Property(s => s.IsCompleted).HasDefaultValue(false);
-                
+
                 // Relationships
                 entity.HasOne(s => s.Student)
                     .WithMany(st => st.Sessions)
                     .HasForeignKey(s => s.StudentID)
                     .OnDelete(DeleteBehavior.Cascade);
-                
+
                 entity.HasOne(s => s.Quiz)
                     .WithMany(q => q.Sessions)
                     .HasForeignKey(s => s.QuizID)
                     .OnDelete(DeleteBehavior.Restrict);
-                
+
                 entity.HasMany(s => s.Results)
                     .WithOne(r => r.Session)
                     .HasForeignKey(r => r.SessionID)
@@ -214,13 +216,13 @@ namespace APMoodle.Data
                 entity.Property(r => r.Answer).HasMaxLength(1).IsRequired();
                 entity.Property(r => r.IsCorrect).HasDefaultValue(false);
                 entity.Property(r => r.TimeUsed).HasDefaultValue(0);
-                
+
                 // Relationships
                 entity.HasOne(r => r.Session)
                     .WithMany(s => s.Results)
                     .HasForeignKey(r => r.SessionID)
                     .OnDelete(DeleteBehavior.Cascade);
-                
+
                 entity.HasOne(r => r.Question)
                     .WithMany(q => q.Results)
                     .HasForeignKey(r => r.QuestionID)
@@ -234,12 +236,28 @@ namespace APMoodle.Data
                 entity.Property(a => a.Title).HasMaxLength(200).IsRequired();
                 entity.Property(a => a.Message).HasMaxLength(2000).IsRequired();
                 entity.Property(a => a.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-                
+
                 // Relationships
                 entity.HasOne(a => a.Creator)
                     .WithMany(ad => ad.Announcements)
                     .HasForeignKey(a => a.CreatedBy)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Enrollment>(entity =>
+            {
+                entity.HasKey(e => e.EnrollmentID);
+                entity.HasIndex(e => new { e.StudentID, e.ModuleID }).IsUnique();
+
+                entity.HasOne(e => e.Student)
+                    .WithMany(s => s.Enrollments)
+                    .HasForeignKey(e => e.StudentID)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Module)
+                    .WithMany(m => m.Enrollments)
+                    .HasForeignKey(e => e.ModuleID)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

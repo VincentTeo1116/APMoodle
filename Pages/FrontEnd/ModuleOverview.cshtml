@@ -1,31 +1,71 @@
-﻿@{
-    var userId = Context.Session.GetString("UserID");
-    var userRole = Context.Session.GetString("UserRole") ?? "Guest";
-    var userName = Context.Session.GetString("UserName") ?? "User";
-
-    var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
-}
-@page
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
+﻿@page
+@using Microsoft.AspNetCore.Http
 @model APMoodle.Pages.BackEnd.ModuleOverviewModel
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Module Overview";
 }
 
-<head>
-    <title>@ViewData["Title"] - APMoodle</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
+@{
+    var userId = HttpContext.Session.GetString("UserID");
+    var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
+    var userName = HttpContext.Session.GetString("UserName") ?? "User";
+    var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
+}
 
 <div>
     <div class="PageTitle">
         <h1>@ViewData["Title"]</h1>
-        <p class="path">@userRole+Dashboard > @ViewData["Title"]</p>
+        <p class="path">@userRole Dashboard > @ViewData["Title"]</p>
     </div>
+
+    @if (userRole == "lecturer")
+    {
+        <div style="margin-bottom: 20px; text-align: right;">
+            <a href="/FrontEnd/Module/Create" class="btn-create">+ Create New Module</a>
+        </div>
+    }
+
     <div class="PageComponent">
-        @for each module in Modules{
-            
+        @if (Model.Modules != null && Model.Modules.Any())
+        {
+            foreach (var module in Model.Modules)
+            {
+                <div class="module-card">
+                    <div class="module-cover">
+                        <span>📚</span>
+                    </div>
+                    <div class="module-content">
+                        <div class="module-code">@module.ModuleCode</div>
+                        <h3 class="module-title">@module.Name</h3>
+                        <p class="module-description">@(module.Description ?? "No description available")</p>
+                    </div>
+                    <div class="module-footer">
+                        <span class="module-lecturer">👨‍🏫 @(module.Lecturer?.Name ?? "Staff")</span>
+                        <a href="/FrontEnd/Module/@module.ModuleID" class="btn-view">View Module →</a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <span>📭</span>
+                <h3>No Modules Found</h3>
+                @if (userRole == "lecturer")
+                {
+                    <p>You haven't created any modules yet. Click "Create New Module" to get started.</p>
+                }
+                else if (userRole == "student")
+                {
+                    <p>You haven't enrolled in any modules yet.</p>
+                    <a href="/FrontEnd/Student/AvailableModules" class="btn-create">Browse Available Modules</a>
+                }
+                else
+                {
+                    <p>There are currently no modules available.</p>
+                }
+            </div>
         }
     </div>
 </div>

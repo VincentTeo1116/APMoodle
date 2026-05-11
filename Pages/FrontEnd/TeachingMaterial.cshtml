@@ -1,0 +1,22 @@
+﻿@page
+@using Microsoft.AspNetCore.Http
+@model APMoodle.Pages.BackEnd.TeachingMaterialModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Teaching Material Overview";
+}
+
+@{
+    var userId = HttpContext.Session.GetString("UserID");
+    var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
+    var moduleId = HttpContext.Session.GetString("ModuleID") ?? "NA";
+    var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest" && !string.IsNullOrEmpty(moduleId);
+}
+
+<div>
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+        <p class="path">@userRole Dashboard > @ViewData["Title"]</p>
+    </div>
+
+</div>

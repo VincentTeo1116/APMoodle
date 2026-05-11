@@ -44,5 +44,6 @@ namespace APMoodle.Models
 
         // Navigation properties
         public List<Material>? Materials { get; set; }
+        public List<Enrollment>? Enrollments { get; set; }
     }
 }

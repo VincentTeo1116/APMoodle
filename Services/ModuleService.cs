@@ -1,0 +1,123 @@
+using Microsoft.EntityFrameworkCore;
+using APMoodle.Data;
+using APMoodle.Models;
+using APMoodle.Services.Interfaces;
+
+namespace APMoodle.Services
+{
+    public class ModuleService : IModuleService
+    {
+        private readonly IEnrollmentService _enrollmentService;
+        private readonly ApplicationDbContext _context;
+
+        public ModuleService(ApplicationDbContext context, IEnrollmentService enrollmentService)
+        {
+            _context = context;
+            _enrollmentService = enrollmentService;
+        }
+
+        // Get modules based on user role
+        public async Task<List<Module>> GetModulesByUserRoleAsync(string userRole, int userId)
+        {
+            if (userRole == "lecturer")
+            {
+                return await GetModulesByLecturerAsync(userId);
+            }
+            else if (userRole == "student")
+            {
+                // Student sees ONLY enrolled modules
+                return await _enrollmentService.GetEnrolledModulesAsync(userId);
+            }
+            else
+            {
+                // Admin sees all modules
+                return await GetAllModulesAsync();
+            }
+        }
+
+        // Get modules for a specific lecturer
+        public async Task<List<Module>> GetModulesByLecturerAsync(int lecturerId)
+        {
+            return await _context.Modules
+                .Where(m => m.LecturerID == lecturerId)
+                .Include(m => m.Lecturer)
+                .OrderBy(m => m.ModuleCode)
+                .ToListAsync();
+        }
+
+        // Get all modules
+        public async Task<List<Module>> GetAllModulesAsync()
+        {
+            return await _context.Modules
+                .Include(m => m.Lecturer)
+                .OrderBy(m => m.ModuleCode)
+                .ToListAsync();
+        }
+
+        // Get single module by ID
+        public async Task<Module?> GetModuleByIdAsync(int moduleId)
+        {
+            return await _context.Modules
+                .Include(m => m.Lecturer)
+                .Include(m => m.Materials)
+                .FirstOrDefaultAsync(m => m.ModuleID == moduleId);
+        }
+
+        // Create new module
+        public async Task<bool> CreateModuleAsync(Module module)
+        {
+            try
+            {
+                _context.Modules.Add(module);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // Update module
+        public async Task<bool> UpdateModuleAsync(Module module)
+        {
+            try
+            {
+                _context.Modules.Update(module);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // Delete module
+        public async Task<bool> DeleteModuleAsync(int moduleId)
+        {
+            try
+            {
+                var module = await _context.Modules.FindAsync(moduleId);
+                if (module == null) return false;
+
+                _context.Modules.Remove(module);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // Check if lecturer owns the module
+        public async Task<bool> IsModuleOwnerAsync(int moduleId, int lecturerId)
+        {
+            var module = await _context.Modules
+                .FirstOrDefaultAsync(m => m.ModuleID == moduleId && m.LecturerID == lecturerId);
+
+            return module != null;
+        }
+    }
+}

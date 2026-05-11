@@ -21,6 +21,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ILecturerService, LecturerService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 // builder.Services.AddScoped<IQuizService, QuizService>();
 // builder.Services.AddScoped<IAuthService, AuthService>();
 

@@ -10,7 +10,7 @@ namespace APMoodle.Models
 
         [Required]
         [MaxLength(10)]
-        public string StudentCode { get; set; } = string.Empty; 
+        public string StudentCode { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(100)]
@@ -50,5 +50,8 @@ namespace APMoodle.Models
 
         // Navigation properties
         public List<Session>? Sessions { get; set; }
+
+        // Navigation property for enrolled modules
+        public List<Enrollment>? Enrollments { get; set; }
     }
 }
