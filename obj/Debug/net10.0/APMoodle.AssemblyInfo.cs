@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("APMoodle")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6600217f425f1c343ff8464702753c102de9ec90")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e600bbdc9c49c2e66636b1a7dec5eff373426af0")]
 [assembly: System.Reflection.AssemblyProductAttribute("APMoodle")]
 [assembly: System.Reflection.AssemblyTitleAttribute("APMoodle")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -54,3 +54,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+window.addEventListener('scroll', function() {
+    const navbar = document.querySelector('.custom-navbar');
+    if (window.scrollY > 10) {
+        navbar.classList.add('sticky-scroll');
+    } else {
+        navbar.classList.remove('sticky-scroll');
+    }
+});

@@ -1,15 +1,6 @@
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.csproj.AssemblyReference.cache
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\rpswa.dswa.cache.json
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.AssemblyInfoInputs.cache
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.AssemblyInfo.cs
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.csproj.CoreCompileInputs.cache
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.RazorAssemblyInfo.cache
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.RazorAssemblyInfo.cs
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.sourcelink.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\appsettings.json
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\credentials.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.staticwebassets.runtime.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.staticwebassets.endpoints.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.exe
@@ -19,6 +10,10 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.pdb
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\BCrypt.Net-Next.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\BouncyCastle.Cryptography.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Google.Apis.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Google.Apis.Auth.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Google.Apis.Core.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Google.Apis.Drive.v3.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Humanizer.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\MailKit.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Microsoft.Bcl.AsyncInterfaces.dll
@@ -36,6 +31,7 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Microsoft.Extensions.DependencyModel.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\MimeKit.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Mono.TextTemplating.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Newtonsoft.Json.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Npgsql.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\System.CodeDom.dll
@@ -44,6 +40,7 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\System.Composition.Hosting.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\System.Composition.Runtime.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\System.Composition.TypedParts.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\System.Management.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\de\Microsoft.CodeAnalysis.resources.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\es\Microsoft.CodeAnalysis.resources.dll
@@ -109,6 +106,17 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\runtimes\win\lib\net7.0\System.Management.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.csproj.AssemblyReference.cache
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.AssemblyInfoInputs.cache
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.AssemblyInfo.cs
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.csproj.CoreCompileInputs.cache
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.RazorAssemblyInfo.cache
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.RazorAssemblyInfo.cs
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.sourcelink.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
@@ -116,6 +124,8 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\scopedcss\bundle\APMoodle.styles.css
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\scopedcss\projectbundle\APMoodle.bundle.scp.css
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\f1dt1zakz7-{0}-583wa3jjow-583wa3jjow.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\0cht45ov9d-{0}-s17wjmh9yd-s17wjmh9yd.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\1f3b01uvca-{0}-51zi99sbqj-51zi99sbqj.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\7rja40ctda-{0}-ve3a9h37gl-ve3a9h37gl.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\yfovsumc9s-{0}-7g4jij568k-7g4jij568k.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\th5zepmf5h-{0}-6pez0mkae2-6pez0mkae2.gz
@@ -197,4 +207,3 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.pdb
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.genruntimeconfig.cache
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\ref\APMoodle.dll
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\0cht45ov9d-{0}-cv9r2d7kvs-cv9r2d7kvs.gz

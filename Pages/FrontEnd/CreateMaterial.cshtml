@@ -1,0 +1,190 @@
+﻿@page
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
+@model APMoodle.Pages.BackEnd.CreateMaterialModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Add Teaching Material";
+}
+
+<head>
+    <title>@ViewData["Title"] - APMoodle</title>
+    <link rel="stylesheet" href="~/css/materialCreation.css" />
+</head>
+<div class="modal-overlay" id="materialModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2>📚 Add Teaching Material</h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        
+        <form id="materialForm" enctype="multipart/form-data">
+            <input type="hidden" name="moduleId" value="@Model.ModuleId" />
+            
+            <div class="form-group">
+                <label for="title">Title *</label>
+                <input type="text" id="title" name="title" required placeholder="e.g., Lecture 1: Introduction" />
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3"
+                          placeholder="Brief description of this material..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="content">Content (Optional - for text-based materials)</label>
+                <textarea id="content" name="content" rows="5"
+                          placeholder="Enter text content here... (Leave empty if uploading a file)"></textarea>
+            </div>
+            
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-icon">📁</div>
+                <p class="drop-zone-text">Drag & drop your file here</p>
+                <p class="drop-zone-subtext">or click to browse</p>
+                <input type="file" id="fileInput" name="file" style="display: none;" />
+            </div>
+            
+            <div class="file-preview" id="filePreview" style="display: none;">
+                <div class="file-preview-icon" id="previewIcon">📄</div>
+                <div class="file-preview-info">
+                    <span class="file-preview-name" id="previewName"></span>
+                    <span class="file-preview-size" id="previewSize"></span>
+                </div>
+                <button type="button" class="file-preview-remove" onclick="clearFile()">✖</button>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-submit">📤 Upload Material</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const filePreview = document.getElementById('filePreview');
+    const previewName = document.getElementById('previewName');
+    const previewSize = document.getElementById('previewSize');
+    const previewIcon = document.getElementById('previewIcon');
+    
+    let selectedFile = null;
+    
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+    
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('drag-over');
+    });
+    
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelect(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileSelect(e.target.files[0]);
+        }
+    });
+
+    function handleFileSelect(file) {
+        selectedFile = file;
+
+        previewName.textContent = file.name;
+        previewSize.textContent = formatFileSize(file.size);
+
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (ext === 'pdf') previewIcon.textContent = '📄';
+        else if (['mp4', 'mov', 'avi'].includes(ext)) previewIcon.textContent = '🎥';
+        else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) previewIcon.textContent = '🖼️';
+        else if (['doc', 'docx'].includes(ext)) previewIcon.textContent = '📝';
+        else if (['xls', 'xlsx'].includes(ext)) previewIcon.textContent = '📊';
+        else previewIcon.textContent = '📘';
+        
+        dropZone.style.display = 'none';
+        filePreview.style.display = 'flex';
+    }
+
+    function clearFile() {
+        selectedFile = null;
+        fileInput.value = '';
+        dropZone.style.display = 'block';
+        filePreview.style.display = 'none';
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function closeModal() {
+        window.location.href = `/FrontEnd/TeachingMaterial/${@Model.ModuleId}`;
+    }
+
+    document.getElementById('materialForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const content = document.getElementById('content').value;
+        
+        if (!title) {
+            alert('Please enter a title');
+            return;
+        }
+        
+        if (!selectedFile) {
+            alert('Please select a file to upload');
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('moduleId', @Model.ModuleId);
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('content', content);
+        formData.append('file', selectedFile);
+        
+        const submitBtn = document.querySelector('.btn-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Uploading...';
+        
+        try {
+            const response = await fetch('/FrontEnd/CreateMaterial', {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': '@antiforgeryToken'
+                },
+                body: formData
+            });
+            
+            if (response.ok) {
+                window.location.href = `/FrontEnd/TeachingMaterial/${@Model.ModuleId}`;
+            } else {
+                const error = await response.text();
+                alert(`Upload failed: ${error}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 Upload Material';
+            }
+        } catch (error) {
+            alert(`Upload failed: ${error.message}`);
+            submitBtn.disabled = false;
+            submitBtn.textContent = '📤 Upload Material';
+        }
+    });
+</script>
