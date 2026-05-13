@@ -24,7 +24,6 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
-builder.Services.AddSingleton<IWebHostEnvironment>(builder.Environment);
 // builder.Services.AddScoped<IQuizService, QuizService>();
 // builder.Services.AddScoped<IAuthService, AuthService>();
 

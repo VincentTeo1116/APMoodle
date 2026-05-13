@@ -1,0 +1,46 @@
+[33md134d0b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Change site.js, site.css, layout, lecturer page
+[33m7ac816d[m Change site.js, site.css, layout, lecturer page
+[33me600bbd[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Add module, teaching material and the overview page
+[33m6600217[m Test render * 3
+[33mcbf7407[m Test render -2:
+[33mc7693a7[m Test the render
+[33mdda2db7[m Edit the nav bar, add the module overview for lecturer
+[33mdba385f[m Change the render limit
+[33me3403f2[m Change the render limit
+[33m29982fa[m Test
+[33m93b14cc[m Rearrange the file hierarchy
+[33mc0905f1[m idk
+[33m1690a7b[m Update minor css
+[33m9523cd7[m Add the css file
+[33m84b995a[m Unsolved nav bar
+[33m224e28a[m Change the title of the pages:
+[33me34f9e9[m Validate the login session
+[33m8875365[m Change the solution file
+[33m22582a2[m Updated login logic and the nav bar, but not fully functional
+[33mc1a96a3[m Updated css for login, register, nav bar
+[33mc84bac9[m Delete useless folder - Controllers
+[33me515042[m Force fix: correct root structure with csproj at root
+[33mcdd531e[m Fix folder structure: correct root level with Dockerfile
+[33m228932e[m Fix folder structure for Docker deployment
+[33md7c6cc3[m Add Docker File
+[33m490bffa[m Merge branch 'main' of https://github.com/VincentTeo1116/APMoodle
+[33m9dc9229[m Test
+[33m5e6d84f[m change css for login and register
+[33m60c6ff6[m Adjust the css for login and  registration
+[33m4340bd5[m Adjust the css for registration
+[33m3ca1bfa[m Email authentication, registration front & back-end development
+[33m79c8a33[m Set the controller and services
+[33m3f597fe[m Set the controller and services
+[33m506dcd8[m Login and Register V1
+[33m9ea6f01[m Login and Register V1
+[33me7fd6cc[m File hierarchy changed
+[33m212d354[m Login
+[33m067a924[m Test connection page
+[33me03fb8f[m Test database conenction
+[33ma41bb23[m Set the applicationdbcontext
+[33m6f78807[m Initialize full database
+[33m2955bb4[m Database was updated
+[33ma36893b[m Database was updated
+[33m36896be[m Create new database
+[33md506cdf[m Initialize database connection
+[33mfbdb304[m Initial commit
