@@ -1,0 +1,210 @@
+.teaching-material-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.materials-section {
+    flex: 7; 
+    min-width: 0;
+}
+
+.module-details-section {
+    flex: 3; 
+}
+
+/* Module Details Card */
+.module-details-card {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 16px;
+    padding: 20px;
+    position: sticky;
+    top: 80px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e0e0e0;
+}
+
+.module-details-card h3 {
+    color: #013D42;
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #1d767e;
+}
+
+.module-detail-item {
+    display: flex;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #013D42;
+    width: 110px;
+    font-size: 13px;
+}
+
+.detail-value {
+    color: #333;
+    font-size: 13px;
+    flex: 1;
+    word-break: break-word;
+}
+
+/* Materials Grid */
+.PageComponent {
+    display: block;
+}
+
+.materials-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.material-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.material-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.material-icon {
+    background: linear-gradient(135deg, #013D42, #1d767e);
+    padding: 20px;
+    text-align: center;
+    font-size: 25px;
+}
+
+.material-content {
+    padding: 16px;
+    flex: 1;
+}
+
+.material-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #b6e8dd;
+    margin-bottom: 8px;
+}
+
+.material-description {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.material-footer {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.btn-create-wrapper {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.btn-new-material {
+    background: linear-gradient(135deg, #013D42, #1d767e);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-new-material:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(1, 61, 66, 0.3);
+    color: white;
+}
+
+.btn-create {
+    background: linear-gradient(135deg, #013D42, #1d767e);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-create:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(1, 61, 66, 0.3);
+    color: white;
+}
+
+.btn-view {
+    background: #013D42;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-view:hover {
+    background: #1d767e;
+    color: white;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.empty-state span {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.no-file {
+    color: #999;
+    font-size: 12px;
+}
+
+.PageTitle {
+    margin-bottom: 24px;
+}
+
+.path {
+    color: #888;
+    font-size: 14px;
+}
+
+/* Responsive: Stack on mobile */
+@media (max-width: 768px) {
+    .teaching-material-container {
+        flex-direction: column;
+    }
+    
+    .materials-section,
+    .module-details-section {
+        flex: 1;
+        width: 100%;
+    }
+    
+    .module-details-card {
+        position: static;
+        margin-top: 20px;
+    }
+}

@@ -42,13 +42,13 @@ body {
 }
 
 .nav-link-login {
-    background: linear-gradient(135deg, #74290e, #E29578);
+    background: linear-gradient(135deg, #013D42, #037984);
     color: white !important;
     border-radius: 5px;
     padding: 10px 24px !important;
     font-weight: 600;
     font-size: 14px;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease-in-out;
     text-decoration: none;
     display: inline-block;
     box-shadow: 0 4px 12px rgba(162, 85, 18, 0.3);
@@ -59,7 +59,7 @@ body {
     transform: translateY(-1px);
     border-radius: 10px;
     box-shadow: 0 8px 20px rgba(162, 85, 18, 0.3);
-    background: linear-gradient(135deg, #74290e, #E29578);
+    background: linear-gradient(135deg, #012b2f, #025259);
     color: white !important;
 }
 

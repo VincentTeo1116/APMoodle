@@ -58,6 +58,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVGVhY2hpbmdNYXRlcmlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/TeachingMaterialOverview.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVGVhY2hpbmdNYXRlcmlhbE92ZXJ2aWV3LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/TestDB.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVGVzdERCLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -74,8 +78,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
+[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/IndexRedirect.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXhSZWRpcmVjdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/Shared/_ValidationScriptsPartial.cshtml]

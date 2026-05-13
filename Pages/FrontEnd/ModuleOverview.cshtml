@@ -12,17 +12,29 @@
     var userName = HttpContext.Session.GetString("UserName") ?? "User";
     var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
 }
-
+<head>
+    <title>@ViewData["Title"] - APMoodle</title>
+    <link rel="stylesheet" href="~/css/module.css" />
+</head>
 <div>
     <div class="PageTitle">
         <h1>@ViewData["Title"]</h1>
-        <p class="path">@userRole Dashboard > @ViewData["Title"]</p>
+        <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard > @ViewData["Title"]</p>
     </div>
 
     @if (userRole == "lecturer")
     {
-        <div style="margin-bottom: 20px; text-align: right;">
-            <a href="/FrontEnd/Module/Create" class="btn-create">+ Create New Module</a>
+        <div class="filter-search-bar">
+            <div class="filter-bar">
+                <select id="filterModule">
+                    <option value="all">All Modules</option>
+                    <option value="active">Active Modules</option>
+                    <option value="completed">Completed Modules</option>
+                </select>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchModule" placeholder="Search modules..." />
+            </div>
         </div>
     }
 
@@ -42,7 +54,7 @@
                     </div>
                     <div class="module-footer">
                         <span class="module-lecturer">👨‍🏫 @(module.Lecturer?.Name ?? "Staff")</span>
-                        <a href="/FrontEnd/Module/@module.ModuleID" class="btn-view">View Module →</a>
+                        <a href="/FrontEnd/TeachingMaterial/@module.ModuleID" class="btn-view">View Module</a>
                     </div>
                 </div>
             }
@@ -54,12 +66,12 @@
                 <h3>No Modules Found</h3>
                 @if (userRole == "lecturer")
                 {
-                    <p>You haven't created any modules yet. Click "Create New Module" to get started.</p>
+                    <p>You haven't invited to any modules yet. Please contact the admin to get help.</p>
                 }
                 else if (userRole == "student")
                 {
                     <p>You haven't enrolled in any modules yet.</p>
-                    <a href="/FrontEnd/Student/AvailableModules" class="btn-create">Browse Available Modules</a>
+                    <a href="/FrontEnd/AvailableModules" class="btn-create">Browse Available Modules</a>
                 }
                 else
                 {

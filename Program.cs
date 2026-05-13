@@ -23,6 +23,7 @@ builder.Services.AddScoped<ILecturerService, LecturerService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+builder.Services.AddScoped<IMaterialService, MaterialService>();
 // builder.Services.AddScoped<IQuizService, QuizService>();
 // builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -55,7 +56,7 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
-app.MapFallbackToPage("/FrontEnd/Index");
+// app.MapFallbackToPage("/FrontEnd/Index");
 
 using (var scope = app.Services.CreateScope())
 {
