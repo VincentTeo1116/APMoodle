@@ -94,11 +94,30 @@
                         {
                             <a href="/FrontEnd/LecturerDashboard" class="menu-item">
                                 <span class="menu-icon">📊</span>
-                                <span>Dashboard</span>
+                                <span>View Dashboard</span>
                             </a>
                             <a href="/FrontEnd/ModuleOverview" class="menu-item">
                                 <span class="menu-icon">📚</span>
-                                <span>Module</span>
+                                <span>View Module List</span>
+                            </a>
+                            <a href="/FrontEnd/Chat" class="menu-item">
+                                <span class="menu-icon">💬</span>
+                                <span>View Chat</span>
+                            </a>
+                            <a href="/FrontEnd/Settings" class="menu-item">
+                                <span class="menu-icon">⚙️</span>
+                                <span>Settings</span>
+                            </a>
+                        }
+                        else if (userRole == "student")
+                        {
+                            <a href="/FrontEnd/LecturerDashboard" class="menu-item">
+                                <span class="menu-icon">📊</span>
+                                <span>View Dashboard</span>
+                            </a>
+                            <a href="/FrontEnd/ModuleOverview" class="menu-item">
+                                <span class="menu-icon">📚</span>
+                                <span>View Module</span>
                             </a>
                             <a href="/FrontEnd/Chat" class="menu-item">
                                 <span class="menu-icon">💬</span>
@@ -109,15 +128,27 @@
                                 <span>Settings</span>
                             </a>
                         }
-                        else if (userRole == "student")
-                        {
-
-                        }
                         else if (userRole == "admin")
                         {
+                            <a href="/FrontEnd/AdminDashboard" class="menu-item">
+                                <span class="menu-icon">📊</span>
+                                <span>View Dashboard</span>
+                            </a>
+                            <a href="/FrontEnd/ModuleOverview" class="menu-item">
+                                <span class="menu-icon">📚</span>
+                                <span>View Module List</span>
+                            </a>
+                            <a href="/FrontEnd/UserList" class="menu-item">
+                                <span class="menu-icon">💬</span>
+                                <span>View User List</span>
+                            </a>
                             <a href="/FrontEnd/TestDB" class="menu-item">
                                 <span class="menu-icon">🗄️</span>
-                                <span>Test Database</span>
+                                <span>View Database</span>
+                            </a>
+                            <a href="/FrontEnd/Settings" class="menu-item">
+                                <span class="menu-icon">⚙️</span>
+                                <span>Settings</span>
                             </a>
                         }
                     </div>
