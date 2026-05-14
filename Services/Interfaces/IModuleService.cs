@@ -23,5 +23,8 @@ namespace APMoodle.Services.Interfaces
         
         // Check if lecturer owns the module
         Task<bool> IsModuleOwnerAsync(int moduleId, int lecturerId);
+        Task<string> RegenerateInvitationCodeAsync(int moduleId);
+
+        Task<bool> IsInvitationCodeExistsAsync(string code);
     }
 }

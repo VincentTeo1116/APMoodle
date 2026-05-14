@@ -11,7 +11,6 @@
     var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
     var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
     
-    // Determine button state
     var hasMaterials = Model.Materials != null && Model.Materials.Any();
     var isLecturer = userRole == "lecturer";
 }
@@ -21,115 +20,107 @@
     <link rel="stylesheet" href="~/css/material.css" />
 </head>
 
-<div id="horizontalNavbar">
-    <div class="PageTitle">
-        <h1>@(Model.CurrentModule?.Name ?? "Teaching Materials")</h1>
-        <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard > @(Model.CurrentModule?.Name) >
-            Teaching Material</p>
+<div class="teaching-material-page">
+    
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-left">
+            <div id="horizontalNavbar">
+                <h1>@(Model.CurrentModule?.Name ?? "Teaching Materials")</h1>
+                <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard >
+                    @(Model.CurrentModule?.Name) >
+                    Teaching Material</p>
+                </div>
+            </div>
         </div>
 
-        <div class="teaching-material-container">
+        <div class="main-content">
             <div class="materials-section">
-                @if (isLecturer && hasMaterials)
-                {
-                    <div class="btn-create-wrapper">
-                        <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="btn-new-material">
-                            Add New Material</a>
-                        </div>
+                <div class="section-header">
+                    <h2>📖 Teaching Material</h2>
+                    @if (isLecturer && !hasMaterials)
+                    {
+                        <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Your
+                                        First Material</a>
+                        }
+                    else if (isLecturer && hasMaterials)
+                    {
+                        <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Material</a>
                     }
+                    </div>
 
-                    <div class="PageComponent">
+                    <div class="materials-list">
                         @if (hasMaterials)
                         {
-                            <div class="materials-grid">
-                                @foreach (var material in Model.Materials)
-                                {
-                                    <div class="material-card">
-                                        <div class="material-icon">
-                                            @if (material.FileURL != null && material.FileURL.EndsWith(".pdf"))
-                                            {
-                                                <span>📄</span>
-                                            }
-                                            else if (material.FileURL != null && (material.FileURL.EndsWith(".mp4") ||
-                                    material.FileURL.Contains("youtube")))
-                                            {
-                                                <span>🎥</span>
-                                            }
-                                            else
-                                            {
-                                                <span>📘</span>
-                                            }
-                                            <span class="material-title">@material.Title</span>
-                                        </div>
-                                        <div class="material-content">
+                            foreach (var material in Model.Materials)
+                            {
+                                <div class="material-card">
+                                    <div class="material-card-header">
+                                        <div class="material-icon">📘</div>
+                                        <div class="material-info">
+                                            <h3 class="material-title">@material.Title</h3>
                                             <p class="material-description">@(material.Description ?? "No description")</p>
                                         </div>
-                                        <div class="material-footer">
-                                            <div class="footer-buttons">
-                                                @if (!string.IsNullOrEmpty(material.FileURL))
-                                                {
-                                                    <a href="@material.FileURL" target="_blank" class="btn-view">📥 Download</a>
-                                                }
-                                                else
-                                                {
-                                                    <span class="no-file">No file</span>
-                                                }
-                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID"
-                                                   class="btn-teaching-material">📖 View Details</a>
-                                            </div>
-                                        </div>
                                     </div>
-                                }
-                            </div>
+                                    <div class="material-card-footer">
+                                        <span class="material-date">Updated @(material.CreatedAt.ToString("MMM dd, yyyy"))</span>
+                                        @if (isLecturer){
+                                            <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link">Edit →</a>
+                                        }else{
+                                            <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link">View →</a>
+                                        }
+                                    </div>
+                                </div>
+                            }
                         }
                         else
                         {
                             <div class="empty-state">
                                 <span>📭</span>
-                                <h3>No Teaching Materials</h3>
-                                <p>No materials have been added to this module yet.</p>
-                                @if (isLecturer)
+                                <p>No teaching materials yet.</p>
+                                @* @if (isLecturer)
                                 {
-                                    <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="btn-new-material">
-                                        Add Your First Material</a>
-                                    }
+                                    <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Your
+                                        First Material</a>
+                                    } *@
                                 </div>
                             }
                         </div>
                     </div>
-
-                    <div class="module-details-section">
+                    <!-- Right Section: Module Details -->
+                    <div class="details-section">
                         <div class="module-details-card">
-                            <h3>📋 Module Information</h3>
-                            <div class="module-detail-item">
-                                <span class="detail-label">Module Name:</span>
-                                <span class="detail-value">@Model.CurrentModule?.Name</span>
+                            <h3>@Model.CurrentModule?.Name</h3>
+                            <div class="module-info-vertical">
+                                <div class="info-group">
+                                    <span class="info-label">Description</span>
+                                    <span class="info-value">@(Model.CurrentModule?.Description ?? "No description")</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Start Date</span>
+                                    <span class="info-value">@(Model.CurrentModule?.StartDate.ToString("dd/MM/yyyy") ??
+                                                                                                          "N/A")</span>
+                                    </div>
+                                    <div class="info-group">
+                                        <span class="info-label">End Date</span>
+                                        <span class="info-value">@(Model.CurrentModule?.EndDate.ToString("dd/MM/yyyy") ?? "N/A")</span>
+                                    </div>
+                                    <!-- Invitation Code Section - Independent -->
+                                    <div class="invitation-section">
+                                        <span class="invitation-label">Invitation Code</span>
+                                        <div class="code-row">
+                                            <span class="code-value" id="invitationCode">@(Model.CurrentModule?.InvitationCode ??
+                                                                  "N/A")</span>
+                                                @if (isLecturer)
+                                                {
+                                                    <button class="regenerate-btn" onclick="regenerateCode(@Model.CurrentModule?.ModuleID)">⟳
+                                                        Regenerate Code</button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="module-detail-item">
-                                <span class="detail-label">Module Code:</span>
-                                <span class="detail-value">@Model.CurrentModule?.ModuleCode</span>
-                            </div>
-                            <div class="module-detail-item">
-                                <span class="detail-label">Description:</span>
-                                <span class="detail-value">@(Model.CurrentModule?.Description ?? "No description")</span>
-                            </div>
-                            <div class="module-detail-item">
-                                <span class="detail-label">Start Date:</span>
-                                <span class="detail-value">@(Model.CurrentModule?.StartDate.ToString("yyyy-MM-dd") ?? "N/A")</span>
-                            </div>
-                            <div class="module-detail-item">
-                                <span class="detail-label">End Date:</span>
-                                <span class="detail-value">@(Model.CurrentModule?.EndDate.ToString("yyyy-MM-dd") ?? "N/A")</span>
-                            </div>
-                            <div class="module-detail-item">
-                                <span class="detail-label">Invitation Code:</span>
-                                <span class="detail-value">@(Model.CurrentModule?.InvitationCode ?? "N/A")</span>
-                            </div>
-                            <div class="module-detail-item">
-                                <span class="detail-label">Lecturer:</span>
-                                <span class="detail-value">@(Model.CurrentModule?.Lecturer?.Name ?? "Unknown")</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+                            <script src="~/js/module.js"></script>

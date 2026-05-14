@@ -119,5 +119,39 @@ namespace APMoodle.Services
 
             return module != null;
         }
+
+        public async Task<string> RegenerateInvitationCodeAsync(int moduleId)
+        {
+            var module = await _context.Modules.FindAsync(moduleId);
+            if (module == null)
+            {
+                throw new Exception("Module not found");
+            }
+
+            var newCode = GenerateUniqueCode();
+
+            // Ensure code is unique across all modules
+            while (await _context.Modules.AnyAsync(m => m.InvitationCode == newCode))
+            {
+                newCode = GenerateUniqueCode();
+            }
+
+            module.InvitationCode = newCode;
+            await _context.SaveChangesAsync();
+
+            return newCode;
+        }
+
+        private string GenerateUniqueCode()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, 8)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        public async Task<bool> IsInvitationCodeExistsAsync(string code)
+        {
+            return await _context.Modules.AnyAsync(m => m.InvitationCode == code);
+        }
     }
 }

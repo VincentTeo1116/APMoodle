@@ -33,12 +33,12 @@
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" title="Main navigation">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
 
                         <!-- Shows Portal Name based on role -->
                         <li class="nav-item" style="position: absolute; left: 50%; transform: translateX(-50%);">
-                            <a class="nav-link text-dark fw-bold" href="/">
+                            <a class="nav-link text-dark fw-bold">
                                 @if (userRole == "admin")
                                 {
                                     @adminLayout
@@ -57,27 +57,28 @@
                                 }
                             </a>
                         </li>
-
+                        <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
                         <!-- Only show Logout button -->
-                        @if (isLoggedIn)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-profile" href="/FrontEnd/Profile" title="Click here to view your profile">
-                                    <img src="~/img/profileIcon.png" alt="Profile" class="profile-icon" />
-                                </a>
-                            </li>
-                            <li class="nav-login">
-                                <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout"
-                                   style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-login">
-                                <a class="nav-link-login" href="/FrontEnd/Login"
-                                   title="Click here to login or register">Login/Register</a>
-                            </li>
-                        }
+                            @if (isLoggedIn)
+                            {
+                                <li class="nav-profile-item">
+                                    <a class="nav-profile" href="/FrontEnd/Profile" title="Click here to view your profile">
+                                        <img src="~/img/profileIcon.png" alt="Profile" class="profile-icon" />
+                                    </a>
+                                </li>
+                                <li class="nav-login">
+                                    <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout"
+                                    style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-login">
+                                    <a class="nav-link-login" href="/FrontEnd/Login"
+                                    title="Click here to login or register">Login/Register</a>
+                                </li>
+                            }
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -111,7 +112,7 @@
                         }
                         else if (userRole == "student")
                         {
-                            <a href="/FrontEnd/LecturerDashboard" class="menu-item">
+                            <a href="/FrontEnd/StudentDashboard" class="menu-item">
                                 <span class="menu-icon">📊</span>
                                 <span>View Dashboard</span>
                             </a>

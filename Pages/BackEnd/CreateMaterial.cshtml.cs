@@ -10,11 +10,13 @@ namespace APMoodle.Pages.BackEnd
     public class CreateMaterialModel : PageModel
     {
         private readonly IMaterialService _materialService;
+        private readonly IModuleService _moduleService;
         private readonly IWebHostEnvironment _environment;
 
-        public CreateMaterialModel(IMaterialService materialService, IWebHostEnvironment environment)
+        public CreateMaterialModel(IMaterialService materialService, IModuleService moduleService, IWebHostEnvironment environment)
         {
             _materialService = materialService;
+            _moduleService = moduleService;
             _environment = environment;
         }
 
@@ -28,76 +30,111 @@ namespace APMoodle.Pages.BackEnd
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Console.WriteLine($"=== UPLOAD START ===");
-            
             try
             {
-                // Read data from form
                 var moduleId = int.Parse(Request.Form["moduleId"]);
                 var title = Request.Form["title"].ToString();
                 var description = Request.Form["description"].ToString();
-                var content = Request.Form["content"].ToString();
-                var file = Request.Form.Files.GetFile("file");
+                var contentType = Request.Form["contentType"].ToString();
 
-                Console.WriteLine($"ModuleId: {moduleId}");
-                Console.WriteLine($"Title: {title}");
-                Console.WriteLine($"File: {file?.FileName}");
-
-                // Validation
                 if (string.IsNullOrWhiteSpace(title))
-                {
                     return BadRequest("Title is required");
-                }
 
-                if (file == null || file.Length == 0)
-                {
-                    return BadRequest("No file selected");
-                }
+                // Get module and lecturer info for file naming
+                var module = await _moduleService.GetModuleByIdAsync(moduleId);
+                var lecturerName = module?.Lecturer?.Name ?? "Unknown";
+                var moduleName = module?.Name ?? "Module";
+                
+                // Sanitize names (remove special characters for filename)
+                var safeLecturerName = SanitizeFileName(lecturerName);
+                var safeModuleName = SanitizeFileName(moduleName);
+                var safeTitle = SanitizeFileName(title);
 
-                // 📁 SAVE FILE LOCALLY
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "materials");
-                Directory.CreateDirectory(uploadsFolder);
-
-                // Generate unique filename to prevent conflicts
-                var uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                // Create URL that can be accessed from browser
-                var fileUrl = $"/uploads/materials/{uniqueFileName}";
-
-                Console.WriteLine($"File saved to: {filePath}");
-                Console.WriteLine($"File URL: {fileUrl}");
-
-                // Create material record
                 var material = new Material
                 {
                     Title = title,
                     Description = description ?? string.Empty,
-                    Content = content ?? string.Empty,
-                    FileURL = fileUrl,
                     ModuleID = moduleId,
+                    ContentType = contentType,
                     CreatedAt = DateTime.UtcNow
                 };
 
-                var success = await _materialService.CreateMaterialAsync(material);
-
-                if (!success)
+                switch (contentType)
                 {
-                    return StatusCode(500, "Failed to save to database");
+                    case "file":
+                        var file = Request.Form.Files.GetFile("file");
+                        if (file == null || file.Length == 0)
+                            return BadRequest("No file selected");
+
+                        // Get file extension
+                        var fileExtension = Path.GetExtension(file.FileName);
+                        
+                        // Create filename: [LecturerName]_[ModuleName]_[MaterialName][extension]
+                        var uniqueFileName = $"{safeLecturerName}_{safeModuleName}_{safeTitle}{fileExtension}";
+                        
+                        // Handle duplicate filenames
+                        var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "materials");
+                        Directory.CreateDirectory(uploadsFolder);
+                        
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        
+                        // If file exists, add timestamp to make it unique
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                            uniqueFileName = $"{safeLecturerName}_{safeModuleName}_{safeTitle}_{timestamp}{fileExtension}";
+                            filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        }
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                            await file.CopyToAsync(stream);
+
+                        material.FileURL = $"/uploads/materials/{uniqueFileName}";
+                        break;
+
+                    case "link":
+                        var contentUrl = Request.Form["contentUrl"].ToString();
+                        if (string.IsNullOrWhiteSpace(contentUrl))
+                            return BadRequest("URL is required");
+                        material.ContentUrl = contentUrl;
+                        break;
+
+                    case "text":
+                        var contentText = Request.Form["contentText"].ToString();
+                        if (string.IsNullOrWhiteSpace(contentText))
+                            return BadRequest("Text content is required");
+                        material.ContentText = contentText;
+                        break;
                 }
 
-                return new OkResult();
+                var success = await _materialService.CreateMaterialAsync(material);
+                return success ? new OkResult() : StatusCode(500, "Failed to save");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Upload error: {ex.Message}");
                 return StatusCode(500, $"Error: {ex.Message}");
             }
+        }
+
+        private string SanitizeFileName(string fileName)
+        {
+            // Remove invalid filename characters
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var sanitized = new string(fileName
+                .Where(ch => !invalidChars.Contains(ch))
+                .ToArray());
+            
+            // Replace spaces with underscores
+            sanitized = sanitized.Replace(' ', '_');
+            
+            // Remove any other problematic characters
+            sanitized = System.Text.RegularExpressions.Regex.Replace(sanitized, @"[^\w\-_]", "");
+            
+            // Limit length to prevent overly long filenames
+            if (sanitized.Length > 50)
+                sanitized = sanitized.Substring(0, 50);
+                
+            return sanitized;
         }
     }
 }

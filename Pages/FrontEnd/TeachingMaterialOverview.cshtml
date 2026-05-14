@@ -1,4 +1,151 @@
-﻿@page
+﻿@page "{id}"
 @model APMoodle.Pages.BackEnd.TeachingMaterialOverviewModel
 @{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model.CurrentMaterial?.Title;
 }
+
+@{
+    var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
+    var isLecturer = userRole == "lecturer";
+}
+
+<head>
+    <title>@ViewData["Title"] - APMoodle</title>
+    <link rel="stylesheet" href="~/css/materialOverview.css" />
+</head>
+
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+        <p class="path"><p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard >
+                    @(Model.CurrentModule?.Name) > @ViewData["Title"] </p>
+    </div>
+
+    <div class="two-column-layout">
+        <div class="info-column">
+            <div class="material-meta">
+                <span>📅 @(Model.CurrentMaterial?.CreatedAt.ToString("dd MMM yyyy") ?? "N/A")</span>
+                <span>👨‍🏫 by @(Model.CurrentModule?.Lecturer?.Name ?? "Unknown")</span>
+            </div>
+            <div class="material-description">
+                <p>@(Model.CurrentMaterial?.Description ?? "No description")</p>
+            </div>
+            
+            @if (Model.CurrentMaterial?.ContentType == "file" && !string.IsNullOrEmpty(Model.CurrentMaterial?.FileURL))
+            {
+                <div class="file-attachment">
+                    <span class="file-icon">📄</span>
+                    <span class="file-name">@System.IO.Path.GetFileName(Model.CurrentMaterial.FileURL)</span>
+                    <a href="@Model.CurrentMaterial.FileURL" class="download-btn" target="_blank">Download →</a>
+                </div>
+            }
+            
+            @if (Model.CurrentMaterial?.ContentType == "text" && !string.IsNullOrEmpty(Model.CurrentMaterial?.ContentText))
+            {
+                <div class="text-content">
+                    @Html.Raw(Model.CurrentMaterial.ContentText.Replace("\n", "<br />"))
+                </div>
+            }
+        </div>
+        
+        <!-- RIGHT: Preview -->
+        <div class="preview-column">
+            <div class="preview-card">
+                <div class="preview-header">
+                    @if (Model.CurrentMaterial?.ContentType == "file") { <span>📄 File Preview</span> }
+                    else if (Model.CurrentMaterial?.ContentType == "link") { <span>🔗 Link Preview</span> }
+                    else if (Model.CurrentMaterial?.ContentType == "text") { <span>📝 Content Preview</span> }
+                </div>
+                <div class="preview-body">
+                    @if (Model.CurrentMaterial?.ContentType == "link" && !string.IsNullOrEmpty(Model.CurrentMaterial?.ContentUrl))
+                    {
+                        if (Model.CurrentMaterial.ContentUrl.Contains("youtube.com") || Model.CurrentMaterial.ContentUrl.Contains("youtu.be"))
+                        {
+                            string videoId = "";
+                            if (Model.CurrentMaterial.ContentUrl.Contains("youtube.com/watch"))
+                            {
+                                videoId = Model.CurrentMaterial.ContentUrl.Split(new[] { "v=" }, StringSplitOptions.None)[1]?.Split('&')[0];
+                            }
+                            else
+                            {
+                                videoId = Model.CurrentMaterial.ContentUrl.Split('/').Last();
+                            }
+                            <iframe src="https://www.youtube.com/embed/@videoId" frameborder="0" allowfullscreen></iframe>
+                        }
+                        else if (Model.CurrentMaterial.ContentUrl.Contains("drive.google.com"))
+                        {
+                            var fileId = System.Text.RegularExpressions.Regex.Match(Model.CurrentMaterial.ContentUrl, @"/d/(.+?)/").Groups[1].Value;
+                            <iframe src="https://drive.google.com/file/d/@fileId/preview" frameborder="0" allowfullscreen></iframe>
+                        }
+                        else
+                        {
+                            <a href="@Model.CurrentMaterial.ContentUrl" target="_blank" class="external-link">🔗 Open in New Tab</a>
+                        }
+                    }
+                    else if (Model.CurrentMaterial?.ContentType == "file" && !string.IsNullOrEmpty(Model.CurrentMaterial?.FileURL))
+                    {
+                        var ext = System.IO.Path.GetExtension(Model.CurrentMaterial.FileURL).ToLower();
+                        if (ext == ".pdf")
+                        {
+                            <iframe src="@Model.CurrentMaterial.FileURL" frameborder="0"></iframe>
+                        }
+                        else if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif")
+                        {
+                            <img src="@Model.CurrentMaterial.FileURL" alt="Preview" />
+                        }
+                        else
+                        {
+                            <div class="no-preview">No preview available for this file type.</div>
+                        }
+                    }
+                    else if (Model.CurrentMaterial?.ContentType == "text" && !string.IsNullOrEmpty(Model.CurrentMaterial?.ContentText))
+                    {
+                        <div class="text-preview">
+                            @Html.Raw(Model.CurrentMaterial.ContentText.Length > 500 ? 
+                                Model.CurrentMaterial.ContentText.Substring(0, 500) + "..." : 
+                                Model.CurrentMaterial.ContentText.Replace("\n", "<br />"))
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-preview">No preview available</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quizzes Section -->
+    <div class="quizzes-section">
+        <div class="quizzes-header">
+            <h3>📝 Quizzes</h3>
+            @if (isLecturer)
+            {
+                <a href="/FrontEnd/Quiz/Create?materialId=@Model.CurrentMaterial?.MaterialID" class="add-quiz-btn">+ Add Quiz</a>
+            }
+        </div>
+        @if (Model.Quizzes != null && Model.Quizzes.Any())
+        {
+            <div class="quizzes-list">
+                @foreach (var quiz in Model.Quizzes)
+                {
+                    <div class="quiz-item">
+                        <span class="quiz-icon">📋</span>
+                        <div class="quiz-info">
+                            <a href="/FrontEnd/Quiz/Take/@quiz.QuizID" class="quiz-title">@quiz.Title</a>
+                        </div>
+                        <a href="/FrontEnd/Quiz/Take/@quiz.QuizID" class="take-quiz-link">Take →</a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-quizzes">
+                <span>📭</span>
+                <p>No quizzes available</p>
+            </div>
+        }
+    </div>
+</div>

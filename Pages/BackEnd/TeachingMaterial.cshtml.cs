@@ -21,27 +21,59 @@ namespace APMoodle.Pages.BackEnd
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            // Get session values
             var userId = HttpContext.Session.GetString("UserID");
-            var userRole = HttpContext.Session.GetString("UserRole");
-
-            // Check if logged in
             if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToPage("/FrontEnd/Login");
             }
 
-            // Get module details
             CurrentModule = await _moduleService.GetModuleByIdAsync(id);
             if (CurrentModule == null)
             {
                 return NotFound();
             }
 
-            // Get teaching materials for this module
             Materials = await _materialService.GetMaterialsByModuleIdAsync(id);
-
             return Page();
+        }
+
+        // POST handler for regenerating invitation code
+        public async Task<IActionResult> OnPostRegenerateCodeAsync([FromForm] int moduleId)
+        {
+            try
+            {
+                var module = await _moduleService.GetModuleByIdAsync(moduleId);
+                if (module == null)
+                {
+                    return new JsonResult(new { success = false, message = "Module not found" });
+                }
+
+                // Generate new 8-character alphanumeric code
+                var newCode = GenerateUniqueCode();
+
+                // Ensure uniqueness
+                while (await _moduleService.IsInvitationCodeExistsAsync(newCode))
+                {
+                    newCode = GenerateUniqueCode();
+                }
+
+                module.InvitationCode = newCode;
+                await _moduleService.UpdateModuleAsync(module);
+
+                return new JsonResult(new { success = true, code = newCode });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { success = false, message = ex.Message });
+            }
+        }
+
+        private string GenerateUniqueCode()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, 8)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

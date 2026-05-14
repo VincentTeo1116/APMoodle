@@ -15,12 +15,19 @@ namespace APMoodle.Models
         [MaxLength(1000)]
         public string Description { get; set; } = string.Empty;
 
+        [MaxLength(20)]
+        public string ContentType { get; set; } = "file";
+
         [MaxLength(500)]
-        public string? FileURL { get; set; }  // Link to Google Drive or local file
+        public string? FileURL { get; set; }
 
-        public string? Content { get; set; }  // For text-based materials
+        [MaxLength(500)]
+        public string? ContentUrl { get; set; }
 
-        // Foreign key to Module
+        public string? ContentText { get; set; }
+
+        public string? EmbedHtml { get; set; }
+
         [Required]
         public int ModuleID { get; set; }
 
@@ -29,7 +36,6 @@ namespace APMoodle.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation properties
         public List<Quiz>? Quizzes { get; set; }
     }
 }

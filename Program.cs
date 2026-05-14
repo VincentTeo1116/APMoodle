@@ -25,7 +25,7 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
-// builder.Services.AddScoped<IQuizService, QuizService>();
+builder.Services.AddScoped<IQuizService, QuizService>();
 // builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Session services
@@ -42,6 +42,7 @@ var app = builder.Build();
 // Use session after app is created
 app.UseSession();
 app.UseStaticFiles();
+app.MapControllers(); 
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -57,8 +58,6 @@ app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
-
-app.MapFallbackToPage("/FrontEnd/Index");
 
 using (var scope = app.Services.CreateScope())
 {

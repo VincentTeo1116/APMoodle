@@ -9,15 +9,12 @@
     ViewData["Title"] = "Add Teaching Material";
 }
 
-<head>
-    <title>@ViewData["Title"] - APMoodle</title>
-    <link rel="stylesheet" href="~/css/materialCreation.css" />
-</head>
-<div id="horizontalNavbar" class="modal-overlay" id="materialModal">
-    <div class="modal-container">
-        <div class="modal-header">
+<link rel="stylesheet" href="~/css/materialCreation.css" />
+
+<div class="material-create-container">
+    <div class="form-card">
+        <div class="form-header">
             <h2>📚 Add Teaching Material</h2>
-            <button class="modal-close" onclick="closeModal()">&times;</button>
         </div>
         
         <form id="materialForm" enctype="multipart/form-data">
@@ -30,40 +27,109 @@
             
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea id="description" name="description" rows="3"
-                          placeholder="Brief description of this material..."></textarea>
+                <textarea id="description" name="description" rows="3" placeholder="Brief description..."></textarea>
             </div>
+            
             <div class="form-group">
-                <label for="content">Content (Optional - for text-based materials)</label>
-                <textarea id="content" name="content" rows="5"
-                          placeholder="Enter text content here... (Leave empty if uploading a file)"></textarea>
-            </div>
-            
-            <div class="drop-zone" id="dropZone">
-                <div class="drop-zone-icon">📁</div>
-                <p class="drop-zone-text">Drag & drop your file here</p>
-                <p class="drop-zone-subtext">or click to browse</p>
-                <input type="file" id="fileInput" name="file" style="display: none;" />
-            </div>
-            
-            <div class="file-preview" id="filePreview" style="display: none;">
-                <div class="file-preview-icon" id="previewIcon">📄</div>
-                <div class="file-preview-info">
-                    <span class="file-preview-name" id="previewName"></span>
-                    <span class="file-preview-size" id="previewSize"></span>
+                <label>Content Type</label>
+                <div class="type-selector">
+                    <button type="button" id="fileTypeBtn" class="type-btn active">📁 File</button>
+                    <button type="button" id="linkTypeBtn" class="type-btn">🔗 Link/URL</button>
+                    <button type="button" id="textTypeBtn" class="type-btn">📝 Text</button>
                 </div>
-                <button type="button" class="file-preview-remove" onclick="clearFile()">✖</button>
+            </div>
+            
+            <!-- File Upload Section -->
+            <div id="fileSection" class="content-section">
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-icon">📁</div>
+                    <p class="drop-zone-text">Drag & drop your file here</p>
+                    <p class="drop-zone-subtext">or click to browse</p>
+                    <input type="file" id="fileInput" name="file" style="display: none;" />
+                </div>
+                <div class="file-preview" id="filePreview" style="display: none;">
+                    <div class="file-preview-icon" id="previewIcon">📄</div>
+                    <div class="file-preview-info">
+                        <span class="file-preview-name" id="previewName"></span>
+                        <span class="file-preview-size" id="previewSize"></span>
+                    </div>
+                    <button type="button" class="file-preview-remove" onclick="clearFile()">✖</button>
+                </div>
+            </div>
+            
+            <!-- Link/URL Section -->
+            <div id="linkSection" class="content-section" style="display: none;">
+                <div class="form-group">
+                    <label for="contentUrl">URL (YouTube, Google Drive, Website)</label>
+                    <input type="url" id="contentUrl" name="contentUrl" placeholder="https://www.youtube.com/watch?v=... or any URL" />
+                </div>
+                <div id="urlPreview" class="url-preview" style="display: none;">
+                    <div class="preview-header">
+                        <span>🔍 Preview</span>
+                        <button type="button" onclick="clearUrl()">✖</button>
+                    </div>
+                    <div id="previewContent" class="preview-content"></div>
+                </div>
+            </div>
+            
+            <!-- Text Section -->
+            <div id="textSection" class="content-section" style="display: none;">
+                <div class="form-group">
+                    <label for="contentText">Text Content</label>
+                    <textarea id="contentText" name="contentText" rows="10" placeholder="Enter your content here..."></textarea>
+                </div>
             </div>
             
             <div class="form-actions">
                 <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
-                <button type="submit" class="btn-submit">Upload Material</button>
+                <button type="submit" class="btn-submit">📤 Upload</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+    // Type selection
+    const fileTypeBtn = document.getElementById('fileTypeBtn');
+    const linkTypeBtn = document.getElementById('linkTypeBtn');
+    const textTypeBtn = document.getElementById('textTypeBtn');
+    const fileSection = document.getElementById('fileSection');
+    const linkSection = document.getElementById('linkSection');
+    const textSection = document.getElementById('textSection');
+    
+    let selectedFile = null;
+    let selectedContentType = 'file';
+    
+    fileTypeBtn.addEventListener('click', () => {
+        setActiveType('file');
+        fileSection.style.display = 'block';
+        linkSection.style.display = 'none';
+        textSection.style.display = 'none';
+    });
+    
+    linkTypeBtn.addEventListener('click', () => {
+        setActiveType('link');
+        fileSection.style.display = 'none';
+        linkSection.style.display = 'block';
+        textSection.style.display = 'none';
+    });
+    
+    textTypeBtn.addEventListener('click', () => {
+        setActiveType('text');
+        fileSection.style.display = 'none';
+        linkSection.style.display = 'none';
+        textSection.style.display = 'block';
+    });
+    
+    function setActiveType(type) {
+        selectedContentType = type;
+        [fileTypeBtn, linkTypeBtn, textTypeBtn].forEach(btn => btn.classList.remove('active'));
+        if (type === 'file') fileTypeBtn.classList.add('active');
+        if (type === 'link') linkTypeBtn.classList.add('active');
+        if (type === 'text') textTypeBtn.classList.add('active');
+    }
+    
+    // File upload handling
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const filePreview = document.getElementById('filePreview');
@@ -71,59 +137,73 @@
     const previewSize = document.getElementById('previewSize');
     const previewIcon = document.getElementById('previewIcon');
     
-    let selectedFile = null;
-    
     dropZone.addEventListener('click', () => fileInput.click());
-
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('drag-over');
-    });
-    
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('drag-over');
-    });
-    
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropZone.classList.remove('drag-over');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            handleFileSelect(files[0]);
-        }
+        if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files[0]);
     });
-
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-            handleFileSelect(e.target.files[0]);
-        }
-    });
-
+    fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) handleFileSelect(e.target.files[0]); });
+    
     function handleFileSelect(file) {
         selectedFile = file;
-
         previewName.textContent = file.name;
         previewSize.textContent = formatFileSize(file.size);
-
         const ext = file.name.split('.').pop().toLowerCase();
         if (ext === 'pdf') previewIcon.textContent = '📄';
         else if (['mp4', 'mov', 'avi'].includes(ext)) previewIcon.textContent = '🎥';
         else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) previewIcon.textContent = '🖼️';
-        else if (['doc', 'docx'].includes(ext)) previewIcon.textContent = '📝';
-        else if (['xls', 'xlsx'].includes(ext)) previewIcon.textContent = '📊';
         else previewIcon.textContent = '📘';
-        
         dropZone.style.display = 'none';
         filePreview.style.display = 'flex';
     }
-
-    function clearFile() {
-        selectedFile = null;
-        fileInput.value = '';
-        dropZone.style.display = 'block';
-        filePreview.style.display = 'none';
+    
+    function clearFile() { selectedFile = null; fileInput.value = ''; dropZone.style.display = 'block'; filePreview.style.display = 'none'; }
+    
+    // URL handling
+    const urlInput = document.getElementById('contentUrl');
+    const urlPreview = document.getElementById('urlPreview');
+    const previewContent = document.getElementById('previewContent');
+    
+    urlInput.addEventListener('input', function() {
+        const url = this.value;
+        if (url) {
+            const embedHtml = getEmbedHtml(url);
+            if (embedHtml) {
+                previewContent.innerHTML = embedHtml;
+                urlPreview.style.display = 'block';
+            } else {
+                previewContent.innerHTML = `<a href="${url}" target="_blank" class="external-link">🔗 Open Link in New Tab</a>`;
+                urlPreview.style.display = 'block';
+            }
+        } else {
+            urlPreview.style.display = 'none';
+        }
+    });
+    
+    function getEmbedHtml(url) {
+        if (url.includes('youtube.com/watch') || url.includes('youtu.be')) {
+            let videoId;
+            if (url.includes('youtube.com/watch')) {
+                videoId = url.split('v=')[1]?.split('&')[0];
+            } else {
+                videoId = url.split('/').pop();
+            }
+            return `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        }
+        if (url.includes('drive.google.com/file')) {
+            const fileId = url.match(/\/d\/(.+?)\//)?.[1];
+            if (fileId) {
+                return `<iframe src="https://drive.google.com/file/d/${fileId}/preview" frameborder="0" allowfullscreen></iframe>`;
+            }
+        }
+        return null;
     }
-
+    
+    function clearUrl() { urlInput.value = ''; urlPreview.style.display = 'none'; }
+    
     function formatFileSize(bytes) {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -131,34 +211,34 @@
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
-
-    function closeModal() {
-        window.location.href = `/FrontEnd/TeachingMaterial/${@Model.ModuleId}`;
-    }
-
+    
+    function closeModal() { window.location.href = `/FrontEnd/TeachingMaterial/${@Model.ModuleId}`; }
+    
     document.getElementById('materialForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const title = document.getElementById('title').value;
         const description = document.getElementById('description').value;
-        const content = document.getElementById('content').value;
         
-        if (!title) {
-            alert('Please enter a title');
-            return;
-        }
-        
-        if (!selectedFile) {
-            alert('Please select a file to upload');
-            return;
-        }
+        if (!title) { alert('Please enter a title'); return; }
         
         const formData = new FormData();
         formData.append('moduleId', @Model.ModuleId);
         formData.append('title', title);
         formData.append('description', description);
-        formData.append('content', content);
-        formData.append('file', selectedFile);
+        formData.append('contentType', selectedContentType);
+        
+        if (selectedContentType === 'file') {
+            if (!selectedFile) { alert('Please select a file'); return; }
+            formData.append('file', selectedFile);
+        } else if (selectedContentType === 'link') {
+            const url = document.getElementById('contentUrl').value;
+            if (!url) { alert('Please enter a URL'); return; }
+            formData.append('contentUrl', url);
+        } else if (selectedContentType === 'text') {
+            const text = document.getElementById('contentText').value;
+            if (!text) { alert('Please enter text content'); return; }
+            formData.append('contentText', text);
+        }
         
         const submitBtn = document.querySelector('.btn-submit');
         submitBtn.disabled = true;
@@ -167,24 +247,21 @@
         try {
             const response = await fetch('/FrontEnd/CreateMaterial', {
                 method: 'POST',
-                headers: {
-                    'RequestVerificationToken': '@antiforgeryToken'
-                },
+                headers: { 'RequestVerificationToken': '@antiforgeryToken' },
                 body: formData
             });
-            
             if (response.ok) {
                 window.location.href = `/FrontEnd/TeachingMaterial/${@Model.ModuleId}`;
             } else {
                 const error = await response.text();
                 alert(`Upload failed: ${error}`);
                 submitBtn.disabled = false;
-                submitBtn.textContent = '📤 Upload Material';
+                submitBtn.textContent = '📤 Upload';
             }
         } catch (error) {
             alert(`Upload failed: ${error.message}`);
             submitBtn.disabled = false;
-            submitBtn.textContent = '📤 Upload Material';
+            submitBtn.textContent = '📤 Upload';
         }
     });
 </script>
