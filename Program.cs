@@ -57,7 +57,7 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
-// app.MapFallbackToPage("/FrontEnd/Index");
+app.MapFallbackToPage("/FrontEnd/Index");
 
 using (var scope = app.Services.CreateScope())
 {

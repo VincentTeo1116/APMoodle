@@ -1,6 +1,5 @@
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\appsettings.json
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\credentials.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.staticwebassets.runtime.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.staticwebassets.endpoints.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.exe
@@ -133,7 +132,6 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\k07w7by2h5-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\q21kzi3adk-{0}-udsa35r2sn-udsa35r2sn.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\6x6uvps83m-{0}-giua8wspd6-giua8wspd6.gz
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\41075pknu5-{0}-idgwl5bhhc-idgwl5bhhc.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\esc6kfmtrf-{0}-44qygr5mcb-44qygr5mcb.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\smdmf1s75o-{0}-bqjiyaj88i-bqjiyaj88i.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\r8fd0pz5o1-{0}-c2jlpeoesf-c2jlpeoesf.gz
@@ -207,3 +205,4 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.pdb
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\APMoodle.genruntimeconfig.cache
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\ref\APMoodle.dll
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\41075pknu5-{0}-nhhani369u-nhhani369u.gz
