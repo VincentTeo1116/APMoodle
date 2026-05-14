@@ -5,10 +5,15 @@
     ViewData["Title"] = "Sign In";
 }
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - APMoodle</title>
     <link rel="stylesheet" href="~/css/login.css" />
 </head>
+<body>
 
 <div class="login-wrapper">
 
@@ -30,7 +35,8 @@
 
         <h2>WELCOME BACK !</h2>
 
-        <form method="post">
+        <!-- Login Form -->
+        <form method="post" id="loginForm">
 
             @if (!string.IsNullOrEmpty(Model.Message))
             {
@@ -45,20 +51,30 @@
             <label>Password</label>
             <div class="password-box">
                 <input type="password" name="Input.Password" id="password" placeholder="Enter Password" required />
-                <span class="eye" onclick="togglePassword()">👁️</span>
+                <!-- Eye icon REMOVED -->
             </div>
 
             <div class="forgot">
-                <a href="/FrontEnd/ForgotPassword">FORGOT PASSWORD?</a>
+                <a href="/ForgotPassword">FORGOT PASSWORD?</a>
             </div>
 
             <button type="submit" class="btn-login">SIGN IN</button>
 
         </form>
 
+        <!-- Divider -->
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <!-- Guest Mode Button -->
+        <form method="post" asp-page-handler="Guest">
+            <button type="submit" class="btn-guest">🎭 CONTINUE AS GUEST</button>
+        </form>
+
         <div class="register-text">
-            DON'T HAVE AN ACCOUNT YET ?
-            <a href="/FrontEnd/Register">JOIN US NOW !</a>
+            DON'T HAVE ACCOUNT YET ?
+            <a href="#">JOIN US NOW !</a>
         </div>
 
     </div>
@@ -66,3 +82,6 @@
 </div>
 
 <script src="~/js/login.js"></script>
+
+</body>
+</html>

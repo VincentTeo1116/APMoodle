@@ -62,7 +62,6 @@ namespace APMoodle.Pages.BackEnd
                         if (student != null && student.Status == "Active" && VerifyPassword(password, student.Password))
                         {
                             SetSession(student.StudentID.ToString(), student.StudentCode, student.Name, "student", student.Email);
-                            // return RedirectToPage("/FrontEnd/Student/Dashboard");
                             return RedirectToPage("/FrontEnd/ModuleOverview");
                         }
                         break;
@@ -72,7 +71,6 @@ namespace APMoodle.Pages.BackEnd
                         if (lecturer != null && lecturer.Status == "Active" && VerifyPassword(password, lecturer.Password))
                         {
                             SetSession(lecturer.LecturerID.ToString(), lecturer.LecturerCode, lecturer.Name, "lecturer", lecturer.Email);
-                            // return RedirectToPage("/FrontEnd/Lecturer/Dashboard");
                             return RedirectToPage("/FrontEnd/ModuleOverview");
                         }
                         break;
@@ -82,8 +80,7 @@ namespace APMoodle.Pages.BackEnd
                         if (admin != null && VerifyPassword(password, admin.Password))
                         {
                             SetSession(admin.AdminID.ToString(), admin.AdminCode, admin.Name, "admin", admin.Email);
-                            // return RedirectToPage("/FrontEnd/Admin/Dashboard");
-                            return RedirectToPage("/FrontEnd/ModuleOverview");
+                            return RedirectToPage("/FrontEnd/AdminDashboard");
                         }
                         break;
                 }
@@ -96,7 +93,6 @@ namespace APMoodle.Pages.BackEnd
                 if (student != null && student.Status == "Active" && VerifyPassword(password, student.Password))
                 {
                     SetSession(student.StudentID.ToString(), student.StudentCode, student.Name, "student", student.Email);
-                    // return RedirectToPage("/Student/Dashboard");
                     return RedirectToPage("/FrontEnd/ModuleOverview");
                 }
 
@@ -105,7 +101,6 @@ namespace APMoodle.Pages.BackEnd
                 if (lecturer != null && lecturer.Status == "Active" && VerifyPassword(password, lecturer.Password))
                 {
                     SetSession(lecturer.LecturerID.ToString(), lecturer.LecturerCode, lecturer.Name, "lecturer", lecturer.Email);
-                    // return RedirectToPage("/Lecturer/Dashboard");
                     return RedirectToPage("/FrontEnd/ModuleOverview");
                 }
 
@@ -114,8 +109,7 @@ namespace APMoodle.Pages.BackEnd
                 if (admin != null && VerifyPassword(password, admin.Password))
                 {
                     SetSession(admin.AdminID.ToString(), admin.AdminCode, admin.Name, "admin", admin.Email);
-                    // return RedirectToPage("/Admin/Dashboard");
-                    return RedirectToPage("/FrontEnd/ModuleOverview");
+                    return RedirectToPage("/FrontEnd/AdminDashboard");
                 }
             }
 

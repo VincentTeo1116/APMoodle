@@ -30,6 +30,10 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
+[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/AdminDashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQWRtaW5EYXNoYm9hcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/CreateMaterial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQ3JlYXRlTWF0ZXJpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

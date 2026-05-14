@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="~/css/material.css" />
 </head>
 
-<div>
+<div id="horizontalNavbar">
     <div class="PageTitle">
         <h1>@(Model.CurrentModule?.Name ?? "Teaching Materials")</h1>
         <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard > @(Model.CurrentModule?.Name) >

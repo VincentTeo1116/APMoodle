@@ -1,4 +1,10 @@
 /* ───────────────── GLOBAL ───────────────── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
@@ -113,7 +119,6 @@ body {
     padding: 40px;
 
     background: rgba(1, 61, 66, 0.15);
-
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
     overflow-y: auto;
@@ -163,7 +168,7 @@ h2 {
     border: 1px solid rgba(190, 227, 219, 0.3);
     border-radius: 30px;
     padding: 5px;
-    margin-bottom: -25px;
+    margin-bottom: 10px;
 }
 
 .toggle-box button {
@@ -294,27 +299,13 @@ input:focus::placeholder {
     transform: translateX(10px);
 }
 
-/* ───────────────── PASSWORD BOX ───────────────── */
+/* ───────────────── PASSWORD BOX (NO EYE ICON) ───────────────── */
 .password-box {
     position: relative;
     width: 100%;
 }
 
-.eye {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #BEE3DB;
-    transition: all 0.3s ease;
-    font-size: 18px;
-}
-
-.eye:hover {
-    color: #0a6c6e;
-    transform: translateY(-50%) scale(1.1);
-}
+/* Eye icon styles completely removed */
 
 /* ───────────────── FORGOT PASSWORD ───────────────── */
 .forgot {
@@ -349,7 +340,7 @@ input:focus::placeholder {
     width: 100%;
 }
 
-/* ───────────────── BUTTON ───────────────── */
+/* ───────────────── BUTTONS ───────────────── */
 .btn-login {
     width: 100%;
     margin-top: 18px;
@@ -388,6 +379,61 @@ input:focus::placeholder {
 
 .btn-login:active {
     transform: translateY(0);
+}
+
+/* Guest Button */
+.btn-guest {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid rgba(190, 227, 219, 0.4);
+    border-radius: 12px;
+    background: rgba(1, 61, 66, 0.3);
+    color: #BEE3DB;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-guest:hover {
+    background: rgba(1, 61, 66, 0.5);
+    border-color: #0a6c6e;
+    transform: translateY(-2px);
+    color: #EDF6F9;
+    box-shadow: 0 5px 15px rgba(1, 61, 66, 0.3);
+}
+
+.btn-guest:active {
+    transform: translateY(0);
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0 12px;
+    color: #BEE3DB;
+    font-size: 12px;
+    width: 100%;
+    max-width: 360px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(190, 227, 219, 0.3);
+}
+
+.divider::before {
+    margin-right: 12px;
+}
+
+.divider::after {
+    margin-left: 12px;
 }
 
 /* ───────────────── REGISTER LINK ───────────────── */
@@ -432,6 +478,8 @@ form > input,
 form > .password-box,
 .forgot,
 .btn-login,
+.divider,
+.btn-guest,
 .register-text {
     animation: fadeInUp 0.5s ease-out backwards;
 }
@@ -442,7 +490,9 @@ form > label:nth-child(3) { animation-delay: 0.2s; }
 form > .password-box { animation-delay: 0.3s; }
 .forgot { animation-delay: 0.4s; }
 .btn-login { animation-delay: 0.5s; }
-.register-text { animation-delay: 0.6s; }
+.divider { animation-delay: 0.55s; }
+.btn-guest { animation-delay: 0.6s; }
+.register-text { animation-delay: 0.7s; }
 
 @keyframes fadeInUp {
     from {

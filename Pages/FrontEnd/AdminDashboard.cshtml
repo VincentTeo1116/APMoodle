@@ -1,0 +1,223 @@
+﻿@page
+@using APMoodle.ViewModels
+@using Newtonsoft.Json
+@model APMoodle.Pages.BackEnd.AdminDashboardModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | APMoodle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="header-title">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>APMoodle</span>
+                </div>
+                <h1>Admin Portal</h1>
+                <p>Welcome back! Here's what's happening with your platform today.</p>
+            </div>
+            <div class="header-date">
+                <i class="far fa-calendar-alt"></i>
+                <span>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</span>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon student-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>Total Students</h3>
+                    <div class="stat-value">@Model.Dashboard.TotalStudents.ToString("N0")</div>
+                    <span class="stat-label">Registered Students</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon lecturer-icon">
+                    <i class="fas fa-chalkboard-user"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>Total Lecturers</h3>
+                    <div class="stat-value">@Model.Dashboard.TotalLecturers.ToString("N0")</div>
+                    <span class="stat-label">Active Lecturers</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon module-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>Total Modules</h3>
+                    <div class="stat-value">@Model.Dashboard.TotalModules.ToString("N0")</div>
+                    <span class="stat-label">Available Courses</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon enrollment-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>Total Enrollments</h3>
+                    <div class="stat-value">@Model.Dashboard.TotalEnrollments.ToString("N0")</div>
+                    <span class="stat-label">Active Enrollments</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Top Students Row -->
+        <div class="charts-row">
+            <!-- Module Categories Chart -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-pie"></i> Monthly Module Enrollments</h3>
+                    <span class="card-subtitle">Distribution by module code prefix</span>
+                </div>
+                <div class="card-body">
+                    @if (Model.Dashboard.ModuleCategories.Any())
+                    {
+                        <canvas id="moduleChart" width="400" height="400"></canvas>
+                    }
+                    else
+                    {
+                        <div class="no-data-message">
+                            <i class="fas fa-chart-pie"></i>
+                            <p>No module data available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Top Students -->
+            <div class="top-students-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-trophy"></i> Highest Performing Students</h3>
+                    <span class="card-subtitle">Based on average progress</span>
+                </div>
+                <div class="card-body">
+                    @if (Model.Dashboard.TopStudents.Any())
+                    {
+                        <div class="students-list">
+                            @for (int i = 0; i < Model.Dashboard.TopStudents.Count; i++)
+                            {
+                                var student = Model.Dashboard.TopStudents[i];
+                                <div class="student-item">
+                                    <div class="student-rank rank-@(i + 1)">
+                                        @(i + 1)
+                                    </div>
+                                    <div class="student-avatar">
+                                        @if (!string.IsNullOrEmpty(student.AvatarUrl))
+                                        {
+                                            <img src="@student.AvatarUrl" alt="@student.StudentName" />
+                                        }
+                                        else
+                                        {
+                                            <div class="avatar-placeholder">
+                                                @(student.StudentName?.FirstOrDefault().ToString().ToUpper() ?? "?")
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="student-info">
+                                        <div class="student-name">@student.StudentName</div>
+                                        <div class="student-code">@student.StudentCode</div>
+                                    </div>
+                                    <div class="student-score">
+                                        <div class="score-circle" data-score="@student.AverageScore">
+                                            <span>@Math.Round(student.AverageScore)%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-data-message">
+                            <i class="fas fa-trophy"></i>
+                            <p>No student data available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="bottom-row">
+            <!-- Recent Activities -->
+            <div class="activities-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clock"></i> Recent Activities</h3>
+                    <a href="#" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="card-body">
+                    @if (Model.Dashboard.RecentActivities.Any())
+                    {
+                        <div class="activities-list">
+                            @foreach (var activity in Model.Dashboard.RecentActivities)
+                            {
+                                <div class="activity-item">
+                                    <div class="activity-icon @activity.ActivityType.ToLower()">
+                                        <i class="fas @activity.IconClass"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-description">@activity.Description</div>
+                                        <div class="activity-time">
+                                            <i class="far fa-clock"></i>
+                                            @activity.Timestamp.ToString("MMM dd, yyyy • hh:mm tt")
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-data-message">
+                            <i class="fas fa-clock"></i>
+                            <p>No recent activities</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Enrollment Trend Chart -->
+            <div class="trend-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> Enrollment Trend</h3>
+                    <span class="card-subtitle">Last 6 months</span>
+                </div>
+                <div class="card-body">
+                    <canvas id="trendChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inject chart data from server
+        window.moduleChartLabels = @Html.Raw(JsonConvert.SerializeObject(Model.Dashboard.ModuleChartData.Labels));
+        window.moduleChartValues = @Html.Raw(JsonConvert.SerializeObject(Model.Dashboard.ModuleChartData.Values));
+        window.trendChartLabels = @Html.Raw(JsonConvert.SerializeObject(Model.Dashboard.TrendChartData.Labels));
+        window.trendChartValues = @Html.Raw(JsonConvert.SerializeObject(Model.Dashboard.TrendChartData.Values));
+    </script>
+    <script src="~/js/dashboard.js"></script>
+</body>
+</html>

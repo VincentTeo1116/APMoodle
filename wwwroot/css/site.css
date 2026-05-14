@@ -33,8 +33,14 @@ body {
 .custom-navbar {
   background: #BEE3DB;
   font-weight: 500;
-  transition: color 0.3s ease;
+  /* transition: color 0.3s ease; */
   z-index: 100;
+  position: fixed;
+  width: 100%;
+}
+
+#horizontalNavbar {
+    padding-top: 80px;
 }
 
 .nav-login {
