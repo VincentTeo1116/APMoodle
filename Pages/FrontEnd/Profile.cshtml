@@ -1,14 +1,24 @@
 ﻿@page
+@using Microsoft.AspNetCore.Http
 @model APMoodle.Pages.BackEnd.ProfileModel
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Profile";
 }
+@{
+    var userId = HttpContext.Session.GetString("UserID");
+    var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
+    var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
+}
+
 
 <head>
     <title>@ViewData["Title"] - APMoodle</title>
     <link rel="stylesheet" href="~/css/profile.css" />
 </head>
 <div id="horizontalNavbar">
-    <p>test</p>
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+        <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard > @ViewData["Title"]</p>
+    </div>
 </div>

@@ -32,7 +32,8 @@ namespace APMoodle.Pages.BackEnd
         {
             try
             {
-                var moduleId = int.Parse(Request.Form["moduleId"]);
+                var moduleIdStr = Request.Form["moduleId"].ToString();
+                var moduleId = !string.IsNullOrEmpty(moduleIdStr) ? int.Parse(moduleIdStr) : 0;
                 var title = Request.Form["title"].ToString();
                 var description = Request.Form["description"].ToString();
                 var contentType = Request.Form["contentType"].ToString();
@@ -44,7 +45,7 @@ namespace APMoodle.Pages.BackEnd
                 var module = await _moduleService.GetModuleByIdAsync(moduleId);
                 var lecturerName = module?.Lecturer?.Name ?? "Unknown";
                 var moduleName = module?.Name ?? "Module";
-                
+
                 // Sanitize names (remove special characters for filename)
                 var safeLecturerName = SanitizeFileName(lecturerName);
                 var safeModuleName = SanitizeFileName(moduleName);
@@ -68,16 +69,16 @@ namespace APMoodle.Pages.BackEnd
 
                         // Get file extension
                         var fileExtension = Path.GetExtension(file.FileName);
-                        
+
                         // Create filename: [LecturerName]_[ModuleName]_[MaterialName][extension]
                         var uniqueFileName = $"{safeLecturerName}_{safeModuleName}_{safeTitle}{fileExtension}";
-                        
+
                         // Handle duplicate filenames
                         var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "materials");
                         Directory.CreateDirectory(uploadsFolder);
-                        
+
                         var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                        
+
                         // If file exists, add timestamp to make it unique
                         if (System.IO.File.Exists(filePath))
                         {
@@ -123,17 +124,17 @@ namespace APMoodle.Pages.BackEnd
             var sanitized = new string(fileName
                 .Where(ch => !invalidChars.Contains(ch))
                 .ToArray());
-            
+
             // Replace spaces with underscores
             sanitized = sanitized.Replace(' ', '_');
-            
+
             // Remove any other problematic characters
             sanitized = System.Text.RegularExpressions.Regex.Replace(sanitized, @"[^\w\-_]", "");
-            
+
             // Limit length to prevent overly long filenames
             if (sanitized.Length > 50)
                 sanitized = sanitized.Substring(0, 50);
-                
+
             return sanitized;
         }
     }

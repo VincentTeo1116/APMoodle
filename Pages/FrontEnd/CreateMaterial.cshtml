@@ -10,7 +10,9 @@
 }
 
 <link rel="stylesheet" href="~/css/materialCreation.css" />
-
+<br />
+<br />
+<br />
 <div class="material-create-container">
     <div class="form-card">
         <div class="form-header">
@@ -81,187 +83,11 @@
             </div>
             
             <div class="form-actions">
-                <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <a href="/FrontEnd/TeachingMaterial/@Model.ModuleId" class="btn-cancel">Cancel</a>
                 <button type="submit" class="btn-submit">📤 Upload</button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-    // Type selection
-    const fileTypeBtn = document.getElementById('fileTypeBtn');
-    const linkTypeBtn = document.getElementById('linkTypeBtn');
-    const textTypeBtn = document.getElementById('textTypeBtn');
-    const fileSection = document.getElementById('fileSection');
-    const linkSection = document.getElementById('linkSection');
-    const textSection = document.getElementById('textSection');
-    
-    let selectedFile = null;
-    let selectedContentType = 'file';
-    
-    fileTypeBtn.addEventListener('click', () => {
-        setActiveType('file');
-        fileSection.style.display = 'block';
-        linkSection.style.display = 'none';
-        textSection.style.display = 'none';
-    });
-    
-    linkTypeBtn.addEventListener('click', () => {
-        setActiveType('link');
-        fileSection.style.display = 'none';
-        linkSection.style.display = 'block';
-        textSection.style.display = 'none';
-    });
-    
-    textTypeBtn.addEventListener('click', () => {
-        setActiveType('text');
-        fileSection.style.display = 'none';
-        linkSection.style.display = 'none';
-        textSection.style.display = 'block';
-    });
-    
-    function setActiveType(type) {
-        selectedContentType = type;
-        [fileTypeBtn, linkTypeBtn, textTypeBtn].forEach(btn => btn.classList.remove('active'));
-        if (type === 'file') fileTypeBtn.classList.add('active');
-        if (type === 'link') linkTypeBtn.classList.add('active');
-        if (type === 'text') textTypeBtn.classList.add('active');
-    }
-    
-    // File upload handling
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const filePreview = document.getElementById('filePreview');
-    const previewName = document.getElementById('previewName');
-    const previewSize = document.getElementById('previewSize');
-    const previewIcon = document.getElementById('previewIcon');
-    
-    dropZone.addEventListener('click', () => fileInput.click());
-    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-    dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('drag-over');
-        if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files[0]);
-    });
-    fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) handleFileSelect(e.target.files[0]); });
-    
-    function handleFileSelect(file) {
-        selectedFile = file;
-        previewName.textContent = file.name;
-        previewSize.textContent = formatFileSize(file.size);
-        const ext = file.name.split('.').pop().toLowerCase();
-        if (ext === 'pdf') previewIcon.textContent = '📄';
-        else if (['mp4', 'mov', 'avi'].includes(ext)) previewIcon.textContent = '🎥';
-        else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) previewIcon.textContent = '🖼️';
-        else previewIcon.textContent = '📘';
-        dropZone.style.display = 'none';
-        filePreview.style.display = 'flex';
-    }
-    
-    function clearFile() { selectedFile = null; fileInput.value = ''; dropZone.style.display = 'block'; filePreview.style.display = 'none'; }
-    
-    // URL handling
-    const urlInput = document.getElementById('contentUrl');
-    const urlPreview = document.getElementById('urlPreview');
-    const previewContent = document.getElementById('previewContent');
-    
-    urlInput.addEventListener('input', function() {
-        const url = this.value;
-        if (url) {
-            const embedHtml = getEmbedHtml(url);
-            if (embedHtml) {
-                previewContent.innerHTML = embedHtml;
-                urlPreview.style.display = 'block';
-            } else {
-                previewContent.innerHTML = `<a href="${url}" target="_blank" class="external-link">🔗 Open Link in New Tab</a>`;
-                urlPreview.style.display = 'block';
-            }
-        } else {
-            urlPreview.style.display = 'none';
-        }
-    });
-    
-    function getEmbedHtml(url) {
-        if (url.includes('youtube.com/watch') || url.includes('youtu.be')) {
-            let videoId;
-            if (url.includes('youtube.com/watch')) {
-                videoId = url.split('v=')[1]?.split('&')[0];
-            } else {
-                videoId = url.split('/').pop();
-            }
-            return `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
-        }
-        if (url.includes('drive.google.com/file')) {
-            const fileId = url.match(/\/d\/(.+?)\//)?.[1];
-            if (fileId) {
-                return `<iframe src="https://drive.google.com/file/d/${fileId}/preview" frameborder="0" allowfullscreen></iframe>`;
-            }
-        }
-        return null;
-    }
-    
-    function clearUrl() { urlInput.value = ''; urlPreview.style.display = 'none'; }
-    
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-    
-    function closeModal() { window.location.href = `/FrontEnd/TeachingMaterial/${@Model.ModuleId}`; }
-    
-    document.getElementById('materialForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const title = document.getElementById('title').value;
-        const description = document.getElementById('description').value;
-        
-        if (!title) { alert('Please enter a title'); return; }
-        
-        const formData = new FormData();
-        formData.append('moduleId', @Model.ModuleId);
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('contentType', selectedContentType);
-        
-        if (selectedContentType === 'file') {
-            if (!selectedFile) { alert('Please select a file'); return; }
-            formData.append('file', selectedFile);
-        } else if (selectedContentType === 'link') {
-            const url = document.getElementById('contentUrl').value;
-            if (!url) { alert('Please enter a URL'); return; }
-            formData.append('contentUrl', url);
-        } else if (selectedContentType === 'text') {
-            const text = document.getElementById('contentText').value;
-            if (!text) { alert('Please enter text content'); return; }
-            formData.append('contentText', text);
-        }
-        
-        const submitBtn = document.querySelector('.btn-submit');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Uploading...';
-        
-        try {
-            const response = await fetch('/FrontEnd/CreateMaterial', {
-                method: 'POST',
-                headers: { 'RequestVerificationToken': '@antiforgeryToken' },
-                body: formData
-            });
-            if (response.ok) {
-                window.location.href = `/FrontEnd/TeachingMaterial/${@Model.ModuleId}`;
-            } else {
-                const error = await response.text();
-                alert(`Upload failed: ${error}`);
-                submitBtn.disabled = false;
-                submitBtn.textContent = '📤 Upload';
-            }
-        } catch (error) {
-            alert(`Upload failed: ${error.message}`);
-            submitBtn.disabled = false;
-            submitBtn.textContent = '📤 Upload';
-        }
-    });
-</script>
+<script src="~/js/createMaterial.js"></script>

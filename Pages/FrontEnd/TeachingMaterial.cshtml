@@ -10,7 +10,7 @@
     var userId = HttpContext.Session.GetString("UserID");
     var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
     var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
-    
+
     var hasMaterials = Model.Materials != null && Model.Materials.Any();
     var isLecturer = userRole == "lecturer";
 }
@@ -21,7 +21,7 @@
 </head>
 
 <div class="teaching-material-page">
-    
+
     <!-- Header Section -->
     <div class="page-header">
         <div class="header-left">
@@ -37,48 +37,52 @@
         <div class="main-content">
             <div class="materials-section">
                 <div class="section-header">
-                    <h2>📖 Teaching Material</h2>
+                    <h2>Teaching Material</h2>
                     @if (isLecturer && !hasMaterials)
                     {
-                        <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Your
-                                        First Material</a>
-                        }
+                        <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">+ Add Your
+                            First Material</a>
+                    }
                     else if (isLecturer && hasMaterials)
                     {
-                        <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Material</a>
+                        <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">+ Add
+                                Material</a>
                     }
-                    </div>
+                        </div>
 
-                    <div class="materials-list">
-                        @if (hasMaterials)
-                        {
-                            foreach (var material in Model.Materials)
+                        <div class="materials-list">
+                            @if (hasMaterials)
                             {
-                                <div class="material-card">
-                                    <div class="material-card-header">
-                                        <div class="material-icon">📘</div>
-                                        <div class="material-info">
-                                            <h3 class="material-title">@material.Title</h3>
-                                            <p class="material-description">@(material.Description ?? "No description")</p>
+                                foreach (var material in Model.Materials)
+                                {
+                                    <div class="material-card">
+                                        <div class="material-card-header">
+                                            <div class="material-icon">📘</div>
+                                            <div class="material-info">
+                                                <h3 class="material-title">@material.Title</h3>
+                                                <p class="material-description">@(material.Description ?? "No description")</p>
+                                            </div>
+                                        </div>
+                                        <div class="material-card-footer">
+                                            <span class="material-date">Updated @(material.CreatedAt.ToString("MMM dd, yyyy")??"Unknown")</span>
+                                            @if (isLecturer)
+                                            {
+                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link">Edit →</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link">View →</a>
+                                            }
                                         </div>
                                     </div>
-                                    <div class="material-card-footer">
-                                        <span class="material-date">Updated @(material.CreatedAt.ToString("MMM dd, yyyy"))</span>
-                                        @if (isLecturer){
-                                            <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link">Edit →</a>
-                                        }else{
-                                            <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link">View →</a>
-                                        }
-                                    </div>
-                                </div>
+                                }
                             }
-                        }
-                        else
-                        {
-                            <div class="empty-state">
-                                <span>📭</span>
-                                <p>No teaching materials yet.</p>
-                                @* @if (isLecturer)
+                            else
+                            {
+                                <div class="empty-state">
+                                    <span>📭</span>
+                                    <p>No teaching materials yet.</p>
+                                    @* @if (isLecturer)
                                 {
                                     <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Your
                                         First Material</a>
@@ -99,7 +103,7 @@
                                 <div class="info-group">
                                     <span class="info-label">Start Date</span>
                                     <span class="info-value">@(Model.CurrentModule?.StartDate.ToString("dd/MM/yyyy") ??
-                                                                                                          "N/A")</span>
+                                                                                                                                                                                          "N/A")</span>
                                     </div>
                                     <div class="info-group">
                                         <span class="info-label">End Date</span>
@@ -110,7 +114,7 @@
                                         <span class="invitation-label">Invitation Code</span>
                                         <div class="code-row">
                                             <span class="code-value" id="invitationCode">@(Model.CurrentModule?.InvitationCode ??
-                                                                  "N/A")</span>
+                                                                                                                                                                  "N/A")</span>
                                                 @if (isLecturer)
                                                 {
                                                     <button class="regenerate-btn" onclick="regenerateCode(@Model.CurrentModule?.ModuleID)">⟳

@@ -16,7 +16,7 @@ namespace APMoodle.Services
 
         public async Task<bool> IsEnrolledAsync(int studentId, int moduleId)
         {
-            return await _context.Enrollments
+            return await _context.Enrollments!
                 .AnyAsync(e => e.StudentID == studentId && e.ModuleID == moduleId && e.Status == "Active");
         }
 
@@ -37,7 +37,7 @@ namespace APMoodle.Services
                     Progress = 0
                 };
 
-                _context.Enrollments.Add(enrollment);
+                _context.Enrollments!.Add(enrollment);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -51,7 +51,7 @@ namespace APMoodle.Services
         {
             try
             {
-                var enrollment = await _context.Enrollments
+                var enrollment = await _context.Enrollments!
                     .FirstOrDefaultAsync(e => e.StudentID == studentId && e.ModuleID == moduleId);
                 
                 if (enrollment == null) return false;
@@ -68,7 +68,7 @@ namespace APMoodle.Services
 
         public async Task<List<Module>> GetEnrolledModulesAsync(int studentId)
         {
-            return await _context.Enrollments
+            return await _context.Enrollments!
                 .Where(e => e.StudentID == studentId && e.Status == "Active")
                 .Include(e => e.Module)
                     .ThenInclude(m => m!.Lecturer)
@@ -78,7 +78,7 @@ namespace APMoodle.Services
 
         public async Task<List<Student>> GetEnrolledStudentsAsync(int moduleId)
         {
-            return await _context.Enrollments
+            return await _context.Enrollments!
                 .Where(e => e.ModuleID == moduleId && e.Status == "Active")
                 .Include(e => e.Student)
                 .Select(e => e.Student!)
@@ -88,7 +88,7 @@ namespace APMoodle.Services
         public async Task<List<Module>> GetAvailableModulesAsync(int studentId)
         {
             // Get modules student is NOT enrolled in
-            var enrolledModuleIds = await _context.Enrollments
+            var enrolledModuleIds = await _context.Enrollments!
                 .Where(e => e.StudentID == studentId && e.Status == "Active")
                 .Select(e => e.ModuleID)
                 .ToListAsync();
@@ -101,7 +101,7 @@ namespace APMoodle.Services
 
         public async Task<Enrollment?> GetEnrollmentAsync(int studentId, int moduleId)
         {
-            return await _context.Enrollments
+            return await _context.Enrollments!
                 .FirstOrDefaultAsync(e => e.StudentID == studentId && e.ModuleID == moduleId);
         }
 

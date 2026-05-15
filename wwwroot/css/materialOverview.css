@@ -34,6 +34,31 @@
     margin-bottom: 20px;
 }
 
+
+.material-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.edit-btn {
+    background: linear-gradient(135deg, #013D42, #1d767e);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(1, 61, 66, 0.3);
+    color: white;
+}
+
 .material-description p {
     font-size: 15px;
     color: #555;
