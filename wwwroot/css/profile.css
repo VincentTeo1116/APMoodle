@@ -134,15 +134,6 @@
     margin-bottom: 20px;
 }
 
-.PageTitle {
-    margin-bottom: 24px;
-}
-
-.path {
-    color: #888;
-    font-size: 14px;
-}
-
 @media (max-width: 768px) {
     .profile-dashboard {
         flex-direction: column;
