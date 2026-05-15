@@ -41,7 +41,6 @@ namespace APMoodle.Models
         public string Gender { get; set; } = string.Empty;  // "Male", "Female", "Other"
 
         [Required]
-        [Phone]
         [MaxLength(20)]
         public string Status { get; set; } = string.Empty;
 

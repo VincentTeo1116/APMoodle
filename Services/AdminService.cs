@@ -34,5 +34,30 @@ namespace APMoodle.Services
             return await _context.Admins
                 .FirstOrDefaultAsync(a => a.AdminCode == userId || a.Email == userId);
         }
+
+        public async Task<bool> UpdateAdminAsync(Admin admin)
+        {
+            try
+            {
+                var existingAdmin = await _context.Admins.FindAsync(admin.AdminID);
+                if (existingAdmin == null) return false;
+
+                // Only update allowed fields
+                existingAdmin.Name = admin.Name;
+                existingAdmin.PhoneNumber = admin.PhoneNumber;
+                existingAdmin.DOB = admin.DOB;
+                existingAdmin.Gender = admin.Gender;
+                existingAdmin.ProfilePic = admin.ProfilePic;
+
+                _context.Admins.Update(existingAdmin);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Update error: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

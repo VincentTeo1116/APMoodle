@@ -34,7 +34,8 @@ namespace APMoodle.Models
         [ForeignKey("ModuleID")]
         public Module? Module { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Column(TypeName = "timestamp with time zone")]
+        public DateTime CreatedAt { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
 
         public List<Quiz>? Quizzes { get; set; }
     }

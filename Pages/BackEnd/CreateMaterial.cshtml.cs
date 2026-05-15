@@ -70,7 +70,7 @@ namespace APMoodle.Pages.BackEnd
                         // Get file extension
                         var fileExtension = Path.GetExtension(file.FileName);
 
-                        // Create filename: [LecturerName]_[ModuleName]_[MaterialName][extension]
+                        // Create filename
                         var uniqueFileName = $"{safeLecturerName}_{safeModuleName}_{safeTitle}{fileExtension}";
 
                         // Handle duplicate filenames

@@ -89,12 +89,23 @@ namespace APMoodle.Services
         {
             try
             {
-                _context.Students!.Update(student);
+                var existingStudent = await _context.Students!.FindAsync(student.StudentID);
+                if (existingStudent == null) return false;
+
+                // Only update allowed fields
+                existingStudent.Name = student.Name;
+                existingStudent.PhoneNumber = student.PhoneNumber;
+                existingStudent.DOB = student.DOB;
+                existingStudent.Gender = student.Gender;
+                existingStudent.ProfilePic = student.ProfilePic;
+
+                _context.Students.Update(existingStudent);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Update error: {ex.Message}");
                 return false;
             }
         }

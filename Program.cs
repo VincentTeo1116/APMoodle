@@ -26,7 +26,6 @@ builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
-// builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Session services
 builder.Services.AddDistributedMemoryCache();

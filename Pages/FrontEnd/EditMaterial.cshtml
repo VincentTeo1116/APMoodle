@@ -1,0 +1,100 @@
+﻿@page "{id}"
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var antiforgeryToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
+@model APMoodle.Pages.BackEnd.EditMaterialModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Edit Teaching Material";
+}
+
+<link rel="stylesheet" href="~/css/materialCreation.css" />
+<br />
+<br />
+<br />
+<div class="material-create-container" data-module-id="@Model.ModuleId">
+    <div class="form-card">
+        <div class="form-header">
+            <h2>✏️ Edit Teaching Material</h2>
+        </div>
+        
+        <form id="materialForm" method="post" enctype="multipart/form-data" asp-page-handler="">
+            <input type="hidden" name="materialId" value="@Model.MaterialId" />
+            
+            <div class="form-group">
+                <label for="title">Title *</label>
+                <input type="text" id="title" name="title" required value="@Model.Title" />
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3">@Model.Description</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Content Type</label>
+                <div class="type-selector">
+                    <button type="button" id="fileTypeBtn" class="type-btn @(Model.ContentType == "file" ? "active" : "")">📁 File</button>
+                    <button type="button" id="linkTypeBtn" class="type-btn @(Model.ContentType == "link" ? "active" : "")">🔗 Link/URL</button>
+                    <button type="button" id="textTypeBtn" class="type-btn @(Model.ContentType == "text" ? "active" : "")">📝 Text</button>
+                </div>
+            </div>
+            
+            <!-- File Upload Section -->
+            <div id="fileSection" class="content-section" style="display: @(Model.ContentType == "file" ? "block" : "none");">
+                @if (!string.IsNullOrEmpty(Model.FileURL))
+                {
+                    <div class="current-file">
+                        <span>📄 Current file:</span>
+                        <a href="@Model.FileURL" target="_blank">@System.IO.Path.GetFileName(Model.FileURL)</a>
+                    </div>
+                }
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-icon">📁</div>
+                    <p class="drop-zone-text">Drag & drop new file here to replace</p>
+                    <p class="drop-zone-subtext">or click to browse</p>
+                    <input type="file" id="fileInput" name="file" style="display: none;" />
+                </div>
+                <div class="file-preview" id="filePreview" style="display: none;">
+                    <div class="file-preview-icon" id="previewIcon">📄</div>
+                    <div class="file-preview-info">
+                        <span class="file-preview-name" id="previewName"></span>
+                        <span class="file-preview-size" id="previewSize"></span>
+                    </div>
+                    <button type="button" class="file-preview-remove" onclick="clearFile()">✖</button>
+                </div>
+            </div>
+            
+            <!-- Link/URL Section -->
+            <div id="linkSection" class="content-section" style="display: @(Model.ContentType == "link" ? "block" : "none");">
+                <div class="form-group">
+                    <label for="contentUrl">URL (YouTube, Google Drive, Website)</label>
+                    <input type="url" id="contentUrl" name="contentUrl" value="@Model.ContentUrl" placeholder="https://www.youtube.com/watch?v=... or any URL" />
+                </div>
+                <div id="urlPreview" class="url-preview" style="display: @(!string.IsNullOrEmpty(Model.ContentUrl) ? "block" : "none");">
+                    <div class="preview-header">
+                        <span>🔍 Preview</span>
+                        <button type="button" onclick="clearUrl()">✖</button>
+                    </div>
+                    <div id="previewContent" class="preview-content"></div>
+                </div>
+            </div>
+            
+            <!-- Text Section -->
+            <div id="textSection" class="content-section" style="display: @(Model.ContentType == "text" ? "block" : "none");">
+                <div class="form-group">
+                    <label for="contentText">Text Content</label>
+                    <textarea id="contentText" name="contentText" rows="10">@Model.ContentText</textarea>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <a href="/FrontEnd/TeachingMaterial/@Model.ModuleId" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-submit">💾 Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="~/js/editMaterial.js"></script>

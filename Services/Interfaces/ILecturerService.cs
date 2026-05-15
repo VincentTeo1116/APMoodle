@@ -9,5 +9,6 @@ namespace APMoodle.Services.Interfaces
         Task<Lecturer?> GetLecturerByEmailAsync(string email);
         Task<Lecturer?> GetLecturerByCodeOrEmailAsync(string userId);
         Task<bool> LecturerExistsAsync(string email);
+        Task<bool> UpdateLecturerAsync(Lecturer lecturer);
     }
 }

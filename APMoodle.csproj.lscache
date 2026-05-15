@@ -81,6 +81,7 @@ Pages/BackEnd/
  AnnouncementList.cshtml.cs
  CreateMaterial.cshtml.cs
  CreateNewQuiz.cshtml.cs
+ EditMaterial.cshtml.cs
  Error.cshtml.cs
  Index.cshtml.cs
  Login.cshtml.cs
@@ -487,6 +488,7 @@ Pages/FrontEnd/
  AnnouncementList.cshtml
  CreateMaterial.cshtml
  CreateNewQuiz.cshtml
+ EditMaterial.cshtml
  Error.cshtml
  Index.cshtml
  Login.cshtml
@@ -516,6 +518,7 @@ Pages/FrontEnd/
  AnnouncementList.cshtml
  CreateMaterial.cshtml
  CreateNewQuiz.cshtml
+ EditMaterial.cshtml
  Error.cshtml
  Index.cshtml
  Login.cshtml

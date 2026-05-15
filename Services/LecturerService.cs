@@ -39,5 +39,33 @@ namespace APMoodle.Services
         {
             return await _context.Lecturers.AnyAsync(l => l.Email == email);
         }
+
+        public async Task<bool> UpdateLecturerAsync(Lecturer lecturer)
+        {
+            try
+            {
+                var existingLecturer = await _context.Lecturers.FindAsync(lecturer.LecturerID);
+                if (existingLecturer == null) return false;
+
+                // Only update allowed fields
+                existingLecturer.Name = lecturer.Name;
+                existingLecturer.PhoneNumber = lecturer.PhoneNumber;
+                existingLecturer.DOB = lecturer.DOB;
+                existingLecturer.Gender = lecturer.Gender;
+                existingLecturer.Department = lecturer.Department;
+                existingLecturer.ProfilePic = lecturer.ProfilePic;
+                // Keep existing RegisteredDate and Status
+                existingLecturer.RegisteredDate = DateTime.SpecifyKind(existingLecturer.RegisteredDate, DateTimeKind.Unspecified);
+
+                _context.Lecturers.Update(existingLecturer);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Update error: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
