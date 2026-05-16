@@ -54,8 +54,7 @@ namespace APMoodle.Services
                 existingLecturer.Gender = lecturer.Gender;
                 existingLecturer.Department = lecturer.Department;
                 existingLecturer.ProfilePic = lecturer.ProfilePic;
-                // Keep existing RegisteredDate and Status
-                existingLecturer.RegisteredDate = DateTime.SpecifyKind(existingLecturer.RegisteredDate, DateTimeKind.Unspecified);
+                existingLecturer.RegisteredDate = DateTime.SpecifyKind(existingLecturer.RegisteredDate, DateTimeKind.Utc);
 
                 _context.Lecturers.Update(existingLecturer);
                 await _context.SaveChangesAsync();

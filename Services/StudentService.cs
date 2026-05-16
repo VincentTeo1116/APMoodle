@@ -98,6 +98,8 @@ namespace APMoodle.Services
                 existingStudent.DOB = student.DOB;
                 existingStudent.Gender = student.Gender;
                 existingStudent.ProfilePic = student.ProfilePic;
+                // Convert RegisteredDate to UTC
+                existingStudent.RegisteredDate = DateTime.SpecifyKind(existingStudent.RegisteredDate, DateTimeKind.Utc);
 
                 _context.Students.Update(existingStudent);
                 await _context.SaveChangesAsync();
