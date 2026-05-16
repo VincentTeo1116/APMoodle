@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // REGISTER CLICK → redirect to register page
         registerTab.addEventListener("click", function () {
-            window.location.href = "FrontEnd/Register";
+            window.location.href = "/FrontEnd/Register";
         });
     }
 
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (registerLink) {
         registerLink.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = "FrontEnd/Register";
+            window.location.href = "/FrontEnd/Register";
         });
     }
 
