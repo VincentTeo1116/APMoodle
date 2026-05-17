@@ -1,0 +1,408 @@
+﻿@page
+@model APMoodle.Pages.BackEnd.ChatModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Messages";
+}
+
+<head>
+    <title>@ViewData["Title"] - APMoodle</title>
+    <link rel="stylesheet" href="~/css/chat.css" />
+</head>
+
+<br /><br /><br /><br />
+
+<div class="chat-container">
+    <!-- Sidebar with Search and New Chat -->
+    <div class="chat-sidebar">
+        <div class="sidebar-header">
+            <h3>💬 @ViewData["Title"]</h3>
+            <button class="new-chat-btn" onclick="openNewChatModal()">+ New</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="chat-search">
+            <input type="text" id="searchInput" placeholder="Search conversations..." onkeyup="filterChats()" />
+        </div>
+
+        <div class="chat-list" id="chatList">
+            @if (Model.UserRole == "student")
+            {
+                @foreach (var chat in Model.ChatSessions)
+                {
+                    <div class="chat-item @(Model.CurrentChatId == chat.ChatID ? "active" : "")" data-chat-id="@chat.ChatID"
+                         data-name="@chat.Lecturer?.Name" onclick="loadChat(@chat.ChatID)">
+                        <div class="chat-avatar">
+                            @if (!string.IsNullOrEmpty(chat.Lecturer?.ProfilePic))
+                            {
+                                <img src="@chat.Lecturer.ProfilePic" alt="@chat.Lecturer.Name" class="avatar-img" />
+                            }
+                            else
+                            {
+                                <div class="avatar-initial">@(chat.Lecturer?.Name?.FirstOrDefault().ToString().ToUpper() ?? "?")
+                                </div>
+                            }
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">@chat.Lecturer?.Name</div>
+                            <div class="chat-last-message">
+                                @(chat.Messages?.LastOrDefault()?.Content ?? "No messages yet")
+                            </div>
+                        </div>
+                        @if (Model.UnreadCounts.TryGetValue(chat.ChatID, out int unread) && unread > 0)
+                        {
+                            <span class="unread-badge">@unread</span>
+                        }
+                    </div>
+                }
+            }
+            else if (Model.UserRole == "lecturer")
+            {
+                @foreach (var chat in Model.ChatSessions)
+                {
+                    <div class="chat-item @(Model.CurrentChatId == chat.ChatID ? "active" : "")" data-chat-id="@chat.ChatID"
+                         data-name="@chat.Student?.Name" onclick="loadChat(@chat.ChatID)">
+                        <div class="chat-avatar">
+                            @if (!string.IsNullOrEmpty(chat.Student?.ProfilePic))
+                            {
+                                <img src="@chat.Student.ProfilePic" alt="@chat.Student.Name" class="avatar-img" />
+                            }
+                            else
+                            {
+                                <div class="avatar-initial">@(chat.Student?.Name?.FirstOrDefault().ToString().ToUpper() ?? "?")
+                                </div>
+                            }
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">@chat.Student?.Name</div>
+                            <div class="chat-last-message">
+                                @(chat.Messages?.LastOrDefault()?.Content ?? "No messages yet")
+                            </div>
+                        </div>
+                        @if (Model.UnreadCounts.TryGetValue(chat.ChatID, out int unread2) && unread2 > 0)
+                        {
+                            <span class="unread-badge">@unread2</span>
+                        }
+                    </div>
+                }
+            }
+        </div>
+
+        @if (!Model.ChatSessions.Any())
+        {
+            <div class="no-chats">
+                <span>💬</span>
+                <p>No conversations yet</p>
+            </div>
+        }
+    </div>
+
+    <!-- Main chat area -->
+    <div class="chat-main">
+        @if (Model.CurrentChatId.HasValue)
+        {
+            <div class="chat-header">
+                <div class="chat-with">
+                    @if (Model.UserRole == "student")
+                    {
+                        <span>Chat with @Model.CurrentLecturer?.Name</span>
+                    }
+                    else
+                    {
+                        <span>Chat with @Model.CurrentStudent?.Name</span>
+                    }
+                </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                @foreach (var msg in Model.Messages)
+                {
+                    <div class="message @(msg.SenderRole == Model.UserRole ? "message-sent" : "message-received")"
+                         data-message-id="@msg.MessageID" data-timestamp="@msg.Timestamp.ToString("o")">
+                        <div class="message-bubble">
+                            <div class="message-text">@msg.Content</div>
+                            <div class="message-time" data-utc="@msg.Timestamp.ToString("o")">
+                                <!-- Time will be filled by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @Html.AntiForgeryToken()
+            <div class="chat-input-area">
+                <textarea id="messageInput" placeholder="Type your message..." rows="2"></textarea>
+                <button id="sendBtn" onclick="sendMessage()">Send</button>
+            </div>
+        }
+        else
+        {
+            <div class="no-chat-selected">
+                <span>💬</span>
+                <p>Select a conversation to start messaging</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- New Chat Modal -->
+<div id="newChatModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Start New Conversation</h4>
+            <span class="modal-close" onclick="closeNewChatModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="search-users">
+                <input type="text" id="userSearchInput" placeholder="Search by name or code..."
+                       onkeyup="searchUsers()" />
+            </div>
+            <div id="searchResults" class="search-results">
+                <!-- Results will appear here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentChatId = @(Model.CurrentChatId ?? 0);
+    let userRole = '@Model.UserRole';
+    let lastMessageIds = new Set();
+
+
+    @foreach (var msg in Model.Messages)
+        {
+            @:lastMessageIds.add(@msg.MessageID);
+    }
+
+        function loadChat(chatId) {
+            window.location.href = `/FrontEnd/Chat?chatId=${chatId}`;
+        }
+
+    function sendMessage() {
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value.trim();
+
+        if (!message) return;
+
+        fetch('/FrontEnd/Chat?handler=SendMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chatId: currentChatId,
+                content: message
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    messageInput.value = '';
+                    // Add the message immediately to avoid delay
+                    if (data.messageId) {
+                        // Create message object and append directly
+                        const newMessage = {
+                            messageId: data.messageId,
+                            content: message,
+                            senderRole: userRole,
+                            timestamp: data.timestamp
+                        };
+                        appendMessage(newMessage);
+                        lastMessageIds.add(data.messageId);
+                        scrollToBottom();
+                    } else {
+                        // Fallback to refresh
+                        refreshMessages();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            });
+    }
+
+    function formatLocalTime(utcTimeString) {
+        if (!utcTimeString) return '';
+        try {
+            const date = new Date(utcTimeString);
+            if (isNaN(date.getTime())) return '';
+
+            return date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        } catch (e) {
+            console.error('Time format error:', e);
+            return '';
+        }
+    }
+
+    function appendMessage(msg) {
+        const messagesDiv = document.getElementById('chatMessages');
+
+        if (msg.messageId && lastMessageIds.has(msg.messageId)) {
+            return;
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${(msg.senderRole || msg.SenderRole) === userRole ? 'message-sent' : 'message-received'}`;
+        messageDiv.setAttribute('data-message-id', msg.messageId || '');
+        messageDiv.setAttribute('data-timestamp', msg.timestamp || msg.Timestamp || '');
+
+        const content = msg.content || msg.Content;
+        const timestamp = msg.timestamp || msg.Timestamp;
+        const formattedTime = formatLocalTime(timestamp);
+
+        messageDiv.innerHTML = `
+            <div class="message-bubble">
+                <div class="message-text">${escapeHtml(content)}</div>
+                <div class="message-time">${formattedTime}</div>
+            </div>
+        `;
+
+        messagesDiv.appendChild(messageDiv);
+
+        if (msg.messageId) {
+            lastMessageIds.add(msg.messageId);
+        }
+
+        scrollToBottom();
+    }
+
+    function refreshMessages() {
+        if (currentChatId > 0) {
+            fetch(`/FrontEnd/Chat?handler=GetMessages&chatId=${currentChatId}`)
+                .then(response => response.json())
+                .then(messages => {
+                    // Clear and reload all messages to ensure consistency
+                    const messagesDiv = document.getElementById('chatMessages');
+                    const currentMessageCount = messagesDiv.children.length;
+
+                    if (messages.length !== currentMessageCount) {
+                        // Clear all messages
+                        messagesDiv.innerHTML = '';
+                        lastMessageIds.clear();
+
+                        // Add all messages back
+                        messages.forEach(msg => {
+                            appendMessage(msg);
+                            if (msg.messageId) {
+                                lastMessageIds.add(msg.messageId);
+                            }
+                        });
+
+                        scrollToBottom();
+                    }
+                })
+                .catch(error => console.error('Error fetching messages:', error));
+        }
+    }
+
+    function scrollToBottom() {
+        const messagesDiv = document.getElementById('chatMessages');
+        if (messagesDiv) {
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function convertAllTimestamps() {
+        const messages = document.querySelectorAll('.message');
+        messages.forEach(message => {
+            const timestampAttr = message.getAttribute('data-timestamp');
+            const timeElement = message.querySelector('.message-time');
+
+            if (timestampAttr && timeElement) {
+                const localTime = formatLocalTime(timestampAttr);
+                if (localTime) {
+                    timeElement.textContent = localTime;
+                }
+            }
+        });
+    }
+
+    // Auto-refresh messages every 5 seconds
+    let refreshInterval = setInterval(refreshMessages, 5000);
+
+    function filterChats() {
+        const searchInput = document.getElementById('searchInput');
+        const filter = searchInput.value.toLowerCase();
+        const chatItems = document.querySelectorAll('.chat-item');
+
+        chatItems.forEach(item => {
+            const name = item.getAttribute('data-name')?.toLowerCase() || '';
+            if (name.includes(filter)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function openNewChatModal() {
+        document.getElementById('newChatModal').style.display = 'block';
+        document.getElementById('userSearchInput').value = '';
+        document.getElementById('searchResults').innerHTML = '';
+    }
+
+    function closeNewChatModal() {
+        document.getElementById('newChatModal').style.display = 'none';
+    }
+
+    function searchUsers() {
+        const searchTerm = document.getElementById('userSearchInput').value.trim();
+
+        if (searchTerm.length < 2) {
+            document.getElementById('searchResults').innerHTML = '<p class="search-hint">Type at least 2 characters to search</p>';
+            return;
+        }
+
+        // Send search term as-is, let server handle case-insensitive search
+        fetch(`/FrontEnd/Chat?handler=SearchUsers&searchTerm=${encodeURIComponent(searchTerm)}&role=${userRole}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('searchResults');
+
+                if (data.users && data.users.length > 0) {
+                    resultsDiv.innerHTML = data.users.map(user => `
+                    <div class="search-result-item" onclick="startNewChat(${user.id})">
+                        <div class="search-avatar">${user.avatar}</div>
+                        <div class="search-info">
+                            <div class="search-name">${escapeHtml(user.name)}</div>
+                            <div class="search-code">${escapeHtml(user.code)}</div>
+                        </div>
+                    </div>
+                `).join('');
+                } else {
+                    resultsDiv.innerHTML = '<p class="no-results">No users found</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error searching users:', error);
+                document.getElementById('searchResults').innerHTML = '<p class="error">Search failed. Please try again.</p>';
+            });
+    }
+
+    function startNewChat(userId) {
+        window.location.href = `/FrontEnd/Chat?${userRole === 'student' ? 'lecturerId' : 'studentId'}=${userId}`;
+    }
+
+    window.onclick = function (event) {
+        const modal = document.getElementById('newChatModal');
+        if (event.target === modal) {
+            closeNewChatModal();
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        convertAllTimestamps();
+        scrollToBottom();
+    });
+</script>

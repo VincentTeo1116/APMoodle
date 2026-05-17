@@ -148,5 +148,13 @@ namespace APMoodle.Services
         {
             return await _context.Students!.Where(s => s.Status == "Pending").ToListAsync();
         }
+
+        public async Task<List<Student>> SearchStudentsAsync(string searchTerm)
+        {
+            return await _context.Students!
+                .Where(s => s.Name.Contains(searchTerm) || s.StudentCode.Contains(searchTerm))
+                .Take(10)
+                .ToListAsync();
+        }
     }
 }

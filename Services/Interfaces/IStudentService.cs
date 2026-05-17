@@ -24,5 +24,6 @@ namespace APMoodle.Services.Interfaces
         Task<int> GetTotalCountAsync();
         Task<int> GetPendingCountAsync();
         Task<List<Student>> GetPendingStudentsAsync();
+        Task<List<Student>> SearchStudentsAsync(string searchTerm);
     }
 }

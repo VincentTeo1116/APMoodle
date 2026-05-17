@@ -33,6 +33,9 @@ namespace APMoodle.Data
 
         public DbSet<Enrollment>? Enrollments { get; set; }
 
+        public DbSet<ChatSession> ChatSessions { get; set; } = null!;
+        public DbSet<Message> Messages { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -258,6 +261,38 @@ namespace APMoodle.Data
                     .WithMany(m => m.Enrollments)
                     .HasForeignKey(e => e.ModuleID)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ChatSession Configuration
+            modelBuilder.Entity<ChatSession>(entity =>
+            {
+                entity.HasKey(c => c.ChatID);
+                entity.HasIndex(c => new { c.StudentID, c.LecturerID }).IsUnique();
+
+                entity.HasOne(c => c.Student)
+                    .WithMany()
+                    .HasForeignKey(c => c.StudentID)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(c => c.Lecturer)
+                    .WithMany()
+                    .HasForeignKey(c => c.LecturerID)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(c => c.Messages)
+                    .WithOne(m => m.ChatSession)
+                    .HasForeignKey(m => m.ChatID)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Message Configuration
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasKey(m => m.MessageID);
+                entity.HasIndex(m => m.ChatID);
+                entity.HasIndex(m => m.Timestamp);
+                entity.Property(m => m.SenderRole).HasMaxLength(10);
+                entity.Property(m => m.Content).IsRequired();
             });
         }
     }

@@ -66,5 +66,13 @@ namespace APMoodle.Services
                 return false;
             }
         }
+
+        public async Task<List<Lecturer>> SearchLecturersAsync(string searchTerm)
+        {
+            return await _context.Lecturers!
+                .Where(l => l.Name.Contains(searchTerm) || l.LecturerCode.Contains(searchTerm))
+                .Take(10)
+                .ToListAsync();
+        }
     }
 }

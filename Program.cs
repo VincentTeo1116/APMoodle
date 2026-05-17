@@ -27,6 +27,7 @@ builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 // Session services
 builder.Services.AddDistributedMemoryCache();
