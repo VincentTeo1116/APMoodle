@@ -6,9 +6,9 @@
     var userId = Context.Session.GetString("UserID");
     var userRole = Context.Session.GetString("UserRole") ?? "Guest";
     var userName = Context.Session.GetString("UserName") ?? "User";
-    
+
     var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
-    
+
     Console.WriteLine($"Current login status - UserID: {userId}, Role: {userRole}, isLoggedIn: {isLoggedIn}");
 }
 
@@ -58,7 +58,7 @@
                             </a>
                         </li>
                         <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-                        <!-- Only show Logout button -->
+                            <!-- Only show Logout button -->
                             @if (isLoggedIn)
                             {
                                 <li class="nav-profile-item">
@@ -67,15 +67,16 @@
                                     </a>
                                 </li>
                                 <li class="nav-login">
-                                    <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout"
-                                    style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
+                                    <a href="javascript:void(0)" onclick="confirmLogout()" class="nav-link-login"
+                                       title="Click here to logout"
+                                       style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-login">
                                     <a class="nav-link-login" href="/FrontEnd/Login"
-                                    title="Click here to login or register">Login/Register</a>
+                                       title="Click here to login or register">Login/Register</a>
                                 </li>
                             }
                         </div>
@@ -83,7 +84,7 @@
                 </div>
             </div>
         </nav>
-        
+
         @if (isLoggedIn)
         {
 
@@ -153,13 +154,13 @@
                             </a>
                         }
                     </div>
-                
+
                     <!-- Expand/Collapse Button at BOTTOM -->
                     <div class="btn-expand-menu" id="menuToggle">
                         <span class="expand-icon" id="expandIcon">❯</span>
                         <span class="expand-text">Expand</span>
                     </div>
-                
+
                     <!-- Footer -->
                     <div class="menu-footer">
                         <span>v1.0</span>
@@ -168,7 +169,7 @@
             </div>
         }
     </header>
-    
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -180,7 +181,7 @@
             &copy; 2026 - APMoodle - <a href="/FrontEnd/Privacy">Privacy</a>
         </div>
     </footer>
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

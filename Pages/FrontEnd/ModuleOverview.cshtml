@@ -38,6 +38,18 @@
         </div>
     }
 
+    @if (TempData["JoinSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["JoinSuccess"]</div>
+    }
+
+    @if (userRole == "student")
+    {
+        <div class="student-actions">
+            <a href="/FrontEnd/JoinModule" class="btn-create">+ Join Module</a>
+        </div>
+    }
+
     <div class="PageComponent">
         @if (Model.Modules != null && Model.Modules.Any())
         {

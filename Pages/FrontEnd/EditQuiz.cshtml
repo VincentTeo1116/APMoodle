@@ -1,0 +1,135 @@
+@page "{id:int}"
+@model APMoodle.Pages.BackEnd.EditQuizModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Edit Quiz";
+}
+
+@*
+    Front-end / styling: Moses
+    Backend contract:
+      Model.QuizId / MaterialId         — hidden, posted back every roundtrip
+      Model.Title / Subject / Theme     — quiz header inputs
+      Model.Questions                   — List<QuestionInput> { QuestionID (0=new), QuestionText, Option1..4, CorrectAnswer }
+      Model.DeletedQuestionIDs          — hidden CSV of removed question IDs, tracked across postbacks
+      Model.Message                     — top-level error/info banner
+    Named handlers (same as CreateNewQuiz):
+      "AddQuestion"
+      "RemoveQuestion?index=N"
+      "Save"                            — updates the quiz, then deletes removed Qs (cascades to Results),
+                                          then inserts new + updates existing. Redirects to /FrontEnd/ManageQuiz/{QuizId}.
+    No JavaScript required.
+*@
+
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+        <p class="path">Lecturer Dashboard &gt; Manage Quiz &gt; @ViewData["Title"]</p>
+    </div>
+
+    <div class="PageComponent">
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert">@Model.Message</div>
+        }
+
+        <form method="post">
+            <input type="hidden" asp-for="QuizId" />
+            <input type="hidden" asp-for="MaterialId" />
+            <input type="hidden" asp-for="DeletedQuestionIDs" />
+
+            <fieldset class="quiz-meta">
+                <legend>Quiz Info</legend>
+
+                <div>
+                    <label asp-for="Title">Title</label>
+                    <input asp-for="Title" maxlength="200" />
+                    <span asp-validation-for="Title"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Subject">Subject</label>
+                    <input asp-for="Subject" maxlength="50" />
+                    <span asp-validation-for="Subject"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Theme">Theme</label>
+                    <input asp-for="Theme" maxlength="50" />
+                    <span asp-validation-for="Theme"></span>
+                </div>
+            </fieldset>
+
+            <div class="questions-list">
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    <fieldset class="question-card">
+                        <legend>
+                            Question @(i + 1)
+                            @if (Model.Questions[i].QuestionID == 0)
+                            {
+                                <em>(new)</em>
+                            }
+                        </legend>
+
+                        <input type="hidden" asp-for="Questions[i].QuestionID" />
+
+                        <div>
+                            <label asp-for="Questions[i].QuestionText">Question</label>
+                            <textarea asp-for="Questions[i].QuestionText" maxlength="500" rows="2"></textarea>
+                            <span asp-validation-for="Questions[i].QuestionText"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="Questions[i].Option1">A</label>
+                            <input asp-for="Questions[i].Option1" maxlength="200" />
+                            <span asp-validation-for="Questions[i].Option1"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Questions[i].Option2">B</label>
+                            <input asp-for="Questions[i].Option2" maxlength="200" />
+                            <span asp-validation-for="Questions[i].Option2"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Questions[i].Option3">C</label>
+                            <input asp-for="Questions[i].Option3" maxlength="200" />
+                            <span asp-validation-for="Questions[i].Option3"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Questions[i].Option4">D</label>
+                            <input asp-for="Questions[i].Option4" maxlength="200" />
+                            <span asp-validation-for="Questions[i].Option4"></span>
+                        </div>
+
+                        <div>
+                            <span>Correct answer:</span>
+                            <label><input type="radio" asp-for="Questions[i].CorrectAnswer" value="A" /> A</label>
+                            <label><input type="radio" asp-for="Questions[i].CorrectAnswer" value="B" /> B</label>
+                            <label><input type="radio" asp-for="Questions[i].CorrectAnswer" value="C" /> C</label>
+                            <label><input type="radio" asp-for="Questions[i].CorrectAnswer" value="D" /> D</label>
+                            <span asp-validation-for="Questions[i].CorrectAnswer"></span>
+                        </div>
+
+                        <button type="submit"
+                                asp-page-handler="RemoveQuestion"
+                                asp-route-index="@i"
+                                formnovalidate
+                                onclick="return confirm('Remove this question? If students have already answered it, their per-question records will be deleted.');">
+                            Remove Question
+                        </button>
+                    </fieldset>
+                }
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" asp-page-handler="AddQuestion" formnovalidate>+ Add Question</button>
+                <a href="/FrontEnd/ManageQuiz/@Model.QuizId">Cancel</a>
+                <button type="submit" asp-page-handler="Save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,4 +1,54 @@
-﻿@page
+@page
 @model APMoodle.Pages.BackEnd.QuizHistoryModel
 @{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Quiz History";
 }
+
+@*
+    Front-end / styling: Moses
+    Backend contract:
+        Model.Sessions — list of completed Session, newest first
+            .SessionID, .TotalScore (int?), .Timestamp (DateTime), .Quiz?.Title, .Quiz?.Subject, .Quiz?.Theme
+    Each row should link to /FrontEnd/QuizResult/{SessionID}.
+    NOTE: side-menu link to this page lives in _Layout.cshtml — left for Moses to add under the student menu.
+*@
+
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="PageComponent">
+        @if (Model.Sessions.Any())
+        {
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Quiz</th>
+                        <th>Subject</th>
+                        <th>Score</th>
+                        <th>Attempted On</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model.Sessions)
+                    {
+                        <tr>
+                            <td>@(s.Quiz?.Title ?? "Quiz")</td>
+                            <td>@(s.Quiz?.Subject ?? "-")</td>
+                            <td>@(s.TotalScore.HasValue ? $"{s.TotalScore}%" : "-")</td>
+                            <td>@s.Timestamp.ToString("dd MMM yyyy HH:mm")</td>
+                            <td><a href="/FrontEnd/QuizResult/@s.SessionID">View</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>You haven't attempted any quizzes yet.</p>
+        }
+    </div>
+</div>

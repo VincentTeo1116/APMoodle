@@ -1,0 +1,56 @@
+@page "{id:int}"
+@model APMoodle.Pages.BackEnd.QuizResultModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Quiz Result";
+}
+
+@*
+    Front-end / styling: Moses
+    Backend contract:
+        Model.CurrentQuiz       — Quiz (Title, Subject, Theme)
+        Model.CurrentSession    — Session (TotalScore, Timestamp)
+        Model.Reviews           — list of QuestionReview { Question, GivenAnswer, IsCorrect, TimeUsed }
+        Model.CorrectCount      — int
+        Model.TotalQuestions    — int
+        Model.TotalTimeUsed     — int (seconds)
+*@
+
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="PageComponent">
+        @if (Model.CurrentQuiz != null && Model.CurrentSession != null)
+        {
+            <div class="score-card">
+                <h2>@Model.CurrentQuiz.Title</h2>
+                <p>Score: <strong>@Model.CurrentSession.TotalScore%</strong></p>
+                <p>Correct: @Model.CorrectCount / @Model.TotalQuestions</p>
+                <p>Time used: @Model.TotalTimeUsed seconds</p>
+                <p>Attempted on: @Model.CurrentSession.Timestamp.ToString("dd MMM yyyy HH:mm")</p>
+            </div>
+
+            <h3>Review</h3>
+            @for (int i = 0; i < Model.Reviews.Count; i++)
+            {
+                var r = Model.Reviews[i];
+                var q = r.Question;
+                <div class="question-card @(r.IsCorrect ? "correct" : "incorrect")">
+                    <h4>Q@(i + 1). @q.QuestionText</h4>
+                    <p>A. @q.Option1</p>
+                    <p>B. @q.Option2</p>
+                    <p>C. @q.Option3</p>
+                    <p>D. @q.Option4</p>
+                    <p>Your answer: <strong>@r.GivenAnswer</strong> @(r.IsCorrect ? "✔" : "✘")</p>
+                    <p>Correct answer: <strong>@q.CorrectAnswer</strong></p>
+                    <p>Time: @r.TimeUsed s</p>
+                </div>
+            }
+
+            <a href="/FrontEnd/QuizHistory">View Quiz History</a>
+            <a href="/FrontEnd/ModuleOverview">Back to Modules</a>
+        }
+    </div>
+</div>

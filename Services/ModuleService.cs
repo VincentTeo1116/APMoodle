@@ -153,5 +153,15 @@ namespace APMoodle.Services
         {
             return await _context.Modules.AnyAsync(m => m.InvitationCode == code);
         }
+
+        public async Task<Module?> GetModuleByInvitationCodeAsync(string invitationCode)
+        {
+            if (string.IsNullOrWhiteSpace(invitationCode))
+                return null;
+
+            return await _context.Modules
+                .Include(m => m.Lecturer)
+                .FirstOrDefaultAsync(m => m.InvitationCode == invitationCode);
+        }
     }
 }

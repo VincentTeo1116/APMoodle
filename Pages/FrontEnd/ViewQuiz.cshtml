@@ -1,4 +1,57 @@
-﻿@page
+@page "{id:int}"
 @model APMoodle.Pages.BackEnd.ViewQuizModel
 @{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model.CurrentQuiz?.Title ?? "Attempt Quiz";
 }
+
+@*
+    Front-end / styling: Moses
+    Backend contract:
+        Model.CurrentQuiz   — the Quiz being attempted (Title, Subject, Theme)
+        Model.Questions     — ordered list of Question (QuestionText, Option1..Option4, QuestionID)
+        Model.SessionId     — int; MUST be posted back as hidden field "SessionId"
+        Model.Message       — string, nullable error
+    Form contract (POST to same URL):
+        SessionId                          — hidden, the session created in OnGet
+        Answer_{QuestionID}                — radio "A" | "B" | "C" | "D"
+        TimeUsed_{QuestionID}              — hidden, seconds (filled in by Moses's JS timer)
+    On success the server redirects to /FrontEnd/QuizResult/{sessionId}.
+*@
+
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="PageComponent">
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert">@Model.Message</div>
+        }
+
+        @if (Model.CurrentQuiz != null && Model.Questions.Any())
+        {
+            <form method="post">
+                <input type="hidden" name="SessionId" value="@Model.SessionId" />
+
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    var q = Model.Questions[i];
+                    <div class="question-card" data-question-id="@q.QuestionID">
+                        <h3>Q@(i + 1). @q.QuestionText</h3>
+
+                        <label><input type="radio" name="Answer_@q.QuestionID" value="A" /> A. @q.Option1</label>
+                        <label><input type="radio" name="Answer_@q.QuestionID" value="B" /> B. @q.Option2</label>
+                        <label><input type="radio" name="Answer_@q.QuestionID" value="C" /> C. @q.Option3</label>
+                        <label><input type="radio" name="Answer_@q.QuestionID" value="D" /> D. @q.Option4</label>
+
+                        <input type="hidden" name="TimeUsed_@q.QuestionID" value="0" />
+                    </div>
+                }
+
+                <button type="submit">Submit Quiz</button>
+            </form>
+        }
+    </div>
+</div>

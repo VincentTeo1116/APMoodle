@@ -62,7 +62,7 @@ namespace APMoodle.Pages.BackEnd
                         if (student != null && student.Status == "Active" && VerifyPassword(password, student.Password))
                         {
                             SetSession(student.StudentID.ToString(), student.StudentCode, student.Name, "student", student.Email);
-                            return RedirectToPage("/FrontEnd/ModuleOverview");
+                            return RedirectToPage("/FrontEnd/StudentDashboard");
                         }
                         break;
 

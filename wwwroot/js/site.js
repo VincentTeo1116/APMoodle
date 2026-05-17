@@ -63,3 +63,9 @@ window.addEventListener('scroll', function() {
         navbar.classList.remove('sticky-scroll');
     }
 });
+
+function confirmLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        window.location.href = '/FrontEnd/Logout';
+    }
+}

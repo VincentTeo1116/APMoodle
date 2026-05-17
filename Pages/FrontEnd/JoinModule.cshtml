@@ -1,0 +1,41 @@
+@page
+@model APMoodle.Pages.BackEnd.JoinModuleModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Join Module";
+}
+
+@*
+    Front-end / styling: Moses
+    The PageModel binds:
+        Input.InvitationCode  (string, required)
+    Server output:
+        Model.Message         (string, nullable — error to show)
+        Model.IsSuccess       (bool — true on success but flow redirects to ModuleOverview with TempData["JoinSuccess"])
+*@
+
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="PageComponent">
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert">@Model.Message</div>
+        }
+
+        <form method="post">
+            <label asp-for="Input.InvitationCode"></label>
+            <input asp-for="Input.InvitationCode" maxlength="20" autocomplete="off" />
+            <span asp-validation-for="Input.InvitationCode"></span>
+
+            <a href="/FrontEnd/ModuleOverview">Cancel</a>
+            <button type="submit">Join Module</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

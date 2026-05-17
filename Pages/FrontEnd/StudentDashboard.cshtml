@@ -1,0 +1,109 @@
+@page
+@model APMoodle.Pages.BackEnd.StudentDashboardModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Student Dashboard";
+}
+
+@*
+    Front-end / styling: Moses
+    Backend contract:
+        Model.StudentName            (string)
+        Model.StudentCode            (string)
+        Model.EnrolledModuleCount    (int)
+        Model.CompletedQuizCount     (int)
+        Model.AverageScore           (int 0..100, percentage)
+        Model.BestScore              (int 0..100)
+        Model.EnrolledModules        (List<Module>)
+        Model.RecentAttempts         (List<Session>, newest first, .Quiz?.Title, .TotalScore, .Timestamp, .SessionID)
+*@
+
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+        <p class="path">Student Dashboard</p>
+    </div>
+
+    <div class="PageComponent">
+        <section class="welcome-banner">
+            <h2>Welcome, @Model.StudentName</h2>
+            <p>@Model.StudentCode</p>
+        </section>
+
+        <section class="stat-cards">
+            <div class="stat-card">
+                <h3>Enrolled Modules</h3>
+                <p>@Model.EnrolledModuleCount</p>
+            </div>
+            <div class="stat-card">
+                <h3>Quizzes Completed</h3>
+                <p>@Model.CompletedQuizCount</p>
+            </div>
+            <div class="stat-card">
+                <h3>Average Score</h3>
+                <p>@(Model.CompletedQuizCount > 0 ? $"{Model.AverageScore}%" : "—")</p>
+            </div>
+            <div class="stat-card">
+                <h3>Best Score</h3>
+                <p>@(Model.CompletedQuizCount > 0 ? $"{Model.BestScore}%" : "—")</p>
+            </div>
+        </section>
+
+        <section class="dashboard-modules">
+            <h3>Your Modules</h3>
+            @if (Model.EnrolledModules.Any())
+            {
+                <ul>
+                    @foreach (var m in Model.EnrolledModules.Take(5))
+                    {
+                        <li>
+                            <a href="/FrontEnd/TeachingMaterial/@m.ModuleID">
+                                @m.ModuleCode — @m.Name
+                            </a>
+                            <span>👨‍🏫 @(m.Lecturer?.Name ?? "Staff")</span>
+                        </li>
+                    }
+                </ul>
+                <a href="/FrontEnd/ModuleOverview">View all modules</a>
+            }
+            else
+            {
+                <p>You haven't joined any modules yet.</p>
+                <a href="/FrontEnd/JoinModule">Join a module</a>
+            }
+        </section>
+
+        <section class="dashboard-attempts">
+            <h3>Recent Quiz Attempts</h3>
+            @if (Model.RecentAttempts.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Quiz</th>
+                            <th>Score</th>
+                            <th>Attempted On</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model.RecentAttempts)
+                        {
+                            <tr>
+                                <td>@(s.Quiz?.Title ?? "Quiz")</td>
+                                <td>@(s.TotalScore.HasValue ? $"{s.TotalScore}%" : "-")</td>
+                                <td>@s.Timestamp.ToString("dd MMM yyyy HH:mm")</td>
+                                <td><a href="/FrontEnd/QuizResult/@s.SessionID">View</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <a href="/FrontEnd/QuizHistory">View full history</a>
+            }
+            else
+            {
+                <p>No quiz attempts yet.</p>
+            }
+        </section>
+    </div>
+</div>

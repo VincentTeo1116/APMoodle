@@ -159,12 +159,15 @@
                                 <div class="quizzes-list">
                                     @foreach (var quiz in Model.Quizzes)
                                     {
+                                        var quizUrl = isLecturer
+                                            ? $"/FrontEnd/ManageQuiz/{quiz.QuizID}"
+                                            : $"/FrontEnd/ViewQuiz/{quiz.QuizID}";
                                         <div class="quiz-item">
                                             <span class="quiz-icon">📋</span>
                                             <div class="quiz-info">
-                                                <a href="/FrontEnd/Quiz/Take/@quiz.QuizID" class="quiz-title">@quiz.Title</a>
+                                                <a href="@quizUrl" class="quiz-title">@quiz.Title</a>
                                             </div>
-                                            <a href="/FrontEnd/Quiz/Take/@quiz.QuizID" class="take-quiz-link">Take →</a>
+                                            <a href="@quizUrl" class="take-quiz-link">@(isLecturer ? "Manage →" : "Take →")</a>
                                         </div>
                                     }
                                 </div>
