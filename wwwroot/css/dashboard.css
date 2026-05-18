@@ -798,6 +798,43 @@ body {
         background: #ddd !important;
         color: black !important;
     }
+
+    /* Chart Legend */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-lighter);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    background: var(--light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-label {
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.legend-value {
+    font-weight: 600;
+    color: var(--dark);
+}
 }
 
 /* ========================================

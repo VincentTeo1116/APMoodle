@@ -225,7 +225,8 @@ namespace APMoodle.Services
                     return GetEmptyTrendData();
                 }
 
-                var sixMonthsAgo = DateTime.Now.AddMonths(-6);
+                // FIX: Use UTC DateTime instead of Local
+                var sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
                 
                 var enrollmentsByMonth = await _context.Enrollments
                     .Where(e => e.EnrolledDate >= sixMonthsAgo && e.Status == "Active")
@@ -240,10 +241,10 @@ namespace APMoodle.Services
                     .ThenBy(x => x.Month)
                     .ToListAsync();
 
-                // Fill in missing months
+                // Fill in missing months - FIX: Use UTC DateTime
                 for (int i = 5; i >= 0; i--)
                 {
-                    var date = DateTime.Now.AddMonths(-i);
+                    var date = DateTime.UtcNow.AddMonths(-i);
                     var monthName = date.ToString("MMM yyyy");
                     
                     var existingData = enrollmentsByMonth
@@ -268,11 +269,12 @@ namespace APMoodle.Services
         private List<EnrollmentTrendData> GetEmptyTrendData()
         {
             var trend = new List<EnrollmentTrendData>();
+            // FIX: Use UTC DateTime
             for (int i = 5; i >= 0; i--)
             {
                 trend.Add(new EnrollmentTrendData
                 {
-                    Month = DateTime.Now.AddMonths(-i).ToString("MMM yyyy"),
+                    Month = DateTime.UtcNow.AddMonths(-i).ToString("MMM yyyy"),
                     EnrollmentCount = 0
                 });
             }

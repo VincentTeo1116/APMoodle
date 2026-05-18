@@ -472,6 +472,35 @@ input:focus::placeholder {
     width: 100%;
 }
 
+/* --- Password Toggle Eye Icon --- */
+.password-box {
+    position: relative;
+    width: 100%;
+}
+
+.password-box .eye {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #BEE3DB;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-box .eye:hover {
+    color: #0a6c6e;
+    transform: translateY(-50%) scale(1.1);
+}
+.password-box input {
+    padding-right: 40px;
+}
+
 /* Animation for form fields - staggered entrance */
 form > label,
 form > input,

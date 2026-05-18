@@ -6,6 +6,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("registerForm");
     const registerLink = document.querySelector('.register-text a');
 
+    // --- PASSWORD SHOW/HIDE TOGGLE ---
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    if (togglePasswordBtn && passwordInput) {
+        togglePasswordBtn.addEventListener('click', function () {
+            // Toggle the type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle the icon
+            const icon = this.querySelector('i');
+            if (icon) {
+                // Toggle between fa-eye-slash (hidden) and fa-eye (visible)
+                if (type === 'password') {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+        });
+    }
+
     // Tab switching functionality
     if (loginTab && registerTab) {
         // LOGIN CLICK
@@ -35,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             const userIdInput = loginForm.querySelector('input[name="Input.UserId"]');
-            const passwordInput = loginForm.querySelector('input[name="Input.Password"]');
+            const passwordInputField = loginForm.querySelector('input[name="Input.Password"]');
             
             let hasError = false;
             let errorMessage = "";
@@ -52,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 hasError = true;
             }
             // Validate Password
-            else if (!passwordInput || !passwordInput.value) {
+            else if (!passwordInputField || !passwordInputField.value) {
                 errorMessage = "Please enter your password";
                 hasError = true;
             }
@@ -108,12 +133,3 @@ document.addEventListener("DOMContentLoaded", function () {
         window.history.replaceState(null, null, window.location.href);
     }
 });
-
-// PASSWORD TOGGLE
-function togglePassword() {
-    const pass = document.getElementById("password");
-
-    if (!pass) return;
-
-    pass.type = pass.type === "password" ? "text" : "password";
-}
