@@ -73,35 +73,5 @@ namespace APMoodle.Pages.BackEnd
             return new string(Enumerable.Repeat(chars, 8)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
-
-        // Add Microsoft.AspNetCore.Mvc.HttpPost attribute
-        [HttpPost]
-        public async Task<JsonResult> OnPostDeleteMaterialAsync([FromQuery] int materialId)
-        {
-            try
-            {
-                var userId = HttpContext.Session.GetString("UserID");
-                var userRole = HttpContext.Session.GetString("UserRole");
-
-                // Add debug logging
-                Console.WriteLine($"Delete called for materialId: {materialId}");
-                Console.WriteLine($"User: {userId}, Role: {userRole}");
-
-                if (string.IsNullOrEmpty(userId) || userRole != "lecturer")
-                {
-                    return new JsonResult(new { success = false, message = "Unauthorized" });
-                }
-
-                var success = await _materialService.DeleteMaterialAsync(materialId);
-                Console.WriteLine($"Delete success: {success}");
-
-                return new JsonResult(new { success = success });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                return new JsonResult(new { success = false, message = ex.Message });
-            }
-        }
     }
 }

@@ -121,17 +121,22 @@
 }
 
 .view-link {
+    color: #1d767e;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
     padding: 4px 12px;
     border-radius: 20px;
 }
 
-/* .view-link:hover {
+.view-link:hover {
     background: rgba(29, 118, 126, 0.1);
     transform: translateX(3px);
     color: #013D42;
-} */
+}
 
-.view-icon {
+/* .view-icon {
     color: #1d767e;
     text-decoration: none;
     font-size: 13px;
@@ -145,9 +150,9 @@
     background: rgba(29, 118, 126, 0.1);
     transform: translateX(3px);
     color: #013D42;
-}
+} */
 
-.delete-icon {
+/* .delete-icon {
     color: #b50e0e;
     text-decoration: none;
     font-size: 13px;
@@ -161,7 +166,7 @@
     background: rgba(126, 29, 29, 0.1);
     transform: translateX(3px);
     color: #6b0707;
-}
+} */
 
 .module-details-card {
     background: linear-gradient(145deg, #f8f9fa, #eef2f0);

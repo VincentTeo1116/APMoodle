@@ -30,6 +30,7 @@ namespace APMoodle.Pages.BackEnd
         public string? FileURL { get; set; }
         public string? ContentUrl { get; set; }
         public string? ContentText { get; set; }
+        public bool ShowSuccessPopup { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -53,6 +54,11 @@ namespace APMoodle.Pages.BackEnd
             FileURL = material.FileURL;
             ContentUrl = material.ContentUrl;
             ContentText = material.ContentText;
+
+            if (TempData["ShowSuccessPopup"] != null && (bool)TempData["ShowSuccessPopup"])
+            {
+                ShowSuccessPopup = true;
+            }
 
             return Page();
         }
@@ -153,7 +159,10 @@ namespace APMoodle.Pages.BackEnd
                 var success = await _materialService.UpdateMaterialAsync(material);
                 if (success)
                 {
-                    return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = material.ModuleID });
+                    TempData["ShowSuccessPopup"] = true;
+                    TempData["SuccessMessage"] = "Material updated successfully!";
+
+                    return RedirectToPage("/FrontEnd/EditMaterial", new { id = materialId });
                 }
                 return StatusCode(500, "Failed to save changes");
             }

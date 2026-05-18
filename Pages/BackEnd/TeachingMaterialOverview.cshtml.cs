@@ -55,5 +55,45 @@ namespace APMoodle.Pages.BackEnd
 
             return Page();
         }
+        public async Task<IActionResult> OnPostDeleteMaterialAsync(int id)
+        {
+            try
+            {
+                var userId = HttpContext.Session.GetString("UserID");
+                var userRole = HttpContext.Session.GetString("UserRole");
+
+                if (string.IsNullOrEmpty(userId) || userRole != "lecturer")
+                {
+                    TempData["ErrorMessage"] = "Unauthorized action.";
+                    return RedirectToPage("/FrontEnd/Login");
+                }
+
+                // Get the material to find its module ID
+                var material = await _materialService.GetMaterialByIdAsync(id);
+                if (material == null)
+                {
+                    TempData["ErrorMessage"] = "Material not found.";
+                    return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = 0 });
+                }
+
+                var moduleId = material.ModuleID;
+                var success = await _materialService.DeleteMaterialAsync(id);
+
+                if (success)
+                {
+                    TempData["ShowDeleteSuccess"] = true;
+                    TempData["SuccessMessage"] = "Material deleted successfully!";
+                    return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = moduleId });
+                }
+
+                TempData["ErrorMessage"] = "Failed to delete material.";
+                return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = moduleId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error: {ex.Message}";
+                return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = 0 });
+            }
+        }
     }
 }

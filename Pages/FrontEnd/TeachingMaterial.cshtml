@@ -69,10 +69,7 @@
                                             <span class="material-date">Updated @(material.CreatedAt.ToString("MMM dd, yyyy")??"Unknown")</span>
                                             @if (isLecturer)
                                             {
-                                                <div class="view-link">
-                                                    <a href="javascript:void(0);" onclick="confirmDelete(@material.MaterialID, @material.ModuleID)"><i class="bi bi-trash delete-icon" title="Delete teaching material"></i></a>
-                                                    <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID"><i class="bi bi-pencil-square view-icon" title="Edit teaching material"></i></a>
-                                                </div>
+                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link"><i class="bi bi-pencil-square" title="Edit teaching material"></i> Edit</a>
                                             }
                                             else
                                             {

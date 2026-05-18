@@ -4,14 +4,13 @@
         const moduleIdInput = document.querySelector('input[name="moduleId"]');
         if (!moduleIdInput) return;
         
-        const moduleId = moduleIdInput.value;
-        
         const fileTypeBtn = document.getElementById('fileTypeBtn');
         const linkTypeBtn = document.getElementById('linkTypeBtn');
         const textTypeBtn = document.getElementById('textTypeBtn');
         const fileSection = document.getElementById('fileSection');
         const linkSection = document.getElementById('linkSection');
         const textSection = document.getElementById('textSection');
+        const contentTypeHidden = document.getElementById('contentTypeHidden');
         
         let selectedFile = null;
         let selectedContentType = 'file';
@@ -28,6 +27,11 @@
             if (fileSection) fileSection.style.display = type === 'file' ? 'block' : 'none';
             if (linkSection) linkSection.style.display = type === 'link' ? 'block' : 'none';
             if (textSection) textSection.style.display = type === 'text' ? 'block' : 'none';
+            
+            // Update hidden field
+            if (contentTypeHidden) {
+                contentTypeHidden.value = type;
+            }
         }
         
         if (fileTypeBtn) fileTypeBtn.addEventListener('click', () => setActiveType('file'));
@@ -134,62 +138,49 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
         
+        // Form validation - normal submit (no fetch)
         const form = document.getElementById('materialForm');
         if (form) {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
+            form.addEventListener('submit', function(e) {
                 const title = document.getElementById('title')?.value;
-                const description = document.getElementById('description')?.value;
                 
-                if (!title) { alert('Please enter a title'); return; }
+                if (!title) {
+                    e.preventDefault();
+                    alert('Please enter a title');
+                    return;
+                }
                 
-                const formData = new FormData();
-                formData.append('moduleId', moduleId);
-                formData.append('title', title);
-                formData.append('description', description || '');
-                formData.append('contentType', selectedContentType);
+                if (selectedContentType === 'file' && !selectedFile) {
+                    e.preventDefault();
+                    alert('Please select a file');
+                    return;
+                }
                 
-                if (selectedContentType === 'file') {
-                    if (!selectedFile) { alert('Please select a file'); return; }
-                    formData.append('file', selectedFile);
-                } else if (selectedContentType === 'link') {
+                if (selectedContentType === 'link') {
                     const url = document.getElementById('contentUrl')?.value;
-                    if (!url) { alert('Please enter a URL'); return; }
-                    formData.append('contentUrl', url);
-                } else if (selectedContentType === 'text') {
+                    if (!url) {
+                        e.preventDefault();
+                        alert('Please enter a URL');
+                        return;
+                    }
+                }
+                
+                if (selectedContentType === 'text') {
                     const text = document.getElementById('contentText')?.value;
-                    if (!text) { alert('Please enter text content'); return; }
-                    formData.append('contentText', text);
-                }
-                
-                const submitBtn = document.querySelector('.btn-submit');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'Uploading...';
-                }
-                
-                try {
-                    const response = await fetch('/FrontEnd/CreateMaterial', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    if (response.ok) {
-                        window.location.href = `/FrontEnd/TeachingMaterial/${moduleId}`;
-                    } else {
-                        const error = await response.text();
-                        alert(`Upload failed: ${error}`);
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.textContent = '📤 Upload';
-                        }
-                    }
-                } catch (error) {
-                    alert(`Upload failed: ${error.message}`);
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = '📤 Upload';
+                    if (!text) {
+                        e.preventDefault();
+                        alert('Please enter text content');
+                        return;
                     }
                 }
+                
+                // Update hidden contentType field before submit
+                if (contentTypeHidden) {
+                    contentTypeHidden.value = selectedContentType;
+                }
+                
+                // Form submits normally - browser will handle redirect
+                // The server will show the popup after successful creation
             });
         }
     }

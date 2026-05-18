@@ -12,6 +12,7 @@ namespace APMoodle.Pages.BackEnd
         private readonly IMaterialService _materialService;
         private readonly IModuleService _moduleService;
         private readonly IWebHostEnvironment _environment;
+        public bool ShowSuccessPopup { get; set; }
 
         public CreateMaterialModel(IMaterialService materialService, IModuleService moduleService, IWebHostEnvironment environment)
         {
@@ -23,9 +24,25 @@ namespace APMoodle.Pages.BackEnd
         [BindProperty(SupportsGet = true)]
         public int ModuleId { get; set; }
 
-        public void OnGet(int moduleId)
+        public async Task<IActionResult> OnGetAsync(int moduleId)
         {
             ModuleId = moduleId;
+            
+            if (TempData.ContainsKey("ShowSuccessPopup") && TempData["ShowSuccessPopup"] != null)
+            {
+                bool showPopup = false;
+                if (bool.TryParse(TempData["ShowSuccessPopup"].ToString(), out showPopup))
+                {
+                    ShowSuccessPopup = showPopup;
+                }
+
+                if (TempData.ContainsKey("SuccessMessage"))
+                {
+                    ViewData["SuccessMessage"] = TempData["SuccessMessage"];
+                }
+            }
+            
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -57,7 +74,8 @@ namespace APMoodle.Pages.BackEnd
                     Description = description ?? string.Empty,
                     ModuleID = moduleId,
                     ContentType = contentType,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
+                    Status = "Active"  // ✅ Make sure status is set
                 };
 
                 switch (contentType)
@@ -67,19 +85,14 @@ namespace APMoodle.Pages.BackEnd
                         if (file == null || file.Length == 0)
                             return BadRequest("No file selected");
 
-                        // Get file extension
                         var fileExtension = Path.GetExtension(file.FileName);
-
-                        // Create filename
                         var uniqueFileName = $"{safeLecturerName}_{safeModuleName}_{safeTitle}{fileExtension}";
 
-                        // Handle duplicate filenames
                         var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "materials");
                         Directory.CreateDirectory(uploadsFolder);
 
                         var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                        // If file exists, add timestamp to make it unique
                         if (System.IO.File.Exists(filePath))
                         {
                             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -109,7 +122,18 @@ namespace APMoodle.Pages.BackEnd
                 }
 
                 var success = await _materialService.CreateMaterialAsync(material);
-                return success ? new OkResult() : StatusCode(500, "Failed to save");
+                
+                if (success)
+                {
+                    // ✅ Set TempData BEFORE redirect
+                    TempData["ShowSuccessPopup"] = true;
+                    TempData["SuccessMessage"] = "Material created successfully!";
+                    
+                    // ✅ Redirect to GET request
+                    return RedirectToPage("/FrontEnd/CreateMaterial", new { moduleId = moduleId });
+                }
+        
+                return StatusCode(500, "Failed to save");
             }
             catch (Exception ex)
             {
@@ -119,19 +143,14 @@ namespace APMoodle.Pages.BackEnd
 
         private string SanitizeFileName(string fileName)
         {
-            // Remove invalid filename characters
             var invalidChars = Path.GetInvalidFileNameChars();
             var sanitized = new string(fileName
                 .Where(ch => !invalidChars.Contains(ch))
                 .ToArray());
 
-            // Replace spaces with underscores
             sanitized = sanitized.Replace(' ', '_');
-
-            // Remove any other problematic characters
             sanitized = System.Text.RegularExpressions.Regex.Replace(sanitized, @"[^\w\-_]", "");
 
-            // Limit length to prevent overly long filenames
             if (sanitized.Length > 50)
                 sanitized = sanitized.Substring(0, 50);
 

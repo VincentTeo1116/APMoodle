@@ -420,3 +420,14 @@ form {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(1, 61, 66, 0.3);
 }
+
+@keyframes popupSlideIn {
+    from {
+        transform: scale(0.9) translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}

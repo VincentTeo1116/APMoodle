@@ -59,6 +59,23 @@
     color: white;
 }
 
+.delete-btn {
+    background: linear-gradient(135deg, #d92d0f, #bb260c);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(1, 61, 66, 0.3);
+    color: white;
+}
+
 .material-description p {
     font-size: 15px;
     color: #555;
