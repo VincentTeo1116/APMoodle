@@ -18,6 +18,8 @@
 <head>
     <title>@ViewData["Title"] - APMoodle</title>
     <link rel="stylesheet" href="~/css/material.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="~/js/module.js"></script>
 </head>
 
 <div class="teaching-material-page">
@@ -67,11 +69,14 @@
                                             <span class="material-date">Updated @(material.CreatedAt.ToString("MMM dd, yyyy")??"Unknown")</span>
                                             @if (isLecturer)
                                             {
-                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link">Edit →</a>
+                                                <div class="view-link">
+                                                    <a href="javascript:void(0);" onclick="confirmDelete(@material.MaterialID, @material.ModuleID)"><i class="bi bi-trash delete-icon" title="Delete teaching material"></i></a>
+                                                    <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID"><i class="bi bi-pencil-square view-icon" title="Edit teaching material"></i></a>
+                                                </div>
                                             }
                                             else
                                             {
-                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link">View →</a>
+                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-icon">View</a>
                                             }
                                         </div>
                                     </div>
@@ -83,7 +88,7 @@
                                     <span>📭</span>
                                     <p>No teaching materials yet.</p>
                                     @* @if (isLecturer)
-                                {
+                                    {
                                     <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Your
                                         First Material</a>
                                     } *@
@@ -119,12 +124,12 @@
                                                 {
                                                     <button class="regenerate-btn" onclick="regenerateCode(@Model.CurrentModule?.ModuleID)">⟳
                                                         Regenerate Code</button>
-                                                    }
-                                                </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <script src="~/js/module.js"></script>
+                        

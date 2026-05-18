@@ -41,5 +41,9 @@ namespace APMoodle.Models
 
         // Navigation properties
         public List<Result>? Results { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string Status { get; set; } = "Active";
     }
 }

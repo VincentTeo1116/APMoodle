@@ -45,3 +45,27 @@ function regenerateCode(moduleId) {
             submitBtn.disabled = false;
         });
 }
+
+function confirmDelete(materialId, moduleId) {
+    // ✅ CHANGED: Use 'materialId' instead of 'id'
+    fetch(`/FrontEnd/TeachingMaterial/${moduleId}?handler=DeleteMaterial&materialId=${materialId}`, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            location.reload(); // Refresh the page
+        } else {
+            alert('Failed to delete material');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Delete failed: ' + error.message);
+    });
+}

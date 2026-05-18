@@ -32,5 +32,9 @@ namespace APMoodle.Models
         public List<Question>? Questions { get; set; }
         public List<Result>? Results { get; set; }
         public List<Session>? Sessions { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string Status { get; set; } = "Active";
     }
 }

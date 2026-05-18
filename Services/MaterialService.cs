@@ -17,7 +17,7 @@ namespace APMoodle.Services
         public async Task<List<Material>> GetMaterialsByModuleIdAsync(int moduleId)
         {
             return await _context.Materials!
-                .Where(m => m.ModuleID == moduleId)
+                .Where(m => m.ModuleID == moduleId && m.Status == "Active")
                 .OrderBy(m => m.CreatedAt)
                 .ToListAsync();
         }
@@ -26,7 +26,7 @@ namespace APMoodle.Services
         {
             return await _context.Materials!
                 .Include(m => m.Module)
-                .FirstOrDefaultAsync(m => m.MaterialID == materialId);
+                .FirstOrDefaultAsync(m => m.MaterialID == materialId && m.Status == "Active");
         }
 
         public async Task<bool> CreateMaterialAsync(Material material)
@@ -34,6 +34,7 @@ namespace APMoodle.Services
             try
             {
                 material.CreatedAt = DateTime.UtcNow;
+                material.Status = "Active";
                 _context.Materials!.Add(material);
                 await _context.SaveChangesAsync();
                 return true;
@@ -64,8 +65,9 @@ namespace APMoodle.Services
             {
                 var material = await _context.Materials!.FindAsync(materialId);
                 if (material == null) return false;
-                
-                _context.Materials.Remove(material);
+
+                material.Status = "Removed";
+                _context.Materials!.Update(material);
                 await _context.SaveChangesAsync();
                 return true;
             }

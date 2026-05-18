@@ -48,10 +48,8 @@ namespace APMoodle.Pages.BackEnd
                     return new JsonResult(new { success = false, message = "Module not found" });
                 }
 
-                // Generate new 8-character alphanumeric code
                 var newCode = GenerateUniqueCode();
 
-                // Ensure uniqueness
                 while (await _moduleService.IsInvitationCodeExistsAsync(newCode))
                 {
                     newCode = GenerateUniqueCode();
@@ -74,6 +72,36 @@ namespace APMoodle.Pages.BackEnd
             var random = new Random();
             return new string(Enumerable.Repeat(chars, 8)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        // Add Microsoft.AspNetCore.Mvc.HttpPost attribute
+        [HttpPost]
+        public async Task<JsonResult> OnPostDeleteMaterialAsync([FromQuery] int materialId)
+        {
+            try
+            {
+                var userId = HttpContext.Session.GetString("UserID");
+                var userRole = HttpContext.Session.GetString("UserRole");
+
+                // Add debug logging
+                Console.WriteLine($"Delete called for materialId: {materialId}");
+                Console.WriteLine($"User: {userId}, Role: {userRole}");
+
+                if (string.IsNullOrEmpty(userId) || userRole != "lecturer")
+                {
+                    return new JsonResult(new { success = false, message = "Unauthorized" });
+                }
+
+                var success = await _materialService.DeleteMaterialAsync(materialId);
+                Console.WriteLine($"Delete success: {success}");
+
+                return new JsonResult(new { success = success });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return new JsonResult(new { success = false, message = ex.Message });
+            }
         }
     }
 }

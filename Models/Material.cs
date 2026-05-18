@@ -38,5 +38,9 @@ namespace APMoodle.Models
         public DateTime CreatedAt { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
 
         public List<Quiz>? Quizzes { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string Status { get; set; } = "Active";
     }
 }

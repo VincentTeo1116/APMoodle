@@ -112,6 +112,7 @@ namespace APMoodle.Data
                 entity.Property(m => m.Description).HasMaxLength(1000);
                 entity.Property(m => m.InvitationCode).HasMaxLength(20);
                 entity.Property(m => m.ModulePic).HasMaxLength(500);
+                entity.Property(m => m.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
 
                 // Relationships
                 entity.HasOne(m => m.Lecturer)
@@ -132,6 +133,11 @@ namespace APMoodle.Data
                 entity.Property(m => m.Title).HasMaxLength(200).IsRequired();
                 entity.Property(m => m.Description).HasMaxLength(1000);
                 entity.Property(m => m.FileURL).HasMaxLength(500);
+                entity.Property(m => m.ContentType).HasMaxLength(20).HasDefaultValue("file");
+                entity.Property(m => m.ContentUrl).HasMaxLength(500);
+                entity.Property(m => m.EmbedHtml).HasMaxLength(2000);
+                entity.Property(m => m.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(m => m.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
 
                 // Relationships
                 entity.HasOne(m => m.Module)
@@ -147,6 +153,7 @@ namespace APMoodle.Data
                 entity.Property(q => q.Title).HasMaxLength(200).IsRequired();
                 entity.Property(q => q.Subject).HasMaxLength(50).IsRequired();
                 entity.Property(q => q.Theme).HasMaxLength(50).IsRequired();
+                entity.Property(q => q.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
 
                 // Relationships
                 entity.HasOne(q => q.Material)
@@ -175,6 +182,7 @@ namespace APMoodle.Data
                 entity.Property(q => q.Option3).HasMaxLength(200).IsRequired();
                 entity.Property(q => q.Option4).HasMaxLength(200).IsRequired();
                 entity.Property(q => q.CorrectAnswer).HasMaxLength(1).IsRequired();
+                entity.Property(q => q.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
 
                 // Relationships
                 entity.HasOne(q => q.Quiz)
@@ -239,6 +247,7 @@ namespace APMoodle.Data
                 entity.Property(a => a.Title).HasMaxLength(200).IsRequired();
                 entity.Property(a => a.Message).HasMaxLength(2000).IsRequired();
                 entity.Property(a => a.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(a => a.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
 
                 // Relationships
                 entity.HasOne(a => a.Creator)

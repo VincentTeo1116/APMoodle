@@ -22,5 +22,9 @@ namespace APMoodle.Models
         public Admin? Creator { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        [Required]
+        [MaxLength(20)]
+        public string Status { get; set; } = "Active";
     }
 }

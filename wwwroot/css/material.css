@@ -11,6 +11,8 @@
 }
 
 .main-content {
+    padding-left: 30px;
+    padding-right: 30px;
     display: flex;
     gap: 40px;
     overflow: hidden;
@@ -119,6 +121,17 @@
 }
 
 .view-link {
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* .view-link:hover {
+    background: rgba(29, 118, 126, 0.1);
+    transform: translateX(3px);
+    color: #013D42;
+} */
+
+.view-icon {
     color: #1d767e;
     text-decoration: none;
     font-size: 13px;
@@ -128,10 +141,26 @@
     border-radius: 20px;
 }
 
-.view-link:hover {
+.view-icon:hover {
     background: rgba(29, 118, 126, 0.1);
     transform: translateX(3px);
     color: #013D42;
+}
+
+.delete-icon {
+    color: #b50e0e;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.delete-icon:hover {
+    background: rgba(126, 29, 29, 0.1);
+    transform: translateX(3px);
+    color: #6b0707;
 }
 
 .module-details-card {
