@@ -63,12 +63,17 @@ namespace APMoodle.Services
         {
             try
             {
-                var material = await _context.Materials!.FindAsync(materialId);
-                if (material == null) return false;
+                var material = await _context.Materials.FindAsync(materialId);
+
+                if (material == null)
+                {
+                    return false;
+                }
 
                 material.Status = "Removed";
-                _context.Materials!.Update(material);
+
                 await _context.SaveChangesAsync();
+
                 return true;
             }
             catch

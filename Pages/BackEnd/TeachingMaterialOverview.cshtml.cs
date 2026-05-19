@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using APMoodle.Services.Interfaces;
 using APMoodle.Models;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace APMoodle.Pages.BackEnd
 {
@@ -12,7 +13,7 @@ namespace APMoodle.Pages.BackEnd
         private readonly IQuizService _quizService;
 
         public TeachingMaterialOverviewModel(
-            IModuleService moduleService, 
+            IModuleService moduleService,
             IMaterialService materialService,
             IQuizService quizService)
         {
@@ -26,6 +27,12 @@ namespace APMoodle.Pages.BackEnd
         public List<Quiz> Quizzes { get; set; } = new();
         public string UserRole { get; set; } = "Guest";
         public string UserName { get; set; } = "User";
+
+        // Request DTO
+        public class DeleteMaterialRequest
+        {
+            public int Id { get; set; }
+        }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -41,6 +48,7 @@ namespace APMoodle.Pages.BackEnd
             }
 
             CurrentMaterial = await _materialService.GetMaterialByIdAsync(id);
+
             if (CurrentMaterial == null)
             {
                 return NotFound();
@@ -55,7 +63,9 @@ namespace APMoodle.Pages.BackEnd
 
             return Page();
         }
-        public async Task<IActionResult> OnPostDeleteMaterialAsync(int id)
+
+        public async Task<IActionResult> OnPostDeleteMaterialAsync(
+            [FromBody] DeleteMaterialRequest request)
         {
             try
             {
@@ -64,35 +74,49 @@ namespace APMoodle.Pages.BackEnd
 
                 if (string.IsNullOrEmpty(userId) || userRole != "lecturer")
                 {
-                    TempData["ErrorMessage"] = "Unauthorized action.";
-                    return RedirectToPage("/FrontEnd/Login");
+                    return new JsonResult(new
+                    {
+                        success = false,
+                        message = "Unauthorized"
+                    });
                 }
 
-                // Get the material to find its module ID
-                var material = await _materialService.GetMaterialByIdAsync(id);
+                var material = await _materialService.GetMaterialByIdAsync(request.Id);
+
                 if (material == null)
                 {
-                    TempData["ErrorMessage"] = "Material not found.";
-                    return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = 0 });
+                    return new JsonResult(new
+                    {
+                        success = false,
+                        message = "Material not found"
+                    });
                 }
 
                 var moduleId = material.ModuleID;
-                var success = await _materialService.DeleteMaterialAsync(id);
+                var success = await _materialService.DeleteMaterialAsync(request.Id);
 
                 if (success)
                 {
-                    TempData["ShowDeleteSuccess"] = true;
-                    TempData["SuccessMessage"] = "Material deleted successfully!";
-                    return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = moduleId });
+                    return new JsonResult(new
+                    {
+                        success = true,
+                        moduleId = moduleId
+                    });
                 }
 
-                TempData["ErrorMessage"] = "Failed to delete material.";
-                return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = moduleId });
+                return new JsonResult(new
+                {
+                    success = false,
+                    message = "Delete failed"
+                });
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error: {ex.Message}";
-                return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = 0 });
+                return new JsonResult(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
             }
         }
     }

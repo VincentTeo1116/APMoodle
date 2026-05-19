@@ -5,34 +5,51 @@ let formData = {
     message: ''
 };
 
-// Initialize when DOM is ready
+// Initialize success popup
+function initializeSuccessPopup() {
+    const popup = document.getElementById('successPopup');
+    const continueBtn = document.getElementById('popupContinueBtn');
+    
+    if (popup) {
+        console.log('Success popup found');
+        
+        // Force the popup to be visible and centered
+        popup.style.display = 'flex';
+        popup.style.position = 'fixed';
+        popup.style.top = '0';
+        popup.style.left = '0';
+        popup.style.width = '100%';
+        popup.style.height = '100%';
+        popup.style.zIndex = '10000';
+        popup.style.alignItems = 'center';
+        popup.style.justifyContent = 'center';
+        popup.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        
+        // Handle continue button click
+        if (continueBtn) {
+            continueBtn.onclick = function(e) {
+                e.preventDefault();
+                window.location.href = '/FrontEnd/AnnouncementList';
+            };
+        }
+        
+        // Click on overlay to close
+        const overlay = popup.querySelector('.popup-overlay');
+        if (overlay) {
+            overlay.onclick = function() {
+                window.location.href = '/FrontEnd/AnnouncementList';
+            };
+        }
+    }
+}
+
+// Make sure to call this when DOM loads
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded - initializing');
     initializeCharacterCounters();
     attachEventListeners();
-    checkForSuccessAndShowPopup();
+    initializeSuccessPopup();
 });
-
-// Check if we should show success popup
-function checkForSuccessAndShowPopup() {
-    // Check for success parameter in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const successParam = urlParams.get('success');
-    
-    console.log('Checking for success popup, success param:', successParam);
-    
-    if (successParam === 'true') {
-        console.log('Success param found, showing popup');
-        // Show simple alert popup
-        alert('✓ Announcement published successfully!');
-        
-        // Redirect to announcement list after OK is clicked
-        window.location.href = '/FrontEnd/AnnouncementList';
-    } else {
-        console.log('No success param found');
-    }
-}
-
 // Initialize character counters
 function initializeCharacterCounters() {
     const titleInput = document.getElementById('title');
@@ -92,7 +109,6 @@ function goToReview() {
     const title = titleInput ? titleInput.value.trim() : '';
     const message = messageInput ? messageInput.value.trim() : '';
 
-    // Validation
     if (!title) {
         alert('Please enter an announcement title');
         if (titleInput) titleInput.focus();
@@ -115,11 +131,9 @@ function goToReview() {
         return;
     }
 
-    // Store form data
     formData.title = title;
     formData.message = message;
 
-    // Update review content
     const reviewTitle = document.getElementById('reviewTitle');
     const reviewMessage = document.getElementById('reviewMessage');
     const publishTitle = document.getElementById('publishTitle');
@@ -195,12 +209,3 @@ function validateAndSubmit(event) {
 function cancelAnnouncement() {
     window.location.href = '/FrontEnd/AnnouncementList';
 }
-
-// Export for debugging
-window.addAnnouncementHelpers = {
-    goToStep,
-    goToReview,
-    goToPublish,
-    cancelAnnouncement,
-    checkForSuccessAndShowPopup
-};

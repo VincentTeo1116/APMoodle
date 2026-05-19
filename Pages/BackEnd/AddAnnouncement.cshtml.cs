@@ -21,6 +21,19 @@ namespace APMoodle.Pages.BackEnd
         [BindProperty]
         public string Message { get; set; } = string.Empty;
 
+        // Flag to show success popup
+        public bool ShowSuccessPopup { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
+        {
+            // Check if we need to show success popup
+            if (TempData["ShowSuccessPopup"] != null && (bool)TempData["ShowSuccessPopup"])
+            {
+                ShowSuccessPopup = true;
+            }
+            return Page();
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             // Validate input
@@ -63,8 +76,12 @@ namespace APMoodle.Pages.BackEnd
             try
             {
                 await _announcementService.CreateAnnouncementAsync(announcement);
-                // Redirect with success parameter to trigger popup
-                return RedirectToPage(new { success = true });
+                
+                // Set flag to show popup on GET request
+                TempData["ShowSuccessPopup"] = true;
+                
+                // Redirect to GET version of AddAnnouncement to show popup
+                return RedirectToPage();
             }
             catch (Exception ex)
             {
