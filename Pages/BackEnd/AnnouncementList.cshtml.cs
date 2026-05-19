@@ -38,20 +38,31 @@ namespace APMoodle.Pages.BackEnd
                 .ToList();
         }
     
-        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        // ✅ Updated Delete handler - uses form data instead of JSON
+        public async Task<IActionResult> OnPostDeleteAsync([FromForm] int id)
         {
-            var result = await _announcementService.DeleteAnnouncementAsync(id);
-            
-            if (result)
+            try
             {
-                return new JsonResult(new { success = true, message = "Deleted successfully" });
+                var userId = HttpContext.Session.GetString("UserID");
+                var userRole = HttpContext.Session.GetString("UserRole");
+
+                if (string.IsNullOrEmpty(userId) || (userRole != "admin" && userRole != "lecturer"))
+                {
+                    return new JsonResult(new { success = false, message = "Unauthorized" });
+                }
+
+                var result = await _announcementService.DeleteAnnouncementAsync(id, int.Parse(userId));
+                
+                if (result)
+                {
+                    return new JsonResult(new { success = true, message = "Deleted successfully" });
+                }
+                
+                return new JsonResult(new { success = false, message = "Announcement not found" });
             }
-            else
+            catch (Exception ex)
             {
-                return new JsonResult(new { success = false, message = "Failed to delete announcement" }) 
-                { 
-                    StatusCode = 400 
-                };
+                return new JsonResult(new { success = false, message = ex.Message });
             }
         }
 

@@ -452,7 +452,7 @@ function showSuccessPopup() {
             modal.style.display = 'none';
         };
     }
-
+    
     setTimeout(() => {
         if (modal) modal.style.display = 'none';
     }, 2500);

@@ -1,0 +1,335 @@
+/* TestDB Page Styles */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Page Container */
+.teaching-material-page {
+    background: #f5f7fa;
+    min-height: 100vh;
+}
+
+/* Header Animation */
+.page-header {
+    animation: fadeInDown 0.6s ease-out;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 10px;
+}
+
+/* .header-left h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+} */
+
+/* .path {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+} */
+
+/* Alert Styles */
+.alert {
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 10px;
+    border: none;
+    animation: slideIn 0.5s ease-out;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-left: 5px solid #10b981;
+    color: #065f46;
+}
+
+.alert-success strong {
+    color: #059669;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success p {
+    margin: 8px 0 0 0;
+    opacity: 0.9;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-left: 5px solid #ef4444;
+    color: #991b1b;
+}
+
+.alert-danger strong {
+    color: #dc2626;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-left: 5px solid #f59e0b;
+    color: #92400e;
+}
+
+/* Main Card Container */
+.card {
+    background: white;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.card-header {
+    padding: 16px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #e9edf2;
+}
+
+.card-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Grid System - More compact */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.col-md-4 {
+    width: 33.333%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+/* Smaller Stat Cards */
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    height: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9edf2;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card .card-body {
+    padding: 16px 12px;
+    text-align: center;
+}
+
+/* Card header with gradient bars - thinner */
+.stat-card.students { border-top: 3px solid #3b82f6; }
+.stat-card.lecturers { border-top: 3px solid #10b981; }
+.stat-card.modules { border-top: 3px solid #f59e0b; }
+.stat-card.quizzes { border-top: 3px solid #8b5cf6; }
+.stat-card.questions { border-top: 3px solid #ef4444; }
+.stat-card.announcements { border-top: 3px solid #06b6d4; }
+
+/* Smaller Icon circles */
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    background: #f8fafc;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px auto;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.05);
+}
+
+.stat-icon i {
+    font-size: 22px;
+}
+
+.stat-card.students .stat-icon i { color: #3b82f6; }
+.stat-card.lecturers .stat-icon i { color: #10b981; }
+.stat-card.modules .stat-icon i { color: #f59e0b; }
+.stat-card.quizzes .stat-icon i { color: #8b5cf6; }
+.stat-card.questions .stat-icon i { color: #ef4444; }
+.stat-card.announcements .stat-icon i { color: #06b6d4; }
+
+/* Smaller text */
+.stat-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.stat-number small {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94a3b8;
+}
+
+/* Buttons */
+.mt-3 {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 40px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #013D42 0%, #037984 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    color: white;
+}
+
+.btn-secondary {
+    background: #d5d5d5;
+    color: #013D42;
+    border-style: none;
+}
+
+.btn-secondary:hover {
+    background: #d5d5d5;
+    color: #013D42;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .col-md-4 {
+        width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        padding: 16px 20px;
+    }
+    
+    .header-left h1 {
+        font-size: 22px;
+    }
+    
+    .main-content {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    
+    .stat-number {
+        font-size: 24px;
+    }
+    
+    .stat-icon {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .stat-icon i {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 576px) {
+    .col-md-4 {
+        width: 100%;
+    }
+    
+    .mt-3 {
+        flex-direction: column;
+    }
+    
+    .btn {
+        justify-content: center;
+    }
+    
+    .card-header {
+        padding: 12px 16px;
+    }
+    
+    .card-body {
+        padding: 16px;
+    }
+    
+    .stat-card .card-body {
+        padding: 12px;
+    }
+}

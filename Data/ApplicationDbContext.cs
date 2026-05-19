@@ -246,16 +246,40 @@ namespace APMoodle.Data
                 entity.HasKey(a => a.AnnouncementID);
                 entity.Property(a => a.Title).HasMaxLength(200).IsRequired();
                 entity.Property(a => a.Message).HasMaxLength(2000).IsRequired();
-                entity.Property(a => a.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-                entity.Property(a => a.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
+
+                entity.Property(a => a.CreatedAt)
+                    .HasColumnType("timestamp with time zone")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasConversion(
+                        v => v.ToUniversalTime(),
+                        v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+                    );
+
+                entity.Property(a => a.Status)
+                    .HasMaxLength(20)
+                    .IsRequired()
+                    .HasDefaultValue("Active");
+
+                entity.Property(a => a.DeletedAt)
+                    .HasColumnType("timestamp with time zone")
+                    .HasConversion(
+                        v => v.HasValue ? v.Value.ToUniversalTime() : v,
+                        v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v
+                    );
+
+                entity.HasIndex(a => a.Status);
 
                 // Relationships
                 entity.HasOne(a => a.Creator)
                     .WithMany(ad => ad.Announcements)
                     .HasForeignKey(a => a.CreatedBy)
                     .OnDelete(DeleteBehavior.Restrict);
-            });
 
+                entity.HasOne(a => a.Deleter)
+                    .WithMany()
+                    .HasForeignKey(a => a.DeletedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
             modelBuilder.Entity<Enrollment>(entity =>
             {
                 entity.HasKey(e => e.EnrollmentID);

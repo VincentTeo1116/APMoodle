@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using APMoodle.Services.Interfaces;
 using APMoodle.Models;
-using Microsoft.AspNetCore.Antiforgery;
 
 namespace APMoodle.Pages.BackEnd
 {
@@ -28,12 +27,6 @@ namespace APMoodle.Pages.BackEnd
         public string UserRole { get; set; } = "Guest";
         public string UserName { get; set; } = "User";
 
-        // Request DTO
-        public class DeleteMaterialRequest
-        {
-            public int Id { get; set; }
-        }
-
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var userId = HttpContext.Session.GetString("UserID");
@@ -48,7 +41,6 @@ namespace APMoodle.Pages.BackEnd
             }
 
             CurrentMaterial = await _materialService.GetMaterialByIdAsync(id);
-
             if (CurrentMaterial == null)
             {
                 return NotFound();
@@ -64,8 +56,7 @@ namespace APMoodle.Pages.BackEnd
             return Page();
         }
 
-        public async Task<IActionResult> OnPostDeleteMaterialAsync(
-            [FromBody] DeleteMaterialRequest request)
+        public async Task<IActionResult> OnPostDeleteMaterialAsync([FromForm] int id)
         {
             try
             {
@@ -74,49 +65,36 @@ namespace APMoodle.Pages.BackEnd
 
                 if (string.IsNullOrEmpty(userId) || userRole != "lecturer")
                 {
-                    return new JsonResult(new
-                    {
-                        success = false,
-                        message = "Unauthorized"
-                    });
+                    TempData["ErrorMessage"] = "Unauthorized";
+                    return RedirectToPage("/FrontEnd/Login");
                 }
 
-                var material = await _materialService.GetMaterialByIdAsync(request.Id);
-
+                // Get the material to find its module ID
+                var material = await _materialService.GetMaterialByIdAsync(id);
                 if (material == null)
                 {
-                    return new JsonResult(new
-                    {
-                        success = false,
-                        message = "Material not found"
-                    });
+                    TempData["ErrorMessage"] = "Material not found";
+                    return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = 0 });
                 }
 
                 var moduleId = material.ModuleID;
-                var success = await _materialService.DeleteMaterialAsync(request.Id);
+                
+                // Call service which sets Status = "Removed"
+                var success = await _materialService.DeleteMaterialAsync(id);
 
                 if (success)
                 {
-                    return new JsonResult(new
-                    {
-                        success = true,
-                        moduleId = moduleId
-                    });
+                    TempData["SuccessMessage"] = "Material deleted successfully!";
+                    return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = moduleId });
                 }
 
-                return new JsonResult(new
-                {
-                    success = false,
-                    message = "Delete failed"
-                });
+                TempData["ErrorMessage"] = "Delete failed";
+                return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = moduleId });
             }
             catch (Exception ex)
             {
-                return new JsonResult(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToPage("/FrontEnd/TeachingMaterial", new { id = 0 });
             }
         }
     }

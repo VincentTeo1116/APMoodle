@@ -19,12 +19,21 @@ namespace APMoodle.Models
         public int CreatedBy { get; set; }
 
         [ForeignKey("CreatedBy")]
-        public Admin? Creator { get; set; }
+        public virtual Admin? Creator { get; set; }
 
+        [Column(TypeName = "timestamp with time zone")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Required]
         [MaxLength(20)]
         public string Status { get; set; } = "Active";
+
+        [Column(TypeName = "timestamp with time zone")]
+        public DateTime? DeletedAt { get; set; }
+
+        public int? DeletedBy { get; set; }
+
+        [ForeignKey("DeletedBy")]
+        public virtual Admin? Deleter { get; set; }
     }
 }

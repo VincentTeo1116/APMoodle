@@ -16,6 +16,7 @@ namespace APMoodle.Services.Interfaces
         public async Task<List<Announcement>> GetAllAnnouncementsAsync()
         {
             return await _context.Announcements
+                .Where(a => a.Status == "Active")
                 .Include(a => a.Creator)
                 .OrderByDescending(a => a.CreatedAt)
                 .ToListAsync();
@@ -24,13 +25,15 @@ namespace APMoodle.Services.Interfaces
         public async Task<Announcement?> GetAnnouncementByIdAsync(int id)
         {
             return await _context.Announcements
+                .Where(a => a.Status == "Active")
                 .Include(a => a.Creator)
                 .FirstOrDefaultAsync(a => a.AnnouncementID == id);
         }
 
         public async Task<Announcement> CreateAnnouncementAsync(Announcement announcement)
         {
-            announcement.CreatedAt = DateTime.UtcNow;
+            announcement.CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+            announcement.Status = "Active";
             _context.Announcements.Add(announcement);
             await _context.SaveChangesAsync();
             return announcement;
@@ -43,20 +46,27 @@ namespace APMoodle.Services.Interfaces
             return announcement;
         }
 
-        public async Task<bool> DeleteAnnouncementAsync(int id)
+        public async Task<bool> DeleteAnnouncementAsync(int id, int deletedByAdminId)
         {
             var announcement = await _context.Announcements.FindAsync(id);
             if (announcement == null)
                 return false;
 
-            _context.Announcements.Remove(announcement);
+            announcement.Status = "Removed";
+            announcement.DeletedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+            announcement.DeletedBy = deletedByAdminId;
+
+            _context.Entry(announcement).Property(x => x.Status).IsModified = true;
+            _context.Entry(announcement).Property(x => x.DeletedAt).IsModified = true;
+            _context.Entry(announcement).Property(x => x.DeletedBy).IsModified = true;
+            
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<int> GetTotalCountAsync()
         {
-            return await _context.Announcements.CountAsync();
+            return await _context.Announcements.CountAsync(a => a.Status == "Active");
         }
     }
 }
