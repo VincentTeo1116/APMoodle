@@ -3,24 +3,27 @@
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Edit Quiz";
+
+    bool IsComplete(APMoodle.Pages.BackEnd.EditQuizModel.QuestionInput q) =>
+        !string.IsNullOrWhiteSpace(q.QuestionText)
+        && !string.IsNullOrWhiteSpace(q.Option1)
+        && !string.IsNullOrWhiteSpace(q.Option2)
+        && !string.IsNullOrWhiteSpace(q.Option3)
+        && !string.IsNullOrWhiteSpace(q.Option4)
+        && !string.IsNullOrWhiteSpace(q.CorrectAnswer);
 }
 
 @*
     Front-end / styling: Moses
-    Backend contract:
-      Model.QuizId / MaterialId         — hidden, posted back every roundtrip
-      Model.Title / Subject / Theme     — quiz header inputs
-      Model.Questions                   — List<QuestionInput> { QuestionID (0=new), QuestionText, Option1..4, CorrectAnswer }
-      Model.DeletedQuestionIDs          — hidden CSV of removed question IDs, tracked across postbacks
-      Model.Message                     — top-level error/info banner
-    Named handlers (same as CreateNewQuiz):
-      "AddQuestion"
-      "RemoveQuestion?index=N"
-      "Save"                            — updates the quiz, then deletes removed Qs (cascades to Results),
-                                          then inserts new + updates existing. Redirects to /FrontEnd/ManageQuiz/{QuizId}.
-    No JavaScript required.
+    Backend contract (UNCHANGED — do not touch page model):
+      asp-for bindings: QuizId, MaterialId, DeletedQuestionIDs (hidden), Title, Subject, Theme,
+        Questions[i].QuestionID, .QuestionText, .Option1..4, .CorrectAnswer
+      Handlers: AddQuestion, RemoveQuestion?index=N, Save
+    Theme posts one of: "Default" | "Midterm" | "Mid-term" | "Edited" | "lab".
 *@
-
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
 <div id="horizontalNavbar">
     <div class="PageTitle">
         <h1>@ViewData["Title"]</h1>
@@ -28,108 +31,630 @@
     </div>
 
     <div class="PageComponent">
-        @if (!string.IsNullOrEmpty(Model.Message))
-        {
-            <div class="alert">@Model.Message</div>
-        }
+        <div class="cq-page">
+            @if (!string.IsNullOrEmpty(Model.Message))
+            {
+                <div class="cq-alert">@Model.Message</div>
+            }
 
-        <form method="post">
-            <input type="hidden" asp-for="QuizId" />
-            <input type="hidden" asp-for="MaterialId" />
-            <input type="hidden" asp-for="DeletedQuestionIDs" />
+            <form method="post" class="cq-form" id="cqForm">
+                <input type="hidden" asp-for="QuizId" />
+                <input type="hidden" asp-for="MaterialId" />
+                <input type="hidden" asp-for="DeletedQuestionIDs" />
 
-            <fieldset class="quiz-meta">
-                <legend>Quiz Info</legend>
+                <div class="cq-layout">
+                    <div class="cq-main">
 
-                <div>
-                    <label asp-for="Title">Title</label>
-                    <input asp-for="Title" maxlength="200" />
-                    <span asp-validation-for="Title"></span>
+                        <!-- ── Quiz Info ── -->
+                        <section class="cq-card">
+                            <header class="cq-card-head">
+                                <div class="cq-card-icon"><i class="bi bi-pencil-square"></i></div>
+                                <div>
+                                    <h2>Quiz Info</h2>
+                                    <small>Update the quiz title, subject and theme.</small>
+                                </div>
+                            </header>
+
+                            <div class="cq-meta-grid">
+                                <div class="cq-field">
+                                    <label asp-for="Title">Quiz Title</label>
+                                    <input asp-for="Title" maxlength="200" placeholder="e.g. Evaporative Cooling Quiz" />
+                                    <span asp-validation-for="Title" class="cq-err"></span>
+                                </div>
+                                <div class="cq-field">
+                                    <label asp-for="Subject">Subject</label>
+                                    <input asp-for="Subject" maxlength="50" placeholder="e.g. Thermodynamics" />
+                                    <span asp-validation-for="Subject" class="cq-err"></span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- ── Theme chooser ── -->
+                        <section class="cq-card">
+                            <header class="cq-card-head">
+                                <div class="cq-card-icon">🎨</div>
+                                <div>
+                                    <h2>Quiz Theme</h2>
+                                    <small>Switch how this quiz looks to students.</small>
+                                </div>
+                            </header>
+
+                            <div class="cq-themes">
+                                @{
+                                    var themes = new[]
+                                    {
+                                        ("Default",   "Default (recommended)", "Clean glass card on a soft gradient — modern, friendly, distraction-free.",  "studio"),
+                                        ("Forest",    "Forest 🌿",             "Sage-green & cream tones, leaf accents — calming and easy on the eyes.",    "forest"),
+                                        ("Comic",     "Comic 💥",              "Pop-art comic book — subtle dots, speech bubble, pastel answer tiles.",     "comic"),
+                                        ("Watercolor","Watercolor 🎨",         "Soft watercolor washes, serif title, brush underline — gentle and elegant.", "water"),
+                                        ("Midterm",   "Kahoot game show",      "Bold colored answer tiles, big timer, score counter — game-show vibes.",    "kahoot"),
+                                    };
+                                    var known = new[] { "Default", "Forest", "Comic", "Watercolor", "Midterm" };
+                                    var currentTheme = string.IsNullOrEmpty(Model.Theme) ? "Default" : Model.Theme;
+                                    if (!known.Contains(currentTheme)) { currentTheme = "Default"; }
+                                }
+                                @foreach (var (val, name, desc, mini) in themes)
+                                {
+                                    <label class="cq-theme">
+                                        <input type="radio" asp-for="Theme" value="@val" checked="@(currentTheme == val)" />
+                                        <div class="cq-theme-card">
+                                            @switch (mini)
+                                            {
+                                                case "studio":
+                                                    <div class="cq-mini cq-mini-studio">
+                                                        <div class="cq-mini-studio-card">
+                                                            <span class="cq-mini-studio-dot"></span>
+                                                            <i class="cq-mini-studio-line"></i>
+                                                            <i class="cq-mini-studio-line short"></i>
+                                                            <i class="cq-mini-studio-pill"></i>
+                                                            <i class="cq-mini-studio-pill"></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "forest":
+                                                    <div class="cq-mini cq-mini-forest">
+                                                        <span class="cq-mini-leaf"></span>
+                                                        <div class="cq-mini-forest-card">
+                                                            <i class="cq-mini-forest-pill"></i>
+                                                            <i class="cq-mini-forest-row"></i>
+                                                            <i class="cq-mini-forest-row short"></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "ocean":
+                                                    <div class="cq-mini cq-mini-ocean">
+                                                        <svg viewBox="0 0 80 30" preserveAspectRatio="none" class="cq-mini-ocean-wave"><path d="M0,20 Q20,10 40,20 T80,20 L80,30 L0,30 Z" fill="#0077b6" opacity=".45"/></svg>
+                                                        <div class="cq-mini-ocean-card">
+                                                            <i class="cq-mini-ocean-row"></i>
+                                                            <i class="cq-mini-ocean-row short"></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "sunset":
+                                                    <div class="cq-mini cq-mini-sunset">
+                                                        <div class="cq-mini-sun"></div>
+                                                        <div class="cq-mini-sunset-card">
+                                                            <i class="cq-mini-sunset-row"></i>
+                                                            <i class="cq-mini-sunset-row short"></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "corp":
+                                                    <div class="cq-mini cq-mini-corp">
+                                                        <div class="cq-mini-corp-bar"></div>
+                                                        <div class="cq-mini-corp-rows">
+                                                            <i></i><i></i><i></i><i></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "office":
+                                                    <div class="cq-mini cq-mini-office">
+                                                        <div class="cq-mini-office-card">
+                                                            <div class="cq-mini-office-band"></div>
+                                                            <i class="cq-mini-office-row"></i>
+                                                            <i class="cq-mini-office-row short"></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "classic":
+                                                    <div class="cq-mini cq-mini-classic">
+                                                        <div class="cq-mini-classic-card">
+                                                            <div class="cq-mini-classic-stripe"></div>
+                                                            <i class="cq-mini-classic-row"></i>
+                                                            <i class="cq-mini-classic-row short"></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "comic":
+                                                    <div class="cq-mini cq-mini-comic">
+                                                        <span class="cq-mini-comic-burst">POW!</span>
+                                                        <div class="cq-mini-comic-card">
+                                                            <i class="cq-mini-comic-bubble"></i>
+                                                            <div class="cq-mini-comic-grid">
+                                                                <span class="r"></span><span class="b"></span>
+                                                                <span class="y"></span><span class="g"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "notebook":
+                                                    <div class="cq-mini cq-mini-nb">
+                                                        <span class="cq-mini-nb-tape">📌</span>
+                                                        <div class="cq-mini-nb-lines"><i></i><i></i><i></i><i></i></div>
+                                                    </div>
+                                                    break;
+                                                case "galaxy":
+                                                    <div class="cq-mini cq-mini-gx">
+                                                        <span class="cq-mini-gx-star s1"></span>
+                                                        <span class="cq-mini-gx-star s2"></span>
+                                                        <span class="cq-mini-gx-star s3"></span>
+                                                        <span class="cq-mini-gx-star s4"></span>
+                                                        <div class="cq-mini-gx-card">
+                                                            <i class="cq-mini-gx-row"></i>
+                                                            <i class="cq-mini-gx-row short"></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "term":
+                                                    <div class="cq-mini cq-mini-tm">
+                                                        <div class="cq-mini-tm-bar"><span></span><span></span><span></span></div>
+                                                        <div class="cq-mini-tm-body">
+                                                            <i class="cq-mini-tm-c">// q</i>
+                                                            <i class="cq-mini-tm-l">const x = "..";</i>
+                                                            <i class="cq-mini-tm-l short">[A] → "..";</i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "water":
+                                                    <div class="cq-mini cq-mini-wc">
+                                                        <span class="cq-mini-wc-wash a"></span>
+                                                        <span class="cq-mini-wc-wash b"></span>
+                                                        <div class="cq-mini-wc-card">
+                                                            <i class="cq-mini-wc-row"></i>
+                                                            <i class="cq-mini-wc-row short"></i>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "news":
+                                                    <div class="cq-mini cq-mini-np">
+                                                        <div class="cq-mini-np-banner">TIMES</div>
+                                                        <div class="cq-mini-np-cols">
+                                                            <div><i></i><i class="short"></i><i></i></div>
+                                                            <div><i></i><i></i><i class="short"></i></div>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "kahoot":
+                                                    <div class="cq-mini cq-mini-kahoot">
+                                                        <div class="cq-mini-bar"></div>
+                                                        <div class="cq-mini-grid">
+                                                            <span class="t1"><b></b></span><span class="t2"><b></b></span>
+                                                            <span class="t3"><b></b></span><span class="t4"><b></b></span>
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "exam":
+                                                    <div class="cq-mini cq-mini-exam">
+                                                        <div class="cq-mini-margin"></div>
+                                                        <div class="cq-mini-lines"><i></i><i></i><i></i><i></i><i></i></div>
+                                                    </div>
+                                                    break;
+                                                case "chat":
+                                                    <div class="cq-mini cq-mini-chat">
+                                                        <div class="cq-mini-chathead"></div>
+                                                        <div class="cq-mini-bub cq-mini-bub-l"></div>
+                                                        <div class="cq-mini-bub cq-mini-bub-r"></div>
+                                                        <div class="cq-mini-bub cq-mini-bub-l short"></div>
+                                                    </div>
+                                                    break;
+                                                case "arcade":
+                                                    <div class="cq-mini cq-mini-arcade">
+                                                        <div class="cq-mini-arc-title">ARCADE</div>
+                                                        <div class="cq-mini-arc-row"></div>
+                                                        <div class="cq-mini-arc-row short"></div>
+                                                        <div class="cq-mini-arc-row"></div>
+                                                    </div>
+                                                    break;
+                                            }
+                                            <div class="cq-theme-body">
+                                                <div class="cq-theme-name">@name</div>
+                                                <div class="cq-theme-desc">@desc</div>
+                                                <div class="cq-theme-tag"><code>@val</code></div>
+                                            </div>
+                                            <div class="cq-theme-check">✓</div>
+                                        </div>
+                                    </label>
+                                }
+                            </div>
+                            <span asp-validation-for="Theme" class="cq-err"></span>
+                        </section>
+
+                        <!-- ── Questions ── -->
+                        <section class="cq-card">
+                            <header class="cq-card-head">
+                                <div class="cq-card-icon"><i class="bi bi-patch-question"></i></div>
+                                <div>
+                                    <h2>Questions <span class="cq-count">@Model.Questions.Count</span></h2>
+                                    <small>Removed questions delete their per-student records on save.</small>
+                                </div>
+                            </header>
+
+                            <div class="cq-questions" id="cqQuestions">
+                                @for (int i = 0; i < Model.Questions.Count; i++)
+                                {
+                                    var qDone = IsComplete(Model.Questions[i]);
+                                    <article class="cq-question" id="cq-q-@i" data-idx="@i" data-complete="@(qDone ? "1" : "0")">
+                                        <div class="cq-q-head">
+                                            <div class="cq-q-head-left">
+                                                <span class="cq-q-num">Q@(i + 1)</span>
+                                                @if (Model.Questions[i].QuestionID == 0)
+                                                {
+                                                    <span class="cq-q-new">new</span>
+                                                }
+                                                <span class="cq-q-state @(qDone ? "ok" : "")">@(qDone ? "✓ ready" : "needs answer")</span>
+                                            </div>
+                                            <button type="submit"
+                                                    asp-page-handler="RemoveQuestion"
+                                                    asp-route-index="@i"
+                                                    formnovalidate
+                                                    class="cq-q-remove"
+                                                    title="Remove this question"
+                                                    onclick="return confirm('Remove this question? If students have already answered it, their per-question records will be deleted.');">
+                                                <i class="bi bi-x-square"></i>
+                                            </button>
+                                        </div>
+
+                                        <input type="hidden" asp-for="Questions[i].QuestionID" />
+
+                                        <div class="cq-field cq-q-text-field">
+                                            <label asp-for="Questions[i].QuestionText">Question text</label>
+                                            <textarea asp-for="Questions[i].QuestionText"
+                                                      maxlength="500" rows="2"
+                                                      placeholder="Type the question..."
+                                                      data-watch="text"></textarea>
+                                            <span asp-validation-for="Questions[i].QuestionText" class="cq-err"></span>
+                                        </div>
+
+                                        <div class="cq-options-grid">
+                                            @{
+                                                var letters = new[] { ("A", "Option1"), ("B", "Option2"), ("C", "Option3"), ("D", "Option4") };
+                                            }
+                                            @for (int k = 0; k < letters.Length; k++)
+                                            {
+                                                var letter = letters[k].Item1;
+                                                var propName = letters[k].Item2;
+                                                <div class="cq-opt-row">
+                                                    <span class="cq-opt-letter">@letter</span>
+
+                                                    @if (propName == "Option1")
+                                                    {
+                                                        <input asp-for="Questions[i].Option1" maxlength="200" placeholder="Option @letter" data-watch="opt" />
+                                                    }
+                                                    else if (propName == "Option2")
+                                                    {
+                                                        <input asp-for="Questions[i].Option2" maxlength="200" placeholder="Option @letter" data-watch="opt" />
+                                                    }
+                                                    else if (propName == "Option3")
+                                                    {
+                                                        <input asp-for="Questions[i].Option3" maxlength="200" placeholder="Option @letter" data-watch="opt" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input asp-for="Questions[i].Option4" maxlength="200" placeholder="Option @letter" data-watch="opt" />
+                                                    }
+
+                                                    <label class="cq-correct-toggle" title="Mark as correct answer">
+                                                        <input type="radio"
+                                                               asp-for="Questions[i].CorrectAnswer"
+                                                               value="@letter"
+                                                               data-watch="correct" />
+                                                        <span><span class="cq-correct-mark"><i class="bi bi-check2-all"></i></span> correct</span>
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="cq-opt-errs">
+                                            <span asp-validation-for="Questions[i].Option1" class="cq-err"></span>
+                                            <span asp-validation-for="Questions[i].Option2" class="cq-err"></span>
+                                            <span asp-validation-for="Questions[i].Option3" class="cq-err"></span>
+                                            <span asp-validation-for="Questions[i].Option4" class="cq-err"></span>
+                                            <span asp-validation-for="Questions[i].CorrectAnswer" class="cq-err"></span>
+                                        </div>
+                                    </article>
+                                }
+                            </div>
+
+                            <button type="submit" asp-page-handler="AddQuestion" formnovalidate class="cq-add-q">
+                                <span>+</span> Add another question
+                            </button>
+                        </section>
+                    </div>
+
+                    <!-- ── Sticky right rail ── -->
+                    <aside class="cq-rail">
+                        <div class="cq-rail-card">
+                            <div class="cq-rail-head">
+                                <span>Questions</span>
+                                <span class="cq-rail-count"><span id="cqDoneCount">0</span>/@Model.Questions.Count</span>
+                            </div>
+                            <div class="cq-rail-list" id="cqRailList">
+                                @for (int i = 0; i < Model.Questions.Count; i++)
+                                {
+                                    var qDone = IsComplete(Model.Questions[i]);
+                                    <a href="#cq-q-@i" class="cq-rail-item" data-jump-idx="@i">
+                                        <span class="cq-rail-dot @(qDone ? "ok" : "")"></span>
+                                        <span>Question @(i + 1)</span>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </aside>
                 </div>
 
-                <div>
-                    <label asp-for="Subject">Subject</label>
-                    <input asp-for="Subject" maxlength="50" />
-                    <span asp-validation-for="Subject"></span>
+                <div class="cq-actions">
+                    <a href="/FrontEnd/ManageQuiz/@Model.QuizId" class="cq-btn cq-btn-ghost">Cancel</a>
+                    <button type="submit" asp-page-handler="Save" class="cq-btn cq-btn-primary">Save Changes</button>
                 </div>
-
-                <div>
-                    <label asp-for="Theme">Theme</label>
-                    <input asp-for="Theme" maxlength="50" />
-                    <span asp-validation-for="Theme"></span>
-                </div>
-            </fieldset>
-
-            <div class="questions-list">
-                @for (int i = 0; i < Model.Questions.Count; i++)
-                {
-                    <fieldset class="question-card">
-                        <legend>
-                            Question @(i + 1)
-                            @if (Model.Questions[i].QuestionID == 0)
-                            {
-                                <em>(new)</em>
-                            }
-                        </legend>
-
-                        <input type="hidden" asp-for="Questions[i].QuestionID" />
-
-                        <div>
-                            <label asp-for="Questions[i].QuestionText">Question</label>
-                            <textarea asp-for="Questions[i].QuestionText" maxlength="500" rows="2"></textarea>
-                            <span asp-validation-for="Questions[i].QuestionText"></span>
-                        </div>
-
-                        <div>
-                            <label asp-for="Questions[i].Option1">A</label>
-                            <input asp-for="Questions[i].Option1" maxlength="200" />
-                            <span asp-validation-for="Questions[i].Option1"></span>
-                        </div>
-                        <div>
-                            <label asp-for="Questions[i].Option2">B</label>
-                            <input asp-for="Questions[i].Option2" maxlength="200" />
-                            <span asp-validation-for="Questions[i].Option2"></span>
-                        </div>
-                        <div>
-                            <label asp-for="Questions[i].Option3">C</label>
-                            <input asp-for="Questions[i].Option3" maxlength="200" />
-                            <span asp-validation-for="Questions[i].Option3"></span>
-                        </div>
-                        <div>
-                            <label asp-for="Questions[i].Option4">D</label>
-                            <input asp-for="Questions[i].Option4" maxlength="200" />
-                            <span asp-validation-for="Questions[i].Option4"></span>
-                        </div>
-
-                        <div>
-                            <span>Correct answer:</span>
-                            <label><input type="radio" asp-for="Questions[i].CorrectAnswer" value="A" /> A</label>
-                            <label><input type="radio" asp-for="Questions[i].CorrectAnswer" value="B" /> B</label>
-                            <label><input type="radio" asp-for="Questions[i].CorrectAnswer" value="C" /> C</label>
-                            <label><input type="radio" asp-for="Questions[i].CorrectAnswer" value="D" /> D</label>
-                            <span asp-validation-for="Questions[i].CorrectAnswer"></span>
-                        </div>
-
-                        <button type="submit"
-                                asp-page-handler="RemoveQuestion"
-                                asp-route-index="@i"
-                                formnovalidate
-                                onclick="return confirm('Remove this question? If students have already answered it, their per-question records will be deleted.');">
-                            Remove Question
-                        </button>
-                    </fieldset>
-                }
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" asp-page-handler="AddQuestion" formnovalidate>+ Add Question</button>
-                <a href="/FrontEnd/ManageQuiz/@Model.QuizId">Cancel</a>
-                <button type="submit" asp-page-handler="Save">Save Changes</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const form = document.getElementById('cqForm');
+            if (!form) return;
+            const recomputeAll = () => {
+                const qs = form.querySelectorAll('.cq-question');
+                let done = 0;
+                qs.forEach((q, k) => {
+                    const text = q.querySelector('textarea[data-watch="text"]').value.trim();
+                    const opts = [...q.querySelectorAll('input[data-watch="opt"]')].map(i => i.value.trim());
+                    const correct = q.querySelector('input[data-watch="correct"]:checked');
+                    const ok = text && opts.every(Boolean) && correct;
+                    const dot = document.querySelector(`.cq-rail-item[data-jump-idx="${k}"] .cq-rail-dot`);
+                    const state = q.querySelector('.cq-q-state');
+                    if (ok) {
+                        q.dataset.complete = '1'; dot?.classList.add('ok'); state?.classList.add('ok');
+                        if (state) state.textContent = '✓ ready';
+                        done++;
+                    } else {
+                        q.dataset.complete = '0'; dot?.classList.remove('ok'); state?.classList.remove('ok');
+                        if (state) state.textContent = 'needs answer';
+                    }
+                });
+                const c = document.getElementById('cqDoneCount');
+                if (c) c.textContent = done;
+            };
+            form.addEventListener('input', recomputeAll);
+            form.addEventListener('change', recomputeAll);
+            recomputeAll();
+        })();
+    </script>
 }
+
+<style>
+    .cq-page { max-width: 1180px; margin: 0 auto; padding: 8px 4px 60px; color: #1e293b; }
+    .cq-alert { background: #fef3c7; border: 1px solid #fcd34d; color: #78350f; padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; font-size: 14px; }
+    .cq-form { display: flex; flex-direction: column; gap: 18px; }
+    .cq-layout { display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: start; }
+    @@media (max-width: 980px) { .cq-layout { grid-template-columns: 1fr; } .cq-rail { order: -1; } }
+    .cq-main { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
+    .cq-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 24px; box-shadow: 0 1px 3px rgba(15, 23, 42, .04); }
+    .cq-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .cq-card-icon { width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #013D42, #037984); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .cq-card-head h2 { margin: 0; font-size: 18px; font-weight: 700; color: #0f172a; }
+    .cq-card-head small { color: #64748b; font-size: 13px; }
+
+    .cq-meta-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+    @@media (max-width: 700px) { .cq-meta-grid { grid-template-columns: 1fr; } }
+
+    .cq-field { display: flex; flex-direction: column; gap: 6px; }
+    .cq-field label { font-size: 13px; font-weight: 600; color: #334155; }
+    .cq-field input, .cq-field textarea { padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #0f172a; background: #fff; transition: border-color .15s, box-shadow .15s; font-family: inherit; }
+    .cq-field input:focus, .cq-field textarea:focus { outline: none; border-color: #037984; box-shadow: 0 0 0 3px rgba(3, 121, 132, .12); }
+    .cq-field textarea { resize: vertical; min-height: 60px; }
+    .cq-err { color: #dc2626; font-size: 12px; min-height: 14px; }
+
+    .cq-themes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    @@media (max-width: 700px) { .cq-themes { grid-template-columns: 1fr; } }
+
+    .cq-theme { display: block; cursor: pointer; }
+    .cq-theme input { display: none; }
+    .cq-theme-card { display: grid; grid-template-columns: 130px 1fr auto; gap: 14px; align-items: center; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; background: #fff; transition: all .15s; position: relative; }
+    .cq-theme:hover .cq-theme-card { border-color: #cbd5e1; transform: translateY(-1px); }
+    .cq-theme input:checked + .cq-theme-card { border-color: #037984; background: #f0fdfa; box-shadow: 0 4px 14px rgba(3, 121, 132, .15); }
+    .cq-theme-name { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+    .cq-theme-desc { font-size: 12px; color: #64748b; line-height: 1.4; margin-bottom: 6px; }
+    .cq-theme-tag { font-size: 11px; color: #94a3b8; }
+    .cq-theme-tag code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 11px; color: #475569; }
+    .cq-theme-check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #e2e8f0; background: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: transparent; transition: all .15s; }
+    .cq-theme input:checked + .cq-theme-card .cq-theme-check { background: #037984; border-color: #037984; color: #fff; }
+
+    .cq-mini { width: 130px; height: 88px; border-radius: 8px; overflow: hidden; position: relative; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+
+    .cq-mini-studio { background: linear-gradient(135deg, #e0e7ff 0%, #f5d0fe 50%, #fce7f3 100%); display: flex; align-items: center; justify-content: center; }
+    .cq-mini-studio .cq-mini-studio-card { width: 88%; background: rgba(255,255,255,.85); backdrop-filter: blur(4px); border-radius: 8px; padding: 8px 10px; box-shadow: 0 2px 8px rgba(99, 102, 241, .2); display: flex; flex-direction: column; gap: 4px; }
+    .cq-mini-studio .cq-mini-studio-dot { width: 14px; height: 4px; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 2px; }
+    .cq-mini-studio .cq-mini-studio-line { background: #6366f1; height: 4px; border-radius: 2px; opacity: .85; }
+    .cq-mini-studio .cq-mini-studio-line.short { width: 60%; opacity: .55; }
+    .cq-mini-studio .cq-mini-studio-pill { height: 8px; border-radius: 4px; background: linear-gradient(90deg, rgba(99, 102, 241, .15), rgba(168, 85, 247, .15)); border: 1px solid rgba(99, 102, 241, .25); margin-top: 1px; }
+
+    .cq-mini-forest { background: linear-gradient(135deg, #d8e8c4 0%, #f0ebd8 60%, #e9d6b6 100%); position: relative; padding: 8px; display: flex; align-items: center; justify-content: center; }
+    .cq-mini-forest .cq-mini-leaf { position: absolute; top: 6px; left: 6px; width: 22px; height: 22px; background: #7ba05b; clip-path: polygon(50% 5%, 95% 50%, 50% 95%, 5% 50%); opacity: .6; transform: rotate(-20deg); }
+    .cq-mini-forest .cq-mini-forest-card { background: #fdfbf3; border-radius: 5px; padding: 6px 8px; width: 80%; display: flex; flex-direction: column; gap: 3px; box-shadow: 0 2px 6px rgba(45, 80, 22, .2); }
+    .cq-mini-forest .cq-mini-forest-pill { height: 5px; width: 30%; background: #2d5016; border-radius: 3px; }
+    .cq-mini-forest .cq-mini-forest-row { height: 6px; background: rgba(45, 80, 22, .25); border-radius: 3px; }
+    .cq-mini-forest .cq-mini-forest-row.short { width: 60%; }
+
+    .cq-mini-ocean { background: linear-gradient(180deg, #caf0f8 0%, #90e0ef 60%, #00b4d8 100%); position: relative; padding: 6px; display: flex; align-items: center; justify-content: center; }
+    .cq-mini-ocean .cq-mini-ocean-wave { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 30px; }
+    .cq-mini-ocean .cq-mini-ocean-card { background: #fff; border-radius: 5px; padding: 7px 9px; width: 80%; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 2px 8px rgba(0, 71, 130, .2); position: relative; z-index: 1; }
+    .cq-mini-ocean .cq-mini-ocean-row { height: 6px; background: #00b4d8; border-radius: 3px; opacity: .8; }
+    .cq-mini-ocean .cq-mini-ocean-row.short { width: 55%; opacity: .5; }
+
+    .cq-mini-sunset { background: linear-gradient(180deg, #ffe5b4 0%, #ffb88c 40%, #ff8e9e 75%, #c084fc 100%); position: relative; padding: 6px; display: flex; align-items: center; justify-content: center; }
+    .cq-mini-sunset .cq-mini-sun { position: absolute; width: 50px; height: 50px; background: radial-gradient(circle, #fff9c4, #ffb74d 60%, transparent 75%); border-radius: 50%; top: 18px; left: 50%; transform: translateX(-50%); filter: blur(3px); }
+    .cq-mini-sunset .cq-mini-sunset-card { background: rgba(255,255,255,.78); backdrop-filter: blur(4px); border-radius: 6px; padding: 7px 9px; width: 80%; display: flex; flex-direction: column; gap: 4px; position: relative; z-index: 1; }
+    .cq-mini-sunset .cq-mini-sunset-row { height: 6px; background: linear-gradient(90deg, #fb923c, #ec4899); border-radius: 3px; }
+    .cq-mini-sunset .cq-mini-sunset-row.short { width: 55%; opacity: .55; }
+
+    .cq-mini-corp { background: #f5f7fa; padding: 0; display: flex; flex-direction: column; }
+    .cq-mini-corp .cq-mini-corp-bar { height: 6px; background: linear-gradient(90deg, #1e3a8a, #2563eb); }
+    .cq-mini-corp .cq-mini-corp-rows { flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 5px; }
+    .cq-mini-corp .cq-mini-corp-rows i { height: 5px; background: #cbd5e1; border-radius: 1px; }
+    .cq-mini-corp .cq-mini-corp-rows i:first-child { background: #1e3a8a; width: 70%; height: 6px; }
+
+    .cq-mini-office { background: #faf9f8; padding: 8px; display: flex; align-items: center; justify-content: center; }
+    .cq-mini-office .cq-mini-office-card { width: 90%; background: #fff; border-radius: 3px; padding: 0 0 6px; box-shadow: 0 2px 4px rgba(0,0,0,.08); overflow: hidden; }
+    .cq-mini-office .cq-mini-office-band { height: 5px; background: #0078d4; }
+    .cq-mini-office .cq-mini-office-row { height: 5px; background: #c8c6c4; margin: 5px 8px 0; border-radius: 1px; }
+    .cq-mini-office .cq-mini-office-row.short { width: 55%; opacity: .65; }
+
+    .cq-mini-classic { background: #f0ebf8; padding: 8px; display: flex; align-items: center; justify-content: center; }
+    .cq-mini-classic .cq-mini-classic-card { width: 90%; background: #fff; border-radius: 5px; box-shadow: 0 1px 3px rgba(60, 64, 67, .2); overflow: hidden; }
+    .cq-mini-classic .cq-mini-classic-stripe { height: 8px; background: #673ab7; }
+    .cq-mini-classic .cq-mini-classic-row { height: 5px; background: #5f6368; opacity: .35; margin: 5px 10px 0; border-radius: 1px; }
+    .cq-mini-classic .cq-mini-classic-row.short { width: 55%; opacity: .55; background: #673ab7; }
+
+    .cq-mini-comic { background: #fff7c2; background-image: radial-gradient(circle, rgba(0,0,0,.15) 1px, transparent 1.5px); background-size: 7px 7px; position: relative; padding: 6px; display: flex; align-items: center; justify-content: center; }
+    .cq-mini-comic .cq-mini-comic-burst { position: absolute; top: 4px; right: 4px; font-family: 'Bangers', sans-serif; background: #f43f5e; color: #fff; padding: 2px 6px; font-size: 9px; transform: rotate(8deg); border: 1px solid #000; text-shadow: 1px 1px 0 #000; }
+    .cq-mini-comic .cq-mini-comic-card { background: #fff; border: 2px solid #000; border-radius: 4px; padding: 5px; width: 80%; box-shadow: 3px 3px 0 #000; }
+    .cq-mini-comic .cq-mini-comic-bubble { display: block; height: 8px; background: #000; opacity: .2; border-radius: 3px; margin-bottom: 4px; }
+    .cq-mini-comic .cq-mini-comic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+    .cq-mini-comic .cq-mini-comic-grid > span { height: 14px; border: 1.5px solid #000; border-radius: 2px; }
+    .cq-mini-comic .r { background: #f43f5e; } .cq-mini-comic .b { background: #3b82f6; }
+    .cq-mini-comic .y { background: #facc15; } .cq-mini-comic .g { background: #22c55e; }
+
+    .cq-mini-nb { background: #fdfcf6; background-image: linear-gradient(rgba(180, 30, 30, .35) 0 0), repeating-linear-gradient(transparent 0, transparent 9px, #c0d6f0 10px); background-size: 2px 100%, 100% 100%; background-position: 22px 0, 0 8px; background-repeat: no-repeat, repeat; padding: 8px 8px 8px 28px; position: relative; }
+    .cq-mini-nb .cq-mini-nb-tape { position: absolute; top: 4px; right: 6px; font-size: 14px; transform: rotate(8deg); }
+    .cq-mini-nb .cq-mini-nb-lines { display: flex; flex-direction: column; gap: 5px; padding-top: 4px; }
+    .cq-mini-nb .cq-mini-nb-lines i { display: block; height: 4px; background: #475569; opacity: .55; border-radius: 1px; }
+    .cq-mini-nb .cq-mini-nb-lines i:first-child { background: #ec4899; width: 50%; }
+    .cq-mini-nb .cq-mini-nb-lines i:nth-child(2) { width: 75%; }
+    .cq-mini-nb .cq-mini-nb-lines i:nth-child(3) { width: 65%; }
+    .cq-mini-nb .cq-mini-nb-lines i:nth-child(4) { width: 70%; }
+
+    .cq-mini-gx { background: radial-gradient(ellipse at top right, #4c1d95 0%, transparent 60%), radial-gradient(ellipse at bottom left, #831843 0%, transparent 60%), linear-gradient(180deg, #0c0a3e, #1e1b4b); position: relative; padding: 8px; display: flex; align-items: center; justify-content: center; }
+    .cq-mini-gx .cq-mini-gx-star { position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; box-shadow: 0 0 3px #fff; }
+    .cq-mini-gx .s1 { top: 12px; left: 18px; } .cq-mini-gx .s2 { top: 22px; right: 22px; background: #fde68a; box-shadow: 0 0 4px #fde68a; }
+    .cq-mini-gx .s3 { bottom: 12px; left: 30px; } .cq-mini-gx .s4 { bottom: 20px; right: 14px; }
+    .cq-mini-gx .cq-mini-gx-card { background: rgba(15, 12, 60, .65); backdrop-filter: blur(4px); border: 1px solid rgba(168, 85, 247, .4); border-radius: 5px; padding: 6px 8px; width: 80%; display: flex; flex-direction: column; gap: 4px; position: relative; z-index: 1; box-shadow: 0 0 10px rgba(168, 85, 247, .35); }
+    .cq-mini-gx .cq-mini-gx-row { height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 2px; opacity: .85; }
+    .cq-mini-gx .cq-mini-gx-row.short { width: 55%; opacity: .55; }
+
+    .cq-mini-tm { background: #1e1e2e; display: flex; flex-direction: column; padding: 0; }
+    .cq-mini-tm .cq-mini-tm-bar { display: flex; gap: 3px; padding: 4px 6px; background: #2a2a3a; }
+    .cq-mini-tm .cq-mini-tm-bar span { width: 5px; height: 5px; border-radius: 50%; }
+    .cq-mini-tm .cq-mini-tm-bar span:nth-child(1) { background: #ed8796; }
+    .cq-mini-tm .cq-mini-tm-bar span:nth-child(2) { background: #eed49f; }
+    .cq-mini-tm .cq-mini-tm-bar span:nth-child(3) { background: #a6da95; }
+    .cq-mini-tm .cq-mini-tm-body { flex: 1; padding: 6px 8px; font-family: 'JetBrains Mono', monospace; font-size: 8px; line-height: 1.6; }
+    .cq-mini-tm .cq-mini-tm-c { color: #6c7086; font-style: italic; display: block; }
+    .cq-mini-tm .cq-mini-tm-l { color: #a6da95; display: block; }
+    .cq-mini-tm .cq-mini-tm-l.short { color: #f9e2af; }
+
+    .cq-mini-wc { background: #fdfaf3; position: relative; padding: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .cq-mini-wc .cq-mini-wc-wash { position: absolute; border-radius: 50%; filter: blur(14px); }
+    .cq-mini-wc .cq-mini-wc-wash.a { width: 80px; height: 80px; background: #fda4af; opacity: .55; top: -20px; left: -16px; }
+    .cq-mini-wc .cq-mini-wc-wash.b { width: 60px; height: 60px; background: #fcd34d; opacity: .5; bottom: -10px; right: -10px; }
+    .cq-mini-wc .cq-mini-wc-card { background: rgba(255, 252, 245, .85); border-radius: 3px; padding: 6px 8px; width: 75%; display: flex; flex-direction: column; gap: 4px; position: relative; z-index: 1; box-shadow: 0 2px 6px rgba(120, 53, 15, .14); }
+    .cq-mini-wc .cq-mini-wc-row { height: 5px; background: #b91c1c; opacity: .55; border-radius: 1px; }
+    .cq-mini-wc .cq-mini-wc-row.short { width: 55%; opacity: .3; background: #92400e; }
+
+    .cq-mini-np { background: #faf3df; padding: 5px 6px; display: flex; flex-direction: column; gap: 4px; }
+    .cq-mini-np .cq-mini-np-banner { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 11px; text-align: center; color: #1a1612; border-bottom: 1.5px double #1a1612; padding-bottom: 2px; letter-spacing: 1px; }
+    .cq-mini-np .cq-mini-np-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; }
+    .cq-mini-np .cq-mini-np-cols > div { display: flex; flex-direction: column; gap: 2px; padding-right: 4px; border-right: 1px solid #c4b59a; }
+    .cq-mini-np .cq-mini-np-cols > div:last-child { border: none; }
+    .cq-mini-np .cq-mini-np-cols i { display: block; height: 3px; background: #1a1612; opacity: .55; border-radius: 1px; }
+    .cq-mini-np .cq-mini-np-cols i.short { width: 60%; opacity: .3; }
+
+    .cq-mini-kahoot { background: linear-gradient(135deg, #46178f, #864cd1); padding: 10px 8px; }
+    .cq-mini-kahoot .cq-mini-bar { background: rgba(255,255,255,.85); border-radius: 3px; height: 8px; margin-bottom: 6px; }
+    .cq-mini-kahoot .cq-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    .cq-mini-kahoot .cq-mini-grid > span { height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+    .cq-mini-kahoot .cq-mini-grid > span b { display: inline-block; width: 8px; height: 8px; background: #fff; }
+    .cq-mini-kahoot .t1 { background: #e21b3c; } .cq-mini-kahoot .t1 b { clip-path: polygon(50% 0, 0 100%, 100% 100%); }
+    .cq-mini-kahoot .t2 { background: #1368ce; } .cq-mini-kahoot .t2 b { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+    .cq-mini-kahoot .t3 { background: #d89e00; } .cq-mini-kahoot .t3 b { border-radius: 50%; }
+    .cq-mini-kahoot .t4 { background: #26890c; } .cq-mini-kahoot .t4 b { border-radius: 2px; }
+
+    .cq-mini-exam { background: repeating-linear-gradient(transparent, transparent 9px, rgba(180, 140, 90, .35) 10px), #fdf8ec; }
+    .cq-mini-exam .cq-mini-margin { position: absolute; left: 18px; top: 0; bottom: 0; width: 1.5px; background: rgba(180, 30, 30, .55); }
+    .cq-mini-exam .cq-mini-lines { padding: 8px 8px 0 24px; display: flex; flex-direction: column; gap: 5px; }
+    .cq-mini-exam .cq-mini-lines i { display: block; height: 4px; background: #2b2018; border-radius: 1px; opacity: .55; }
+    .cq-mini-exam .cq-mini-lines i:nth-child(1) { width: 80%; background: #b81e1e; opacity: .85; }
+    .cq-mini-exam .cq-mini-lines i:nth-child(2) { width: 65%; }
+    .cq-mini-exam .cq-mini-lines i:nth-child(3) { width: 70%; }
+    .cq-mini-exam .cq-mini-lines i:nth-child(4) { width: 60%; }
+    .cq-mini-exam .cq-mini-lines i:nth-child(5) { width: 75%; }
+
+    .cq-mini-chat { background: #ece5dd; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .cq-mini-chat .cq-mini-chathead { background: linear-gradient(135deg, #25d366, #128c7e); height: 14px; border-radius: 7px 7px 2px 2px; margin: -8px -8px 4px; }
+    .cq-mini-chat .cq-mini-bub { height: 10px; border-radius: 6px; box-shadow: 0 1px 1px rgba(0,0,0,.1); }
+    .cq-mini-chat .cq-mini-bub-l { background: #fff; width: 60%; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .cq-mini-chat .cq-mini-bub-r { background: #dcf8c6; width: 40%; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .cq-mini-chat .cq-mini-bub.short { width: 45%; }
+
+    .cq-mini-arcade { background: radial-gradient(ellipse at center, #0d041a 0%, #050208 100%); border: 1px solid #ff00ea; padding: 8px 6px; display: flex; flex-direction: column; gap: 5px; }
+    .cq-mini-arcade .cq-mini-arc-title { font-family: 'Press Start 2P', monospace; font-size: 7px; color: #00ffe1; text-shadow: 0 0 4px #00ffe1; text-align: center; letter-spacing: 1px; }
+    .cq-mini-arcade .cq-mini-arc-row { background: rgba(0,255,225,.25); border: 1px solid #00ffe1; height: 8px; border-radius: 1px; }
+    .cq-mini-arcade .cq-mini-arc-row.short { width: 60%; border-color: #ff5af2; background: rgba(255, 90, 242, .25); }
+
+    .cq-count { display: inline-block; background: #f1f5f9; color: #475569; padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; margin-left: 6px; }
+    .cq-questions { display: flex; flex-direction: column; gap: 14px; }
+    .cq-question { border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; background: #fafbfc; transition: border-color .15s, background .15s; scroll-margin-top: 80px; }
+    .cq-question:focus-within { border-color: #037984; background: #fff; }
+    .cq-question[data-complete="1"] { border-color: #86efac; background: #f0fdf4; }
+
+    .cq-q-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .cq-q-head-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .cq-q-num { background: linear-gradient(135deg, #013D42, #037984); color: #fff; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+    .cq-q-new { background: #fef3c7; color: #92400e; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+    .cq-q-state { font-size: 11px; color: #b45309; background: #fef3c7; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
+    .cq-q-state.ok { color: #15803d; background: #dcfce7; }
+    .cq-q-remove { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all .15s; }
+    .cq-q-remove:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+    .cq-q-text-field { margin-bottom: 14px; }
+    .cq-options-grid { display: flex; flex-direction: column; gap: 8px; }
+    .cq-opt-row { display: grid; grid-template-columns: 32px 1fr auto; gap: 10px; align-items: center; background: #fff; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; transition: all .15s; }
+    .cq-opt-row:focus-within { border-color: #037984; }
+    .cq-opt-letter { width: 28px; height: 28px; border-radius: 6px; background: #f1f5f9; color: #475569; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+    .cq-opt-row > input:not([type="radio"]) { border: none; outline: none; font-size: 14px; background: transparent; padding: 4px 0; min-width: 0; }
+    .cq-correct-toggle { cursor: pointer; user-select: none; flex-shrink: 0; }
+    .cq-correct-toggle input { display: none; }
+    .cq-correct-toggle > span { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #fff; font-size: 12px; font-weight: 600; color: #94a3b8; transition: all .15s; }
+    .cq-correct-toggle .cq-correct-mark { font-weight: 800; }
+    .cq-correct-toggle:hover > span { border-color: #86efac; color: #16a34a; }
+    .cq-correct-toggle input:checked + span { background: #16a34a; color: #fff; border-color: #16a34a; box-shadow: 0 2px 6px rgba(22, 163, 74, .3); }
+    .cq-opt-row:has(.cq-correct-toggle input:checked) { background: linear-gradient(90deg, #dcfce7 0%, transparent 100%); border-color: #86efac; }
+    .cq-opt-row:has(.cq-correct-toggle input:checked) .cq-opt-letter { background: #16a34a; color: #fff; }
+    .cq-opt-errs { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+
+    .cq-add-q { margin-top: 14px; width: 100%; padding: 14px; border: 2px dashed #cbd5e1; border-radius: 10px; background: transparent; color: #64748b; font-weight: 600; cursor: pointer; transition: all .15s; font-size: 14px; }
+    .cq-add-q:hover { border-color: #037984; color: #037984; background: #f0fdfa; }
+    .cq-add-q span { font-size: 18px; margin-right: 4px; }
+
+    .cq-rail { position: sticky; top: 80px; }
+    .cq-rail-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 1px 3px rgba(15, 23, 42, .04); overflow: hidden; }
+    .cq-rail-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-weight: 700; font-size: 14px; color: #0f172a; }
+    .cq-rail-count { background: #013D42; color: #fff; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .cq-rail-list { padding: 8px; display: flex; flex-direction: column; gap: 2px; max-height: 60vh; overflow-y: auto; }
+    .cq-rail-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; text-decoration: none; color: #334155; font-size: 13px; font-weight: 500; transition: background .15s; }
+    .cq-rail-item:hover { background: #f1f5f9; color: #013D42; }
+    .cq-rail-dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid #cbd5e1; flex-shrink: 0; position: relative; transition: all .15s; }
+    .cq-rail-dot.ok { background: #16a34a; border-color: #16a34a; }
+    .cq-rail-dot.ok::after { content: '✓'; position: absolute; inset: 0; color: #fff; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+
+    .cq-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0 8px; position: sticky; bottom: 0; background: linear-gradient(180deg, transparent, rgba(255,255,255,.96) 40%); }
+    .cq-btn { padding: 12px 28px; border-radius: 10px; border: none; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; transition: all .15s; }
+    .cq-btn-ghost { background: #f1f5f9; color: #475569; }
+    .cq-btn-ghost:hover { background: #e2e8f0; color: #334155; }
+    .cq-btn-primary { background: linear-gradient(135deg, #013D42, #037984); color: #fff; box-shadow: 0 4px 12px rgba(3, 121, 132, .3); }
+    .cq-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(3, 121, 132, .4); background: linear-gradient(135deg, #012b2f, #025259); color: #fff; }
+</style>

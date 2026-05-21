@@ -3,69 +3,602 @@
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = Model.CurrentQuiz?.Title ?? "Manage Quiz";
+
+    string ThemeName(string? t) => (t ?? "").Trim() switch
+    {
+        "Midterm"    => "Kahoot game show",
+        "Forest"     => "Forest (calm green)",
+        "Comic"      => "Comic (pop art)",
+        "Watercolor" => "Watercolor (painterly)",
+        "Default"    => "Default (clean glass)",
+        _            => "Default (clean glass)"
+    };
+    string ThemeMini(string? t) => (t ?? "").Trim() switch
+    {
+        "Midterm"    => "kahoot",
+        "Forest"     => "forest",
+        "Comic"      => "comic",
+        "Watercolor" => "water",
+        _            => "studio"
+    };
+    var theme = Model.CurrentQuiz?.Theme ?? "";
+    var mini = ThemeMini(theme);
 }
 
 @*
     Front-end / styling: Moses
-    Backend contract:
-      Model.CurrentQuiz   — Quiz (Title, Subject, Theme, CreatedAt, MaterialID)
-      Model.Questions     — ordered List<Question> with correct answer visible
+    Backend contract (UNCHANGED):
+      Model.CurrentQuiz   — Quiz (Title, Subject, Theme, CreatedAt, MaterialID, QuizID)
+      Model.Questions     — ordered List<Question> with CorrectAnswer (lecturer-only)
       Model.MaterialId    — int, for back link
-      Model.Message       — string, nullable error
+      Model.Message       — string, nullable
     Actions:
-      Edit       → link to /FrontEnd/EditQuiz/{quizId}
-      Delete     → POST handler "Delete" on this page (named handler)
-                   triggers IQuizService.DeleteQuizAsync, cascades to Questions/Sessions/Results
+      Edit  → /FrontEnd/EditQuiz/{quizId}
+      Delete → POST handler "Delete" on this page
+      Back  → /FrontEnd/TeachingMaterialOverview/{MaterialId}
 *@
-
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
 <div id="horizontalNavbar">
     <div class="PageTitle">
-        <h1>@ViewData["Title"]</h1>
+        <h1>Manage Quiz</h1>
         <p class="path">Lecturer Dashboard &gt; Manage Quiz</p>
     </div>
 
     <div class="PageComponent">
-        @if (!string.IsNullOrEmpty(Model.Message))
-        {
-            <div class="alert">@Model.Message</div>
-        }
+        <div class="mq-page">
 
-        @if (Model.CurrentQuiz != null)
-        {
-            <section class="quiz-meta">
-                <p><strong>Subject:</strong> @Model.CurrentQuiz.Subject</p>
-                <p><strong>Theme:</strong> @Model.CurrentQuiz.Theme</p>
-                <p><strong>Created:</strong> @Model.CurrentQuiz.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
-                <p><strong>Questions:</strong> @Model.Questions.Count</p>
-            </section>
+            @if (!string.IsNullOrEmpty(Model.Message))
+            {
+                <div class="mq-alert">@Model.Message</div>
+            }
 
-            <section class="actions">
-                <a href="/FrontEnd/EditQuiz/@Model.CurrentQuiz.QuizID">Edit Quiz</a>
+            @if (Model.CurrentQuiz != null)
+            {
+                <!-- ── Hero card ── -->
+                <section class="mq-hero">
+                    <div class="mq-hero-left">
+                        <div class="mq-pill">@Model.CurrentQuiz.Subject</div>
+                        <h2 class="mq-title">@Model.CurrentQuiz.Title</h2>
 
-                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.CurrentQuiz.QuizID"
-                      onsubmit="return confirm('Delete this quiz? Student attempts and answers for it will also be removed. This cannot be undone.');"
-                      style="display: inline;">
-                    <button type="submit">Delete Quiz</button>
-                </form>
+                        <div class="mq-meta">
+                            <div class="mq-meta-item">
+                                <span class="mq-meta-label">Theme</span>
+                                <span class="mq-meta-val">@ThemeName(theme) <code>@(string.IsNullOrWhiteSpace(theme) ? "—" : theme)</code></span>
+                            </div>
+                            <div class="mq-meta-item">
+                                <span class="mq-meta-label">Questions</span>
+                                <span class="mq-meta-val">@Model.Questions.Count</span>
+                            </div>
+                            <div class="mq-meta-item">
+                                <span class="mq-meta-label">Created</span>
+                                <span class="mq-meta-val">@Model.CurrentQuiz.CreatedAt.ToString("dd MMM yyyy · HH:mm")</span>
+                            </div>
+                            <div class="mq-meta-item">
+                                <span class="mq-meta-label">Quiz ID</span>
+                                <span class="mq-meta-val">#@Model.CurrentQuiz.QuizID</span>
+                            </div>
+                        </div>
 
-                <a href="/FrontEnd/TeachingMaterialOverview/@Model.MaterialId">Back to Material</a>
-            </section>
-
-            <section class="questions">
-                <h3>Questions</h3>
-                @for (int i = 0; i < Model.Questions.Count; i++)
-                {
-                    var q = Model.Questions[i];
-                    <div class="question-card">
-                        <h4>Q@(i + 1). @q.QuestionText</h4>
-                        <p>A. @q.Option1</p>
-                        <p>B. @q.Option2</p>
-                        <p>C. @q.Option3</p>
-                        <p>D. @q.Option4</p>
-                        <p><strong>Correct answer: @q.CorrectAnswer</strong></p>
+                        <div class="mq-actions">
+                            <a href="/FrontEnd/EditQuiz/@Model.CurrentQuiz.QuizID" class="mq-btn mq-btn-primary">
+                                <span class="mq-btn-icon"><i class="bi bi-pencil-square"></i></span> Edit Quiz
+                            </a>
+                            <a href="/FrontEnd/TeachingMaterialOverview/@Model.MaterialId" class="mq-btn mq-btn-ghost">
+                                <i class="bi bi-box-arrow-left"></i> Back to Material
+                            </a>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@Model.CurrentQuiz.QuizID"
+                                  onsubmit="return confirm('Delete this quiz?\n\nStudent attempts and answers for it will also be removed. This cannot be undone.');"
+                                  class="mq-delete-form">
+                                <button type="submit" class="mq-btn mq-btn-danger">
+                                    <span class="mq-btn-icon"><i class="bi bi-trash3"></i></span> Delete Quiz
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                }
-            </section>
-        }
+
+                    <div class="mq-hero-right">
+                        <div class="mq-preview-label">Student preview</div>
+                        @switch (mini)
+                        {
+                            case "studio":
+                                <div class="mq-mini mq-mini-studio">
+                                    <div class="mq-mini-studio-card">
+                                        <span class="mq-mini-studio-dot"></span>
+                                        <i class="mq-mini-studio-line"></i>
+                                        <i class="mq-mini-studio-line short"></i>
+                                        <i class="mq-mini-studio-pill"></i>
+                                        <i class="mq-mini-studio-pill"></i>
+                                    </div>
+                                </div>
+                                break;
+                            case "forest":
+                                <div class="mq-mini mq-mini-forest">
+                                    <span class="mq-mini-leaf"></span>
+                                    <div class="mq-mini-forest-card">
+                                        <i class="mq-mini-forest-pill"></i>
+                                        <i class="mq-mini-forest-row"></i>
+                                        <i class="mq-mini-forest-row short"></i>
+                                    </div>
+                                </div>
+                                break;
+                            case "ocean":
+                                <div class="mq-mini mq-mini-ocean">
+                                    <svg viewBox="0 0 80 30" preserveAspectRatio="none" class="mq-mini-ocean-wave"><path d="M0,20 Q20,10 40,20 T80,20 L80,30 L0,30 Z" fill="#0077b6" opacity=".45"/></svg>
+                                    <div class="mq-mini-ocean-card">
+                                        <i class="mq-mini-ocean-row"></i>
+                                        <i class="mq-mini-ocean-row short"></i>
+                                    </div>
+                                </div>
+                                break;
+                            case "sunset":
+                                <div class="mq-mini mq-mini-sunset">
+                                    <div class="mq-mini-sun"></div>
+                                    <div class="mq-mini-sunset-card">
+                                        <i class="mq-mini-sunset-row"></i>
+                                        <i class="mq-mini-sunset-row short"></i>
+                                    </div>
+                                </div>
+                                break;
+                            case "corp":
+                                <div class="mq-mini mq-mini-corp">
+                                    <div class="mq-mini-corp-bar"></div>
+                                    <div class="mq-mini-corp-rows"><i></i><i></i><i></i><i></i></div>
+                                </div>
+                                break;
+                            case "office":
+                                <div class="mq-mini mq-mini-office">
+                                    <div class="mq-mini-office-card">
+                                        <div class="mq-mini-office-band"></div>
+                                        <i class="mq-mini-office-row"></i>
+                                        <i class="mq-mini-office-row short"></i>
+                                    </div>
+                                </div>
+                                break;
+                            case "classic":
+                                <div class="mq-mini mq-mini-classic">
+                                    <div class="mq-mini-classic-card">
+                                        <div class="mq-mini-classic-stripe"></div>
+                                        <i class="mq-mini-classic-row"></i>
+                                        <i class="mq-mini-classic-row short"></i>
+                                    </div>
+                                </div>
+                                break;
+                            case "comic":
+                                <div class="mq-mini mq-mini-comic">
+                                    <span class="mq-mini-comic-burst">POW!</span>
+                                    <div class="mq-mini-comic-card">
+                                        <i class="mq-mini-comic-bubble"></i>
+                                        <div class="mq-mini-comic-grid">
+                                            <span class="r"></span><span class="b"></span>
+                                            <span class="y"></span><span class="g"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                break;
+                            case "notebook":
+                                <div class="mq-mini mq-mini-nb">
+                                    <span class="mq-mini-nb-tape">📌</span>
+                                    <div class="mq-mini-nb-lines"><i></i><i></i><i></i><i></i></div>
+                                </div>
+                                break;
+                            case "galaxy":
+                                <div class="mq-mini mq-mini-gx">
+                                    <span class="mq-mini-gx-star s1"></span>
+                                    <span class="mq-mini-gx-star s2"></span>
+                                    <span class="mq-mini-gx-star s3"></span>
+                                    <span class="mq-mini-gx-star s4"></span>
+                                    <div class="mq-mini-gx-card">
+                                        <i class="mq-mini-gx-row"></i>
+                                        <i class="mq-mini-gx-row short"></i>
+                                    </div>
+                                </div>
+                                break;
+                            case "term":
+                                <div class="mq-mini mq-mini-tm">
+                                    <div class="mq-mini-tm-bar"><span></span><span></span><span></span></div>
+                                    <div class="mq-mini-tm-body">
+                                        <i class="mq-mini-tm-c">// q</i>
+                                        <i class="mq-mini-tm-l">const x = "..";</i>
+                                        <i class="mq-mini-tm-l short">[A] → "..";</i>
+                                    </div>
+                                </div>
+                                break;
+                            case "water":
+                                <div class="mq-mini mq-mini-wc">
+                                    <span class="mq-mini-wc-wash a"></span>
+                                    <span class="mq-mini-wc-wash b"></span>
+                                    <div class="mq-mini-wc-card">
+                                        <i class="mq-mini-wc-row"></i>
+                                        <i class="mq-mini-wc-row short"></i>
+                                    </div>
+                                </div>
+                                break;
+                            case "news":
+                                <div class="mq-mini mq-mini-np">
+                                    <div class="mq-mini-np-banner">TIMES</div>
+                                    <div class="mq-mini-np-cols">
+                                        <div><i></i><i class="short"></i><i></i></div>
+                                        <div><i></i><i></i><i class="short"></i></div>
+                                    </div>
+                                </div>
+                                break;
+                            case "kahoot":
+                                <div class="mq-mini mq-mini-kahoot">
+                                    <div class="mq-mini-bar"></div>
+                                    <div class="mq-mini-grid">
+                                        <span class="t1"><b></b></span><span class="t2"><b></b></span>
+                                        <span class="t3"><b></b></span><span class="t4"><b></b></span>
+                                    </div>
+                                </div>
+                                break;
+                            case "exam":
+                                <div class="mq-mini mq-mini-exam">
+                                    <div class="mq-mini-margin"></div>
+                                    <div class="mq-mini-lines"><i></i><i></i><i></i><i></i><i></i></div>
+                                </div>
+                                break;
+                            case "chat":
+                                <div class="mq-mini mq-mini-chat">
+                                    <div class="mq-mini-chathead"></div>
+                                    <div class="mq-mini-bub mq-mini-bub-l"></div>
+                                    <div class="mq-mini-bub mq-mini-bub-r"></div>
+                                    <div class="mq-mini-bub mq-mini-bub-l short"></div>
+                                </div>
+                                break;
+                            case "arcade":
+                                <div class="mq-mini mq-mini-arcade">
+                                    <div class="mq-mini-arc-title">ARCADE</div>
+                                    <div class="mq-mini-arc-row"></div>
+                                    <div class="mq-mini-arc-row short"></div>
+                                    <div class="mq-mini-arc-row"></div>
+                                </div>
+                                break;
+                        }
+                    </div>
+                </section>
+
+                <!-- ── Questions list ── -->
+                <section class="mq-card">
+                    <header class="mq-card-head">
+                        <div class="mq-card-icon"><i class="bi bi-patch-question"></i></div>
+                        <div>
+                            <h3>Questions <span class="mq-count">@Model.Questions.Count</span></h3>
+                            <small>Correct answer is highlighted in green. Use <em>Edit Quiz</em> to change anything.</small>
+                        </div>
+                    </header>
+
+                    @if (Model.Questions.Count == 0)
+                    {
+                        <div class="mq-empty">No questions yet — click <a href="/FrontEnd/EditQuiz/@Model.CurrentQuiz.QuizID">Edit Quiz</a> to add some.</div>
+                    }
+                    else
+                    {
+                        <ol class="mq-q-list">
+                            @for (int i = 0; i < Model.Questions.Count; i++)
+                            {
+                                var q = Model.Questions[i];
+                                <li class="mq-q" id="q-@(i + 1)">
+                                    <div class="mq-q-head">
+                                        <span class="mq-q-num">Q@(i + 1)</span>
+                                        <span class="mq-q-correct">Correct: <b>@q.CorrectAnswer</b></span>
+                                    </div>
+                                    <div class="mq-q-text">@q.QuestionText</div>
+
+                                    <div class="mq-q-options">
+                                        @{
+                                            var rows = new[]
+                                            {
+                                                ("A", q.Option1),
+                                                ("B", q.Option2),
+                                                ("C", q.Option3),
+                                                ("D", q.Option4),
+                                            };
+                                        }
+                                        @foreach (var (letter, text) in rows)
+                                        {
+                                            var isCorrect = string.Equals(q.CorrectAnswer?.Trim(), letter, StringComparison.OrdinalIgnoreCase);
+                                            <div class="mq-q-opt @(isCorrect ? "ok" : "")">
+                                                <span class="mq-q-opt-letter">@letter</span>
+                                                <span class="mq-q-opt-text">@text</span>
+                                                @if (isCorrect)
+                                                {
+                                                    <span class="mq-q-opt-tag"><i class="bi bi-check2-all"></i> correct</span>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </li>
+                            }
+                        </ol>
+                    }
+                </section>
+            }
+        </div>
     </div>
 </div>
+
+<style>
+    .mq-page { max-width: 1100px; margin: 0 auto; padding: 8px 4px 60px; color: #1e293b; }
+    .mq-alert { background: #fef3c7; border: 1px solid #fcd34d; color: #78350f; padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; font-size: 14px; }
+
+    /* ── Hero ── */
+    .mq-hero {
+        display: grid; grid-template-columns: 1fr 200px; gap: 28px; align-items: center;
+        background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+        border: 1px solid #e2e8f0; border-radius: 16px;
+        padding: 28px 32px; margin-bottom: 18px;
+        box-shadow: 0 4px 20px rgba(15, 23, 42, .04);
+    }
+    @@media (max-width: 720px) { .mq-hero { grid-template-columns: 1fr; } .mq-hero-right { justify-self: start; } }
+
+    .mq-pill {
+        display: inline-block; background: linear-gradient(135deg, #013D42, #037984);
+        color: #fff; font-size: 11px; font-weight: 700;
+        padding: 4px 12px; border-radius: 999px;
+        letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .mq-title { font-size: 30px; font-weight: 800; margin: 0 0 18px; color: #0f172a; line-height: 1.2; }
+
+    .mq-meta {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px 24px; margin-bottom: 22px;
+        padding: 14px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;
+    }
+    .mq-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .mq-meta-label { font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+    .mq-meta-val { font-size: 14px; color: #0f172a; font-weight: 600; }
+    .mq-meta-val code { background: #f1f5f9; color: #475569; padding: 1px 6px; border-radius: 4px; font-size: 11px; margin-left: 4px; font-weight: 600; }
+
+    .mq-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .mq-delete-form { display: inline; margin: 0; padding: 0; }
+    .mq-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 11px 22px; border-radius: 10px; border: none;
+        font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none;
+        transition: all .15s; font-family: inherit;
+    }
+    .mq-btn-icon { font-size: 15px; line-height: 1; }
+    .mq-btn-primary {
+        background: linear-gradient(135deg, #013D42, #037984); color: #fff;
+        box-shadow: 0 4px 12px rgba(3, 121, 132, .3);
+    }
+    .mq-btn-primary:hover {
+        transform: translateY(-1px); box-shadow: 0 6px 16px rgba(3, 121, 132, .4);
+        background: linear-gradient(135deg, #012b2f, #025259); color: #fff;
+    }
+    .mq-btn-ghost { background: #f1f5f9; color: #475569; }
+    .mq-btn-ghost:hover { background: #e2e8f0; color: #334155; }
+    .mq-btn-danger {
+        background: #fef2f2; color: #b91c1c; border: 1.5px solid #fecaca;
+    }
+    .mq-btn-danger:hover { background: #dc2626; color: #fff; border-color: #dc2626; box-shadow: 0 4px 12px rgba(220, 38, 38, .3); }
+
+    /* ── Theme preview thumbnail ── */
+    .mq-hero-right { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+    .mq-preview-label { font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+
+    .mq-mini {
+        width: 180px; height: 122px; border-radius: 10px;
+        overflow: hidden; position: relative; flex-shrink: 0;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, .15), inset 0 0 0 1px rgba(0,0,0,.06);
+    }
+
+    /* Studio (default) mini */
+    .mq-mini-studio { background: linear-gradient(135deg, #e0e7ff 0%, #f5d0fe 50%, #fce7f3 100%); display: flex; align-items: center; justify-content: center; }
+    .mq-mini-studio .mq-mini-studio-card { width: 88%; background: rgba(255,255,255,.85); backdrop-filter: blur(4px); border-radius: 8px; padding: 10px 12px; box-shadow: 0 2px 8px rgba(99, 102, 241, .2); display: flex; flex-direction: column; gap: 5px; }
+    .mq-mini-studio .mq-mini-studio-dot { width: 18px; height: 5px; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 3px; }
+    .mq-mini-studio .mq-mini-studio-line { background: #6366f1; height: 5px; border-radius: 2px; opacity: .85; }
+    .mq-mini-studio .mq-mini-studio-line.short { width: 60%; opacity: .55; }
+    .mq-mini-studio .mq-mini-studio-pill { height: 10px; border-radius: 5px; background: linear-gradient(90deg, rgba(99, 102, 241, .15), rgba(168, 85, 247, .15)); border: 1px solid rgba(99, 102, 241, .25); margin-top: 1px; }
+
+    /* Forest mini */
+    .mq-mini-forest { background: linear-gradient(135deg, #d8e8c4 0%, #f0ebd8 60%, #e9d6b6 100%); position: relative; padding: 10px; display: flex; align-items: center; justify-content: center; }
+    .mq-mini-forest .mq-mini-leaf { position: absolute; top: 8px; left: 8px; width: 30px; height: 30px; background: #7ba05b; clip-path: polygon(50% 5%, 95% 50%, 50% 95%, 5% 50%); opacity: .6; transform: rotate(-20deg); }
+    .mq-mini-forest .mq-mini-forest-card { background: #fdfbf3; border-radius: 7px; padding: 8px 10px; width: 80%; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 2px 8px rgba(45, 80, 22, .25); }
+    .mq-mini-forest .mq-mini-forest-pill { height: 7px; width: 30%; background: #2d5016; border-radius: 4px; }
+    .mq-mini-forest .mq-mini-forest-row { height: 8px; background: rgba(45, 80, 22, .25); border-radius: 4px; }
+    .mq-mini-forest .mq-mini-forest-row.short { width: 60%; }
+
+    /* Ocean mini */
+    .mq-mini-ocean { background: linear-gradient(180deg, #caf0f8 0%, #90e0ef 60%, #00b4d8 100%); position: relative; padding: 8px; display: flex; align-items: center; justify-content: center; }
+    .mq-mini-ocean .mq-mini-ocean-wave { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 42px; }
+    .mq-mini-ocean .mq-mini-ocean-card { background: #fff; border-radius: 7px; padding: 9px 12px; width: 80%; display: flex; flex-direction: column; gap: 5px; box-shadow: 0 2px 10px rgba(0, 71, 130, .25); position: relative; z-index: 1; }
+    .mq-mini-ocean .mq-mini-ocean-row { height: 8px; background: #00b4d8; border-radius: 4px; opacity: .8; }
+    .mq-mini-ocean .mq-mini-ocean-row.short { width: 55%; opacity: .5; }
+
+    /* Sunset mini */
+    .mq-mini-sunset { background: linear-gradient(180deg, #ffe5b4 0%, #ffb88c 40%, #ff8e9e 75%, #c084fc 100%); position: relative; padding: 8px; display: flex; align-items: center; justify-content: center; }
+    .mq-mini-sunset .mq-mini-sun { position: absolute; width: 68px; height: 68px; background: radial-gradient(circle, #fff9c4, #ffb74d 60%, transparent 75%); border-radius: 50%; top: 24px; left: 50%; transform: translateX(-50%); filter: blur(4px); }
+    .mq-mini-sunset .mq-mini-sunset-card { background: rgba(255,255,255,.78); backdrop-filter: blur(6px); border-radius: 8px; padding: 9px 12px; width: 80%; display: flex; flex-direction: column; gap: 5px; position: relative; z-index: 1; }
+    .mq-mini-sunset .mq-mini-sunset-row { height: 8px; background: linear-gradient(90deg, #fb923c, #ec4899); border-radius: 4px; }
+    .mq-mini-sunset .mq-mini-sunset-row.short { width: 55%; opacity: .55; }
+
+    /* Corporate mini */
+    .mq-mini-corp { background: #f5f7fa; padding: 0; display: flex; flex-direction: column; }
+    .mq-mini-corp .mq-mini-corp-bar { height: 8px; background: linear-gradient(90deg, #1e3a8a, #2563eb); }
+    .mq-mini-corp .mq-mini-corp-rows { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 7px; }
+    .mq-mini-corp .mq-mini-corp-rows i { height: 7px; background: #cbd5e1; border-radius: 1px; }
+    .mq-mini-corp .mq-mini-corp-rows i:first-child { background: #1e3a8a; width: 70%; height: 8px; }
+
+    /* Office mini */
+    .mq-mini-office { background: #faf9f8; padding: 12px; display: flex; align-items: center; justify-content: center; }
+    .mq-mini-office .mq-mini-office-card { width: 90%; background: #fff; border-radius: 4px; padding: 0 0 9px; box-shadow: 0 2px 6px rgba(0,0,0,.1); overflow: hidden; }
+    .mq-mini-office .mq-mini-office-band { height: 7px; background: #0078d4; }
+    .mq-mini-office .mq-mini-office-row { height: 7px; background: #c8c6c4; margin: 7px 10px 0; border-radius: 1px; }
+    .mq-mini-office .mq-mini-office-row.short { width: 55%; opacity: .65; }
+
+    /* Classic (Google Forms) mini */
+    .mq-mini-classic { background: #f0ebf8; padding: 12px; display: flex; align-items: center; justify-content: center; }
+    .mq-mini-classic .mq-mini-classic-card { width: 90%; background: #fff; border-radius: 7px; box-shadow: 0 1px 4px rgba(60, 64, 67, .3); overflow: hidden; }
+    .mq-mini-classic .mq-mini-classic-stripe { height: 11px; background: #673ab7; }
+    .mq-mini-classic .mq-mini-classic-row { height: 7px; background: #5f6368; opacity: .35; margin: 7px 12px 0; border-radius: 1px; }
+    .mq-mini-classic .mq-mini-classic-row.short { width: 55%; opacity: .55; background: #673ab7; }
+
+    /* Comic mini */
+    .mq-mini-comic { background: #fff7c2; background-image: radial-gradient(circle, rgba(0,0,0,.15) 1px, transparent 1.5px); background-size: 9px 9px; position: relative; padding: 10px; display: flex; align-items: center; justify-content: center; }
+    .mq-mini-comic .mq-mini-comic-burst { position: absolute; top: 6px; right: 6px; font-family: 'Bangers', sans-serif; background: #f43f5e; color: #fff; padding: 3px 8px; font-size: 11px; transform: rotate(8deg); border: 1.5px solid #000; text-shadow: 1px 1px 0 #000; }
+    .mq-mini-comic .mq-mini-comic-card { background: #fff; border: 2px solid #000; border-radius: 5px; padding: 7px; width: 78%; box-shadow: 4px 4px 0 #000; }
+    .mq-mini-comic .mq-mini-comic-bubble { display: block; height: 10px; background: #000; opacity: .2; border-radius: 3px; margin-bottom: 5px; }
+    .mq-mini-comic .mq-mini-comic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    .mq-mini-comic .mq-mini-comic-grid > span { height: 18px; border: 2px solid #000; border-radius: 3px; }
+    .mq-mini-comic .r { background: #f43f5e; } .mq-mini-comic .b { background: #3b82f6; }
+    .mq-mini-comic .y { background: #facc15; } .mq-mini-comic .g { background: #22c55e; }
+
+    /* Notebook mini */
+    .mq-mini-nb { background: #fdfcf6; background-image: linear-gradient(rgba(180, 30, 30, .35) 0 0), repeating-linear-gradient(transparent 0, transparent 11px, #c0d6f0 12px); background-size: 2px 100%, 100% 100%; background-position: 30px 0, 0 10px; background-repeat: no-repeat, repeat; padding: 10px 10px 10px 36px; position: relative; }
+    .mq-mini-nb .mq-mini-nb-tape { position: absolute; top: 6px; right: 8px; font-size: 18px; transform: rotate(8deg); }
+    .mq-mini-nb .mq-mini-nb-lines { display: flex; flex-direction: column; gap: 7px; padding-top: 6px; }
+    .mq-mini-nb .mq-mini-nb-lines i { display: block; height: 6px; background: #475569; opacity: .55; border-radius: 1px; }
+    .mq-mini-nb .mq-mini-nb-lines i:first-child { background: #ec4899; width: 50%; }
+    .mq-mini-nb .mq-mini-nb-lines i:nth-child(2) { width: 75%; }
+    .mq-mini-nb .mq-mini-nb-lines i:nth-child(3) { width: 65%; }
+    .mq-mini-nb .mq-mini-nb-lines i:nth-child(4) { width: 70%; }
+
+    /* Galaxy mini */
+    .mq-mini-gx { background: radial-gradient(ellipse at top right, #4c1d95 0%, transparent 60%), radial-gradient(ellipse at bottom left, #831843 0%, transparent 60%), linear-gradient(180deg, #0c0a3e, #1e1b4b); position: relative; padding: 10px; display: flex; align-items: center; justify-content: center; }
+    .mq-mini-gx .mq-mini-gx-star { position: absolute; width: 2.5px; height: 2.5px; background: #fff; border-radius: 50%; box-shadow: 0 0 4px #fff; }
+    .mq-mini-gx .s1 { top: 14px; left: 22px; } .mq-mini-gx .s2 { top: 28px; right: 28px; background: #fde68a; box-shadow: 0 0 5px #fde68a; }
+    .mq-mini-gx .s3 { bottom: 16px; left: 38px; } .mq-mini-gx .s4 { bottom: 28px; right: 18px; }
+    .mq-mini-gx .mq-mini-gx-card { background: rgba(15, 12, 60, .65); backdrop-filter: blur(5px); border: 1px solid rgba(168, 85, 247, .4); border-radius: 6px; padding: 7px 10px; width: 78%; display: flex; flex-direction: column; gap: 5px; position: relative; z-index: 1; box-shadow: 0 0 12px rgba(168, 85, 247, .4); }
+    .mq-mini-gx .mq-mini-gx-row { height: 7px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 3px; opacity: .85; }
+    .mq-mini-gx .mq-mini-gx-row.short { width: 55%; opacity: .55; }
+
+    /* Terminal mini */
+    .mq-mini-tm { background: #1e1e2e; display: flex; flex-direction: column; padding: 0; }
+    .mq-mini-tm .mq-mini-tm-bar { display: flex; gap: 5px; padding: 5px 8px; background: #2a2a3a; }
+    .mq-mini-tm .mq-mini-tm-bar span { width: 7px; height: 7px; border-radius: 50%; }
+    .mq-mini-tm .mq-mini-tm-bar span:nth-child(1) { background: #ed8796; }
+    .mq-mini-tm .mq-mini-tm-bar span:nth-child(2) { background: #eed49f; }
+    .mq-mini-tm .mq-mini-tm-bar span:nth-child(3) { background: #a6da95; }
+    .mq-mini-tm .mq-mini-tm-body { flex: 1; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; line-height: 1.6; }
+    .mq-mini-tm .mq-mini-tm-c { color: #6c7086; font-style: italic; display: block; }
+    .mq-mini-tm .mq-mini-tm-l { color: #a6da95; display: block; }
+    .mq-mini-tm .mq-mini-tm-l.short { color: #f9e2af; }
+
+    /* Watercolor mini */
+    .mq-mini-wc { background: #fdfaf3; position: relative; padding: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .mq-mini-wc .mq-mini-wc-wash { position: absolute; border-radius: 50%; filter: blur(18px); }
+    .mq-mini-wc .mq-mini-wc-wash.a { width: 110px; height: 110px; background: #fda4af; opacity: .55; top: -26px; left: -22px; }
+    .mq-mini-wc .mq-mini-wc-wash.b { width: 80px; height: 80px; background: #fcd34d; opacity: .5; bottom: -14px; right: -14px; }
+    .mq-mini-wc .mq-mini-wc-card { background: rgba(255, 252, 245, .85); border-radius: 4px; padding: 8px 12px; width: 78%; display: flex; flex-direction: column; gap: 5px; position: relative; z-index: 1; box-shadow: 0 2px 8px rgba(120, 53, 15, .15); }
+    .mq-mini-wc .mq-mini-wc-row { height: 7px; background: #b91c1c; opacity: .55; border-radius: 2px; }
+    .mq-mini-wc .mq-mini-wc-row.short { width: 55%; opacity: .3; background: #92400e; }
+
+    /* Newspaper mini */
+    .mq-mini-np { background: #faf3df; padding: 7px 9px; display: flex; flex-direction: column; gap: 5px; }
+    .mq-mini-np .mq-mini-np-banner { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 14px; text-align: center; color: #1a1612; border-bottom: 2px double #1a1612; padding-bottom: 3px; letter-spacing: 1.5px; }
+    .mq-mini-np .mq-mini-np-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; }
+    .mq-mini-np .mq-mini-np-cols > div { display: flex; flex-direction: column; gap: 3px; padding-right: 5px; border-right: 1px solid #c4b59a; }
+    .mq-mini-np .mq-mini-np-cols > div:last-child { border: none; }
+    .mq-mini-np .mq-mini-np-cols i { display: block; height: 4px; background: #1a1612; opacity: .55; border-radius: 1px; }
+    .mq-mini-np .mq-mini-np-cols i.short { width: 60%; opacity: .3; }
+
+    /* Kahoot mini */
+    .mq-mini-kahoot { background: linear-gradient(135deg, #46178f, #864cd1); padding: 12px 10px; }
+    .mq-mini-kahoot .mq-mini-bar { background: rgba(255,255,255,.85); border-radius: 3px; height: 10px; margin-bottom: 8px; }
+    .mq-mini-kahoot .mq-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .mq-mini-kahoot .mq-mini-grid > span { height: 32px; border-radius: 5px; display: flex; align-items: center; justify-content: center; }
+    .mq-mini-kahoot .mq-mini-grid > span b { display: inline-block; width: 12px; height: 12px; background: #fff; }
+    .mq-mini-kahoot .t1 { background: #e21b3c; } .mq-mini-kahoot .t1 b { clip-path: polygon(50% 0, 0 100%, 100% 100%); }
+    .mq-mini-kahoot .t2 { background: #1368ce; } .mq-mini-kahoot .t2 b { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+    .mq-mini-kahoot .t3 { background: #d89e00; } .mq-mini-kahoot .t3 b { border-radius: 50%; }
+    .mq-mini-kahoot .t4 { background: #26890c; } .mq-mini-kahoot .t4 b { border-radius: 2px; }
+
+    /* Exam mini */
+    .mq-mini-exam { background: repeating-linear-gradient(transparent, transparent 11px, rgba(180, 140, 90, .35) 12px), #fdf8ec; }
+    .mq-mini-exam .mq-mini-margin { position: absolute; left: 26px; top: 0; bottom: 0; width: 2px; background: rgba(180, 30, 30, .55); }
+    .mq-mini-exam .mq-mini-lines { padding: 10px 12px 0 34px; display: flex; flex-direction: column; gap: 7px; }
+    .mq-mini-exam .mq-mini-lines i { display: block; height: 5px; background: #2b2018; border-radius: 1px; opacity: .55; }
+    .mq-mini-exam .mq-mini-lines i:nth-child(1) { width: 80%; background: #b81e1e; opacity: .85; }
+    .mq-mini-exam .mq-mini-lines i:nth-child(2) { width: 65%; }
+    .mq-mini-exam .mq-mini-lines i:nth-child(3) { width: 70%; }
+    .mq-mini-exam .mq-mini-lines i:nth-child(4) { width: 60%; }
+    .mq-mini-exam .mq-mini-lines i:nth-child(5) { width: 75%; }
+
+    /* Chat mini */
+    .mq-mini-chat { background: #ece5dd; padding: 12px; display: flex; flex-direction: column; gap: 5px; }
+    .mq-mini-chat .mq-mini-chathead { background: linear-gradient(135deg, #25d366, #128c7e); height: 18px; border-radius: 9px 9px 2px 2px; margin: -12px -12px 6px; }
+    .mq-mini-chat .mq-mini-bub { height: 14px; border-radius: 7px; box-shadow: 0 1px 1px rgba(0,0,0,.1); }
+    .mq-mini-chat .mq-mini-bub-l { background: #fff; width: 60%; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .mq-mini-chat .mq-mini-bub-r { background: #dcf8c6; width: 40%; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .mq-mini-chat .mq-mini-bub.short { width: 45%; }
+
+    /* Arcade mini */
+    .mq-mini-arcade { background: radial-gradient(ellipse at center, #0d041a 0%, #050208 100%); border: 1px solid #ff00ea; padding: 10px 8px; display: flex; flex-direction: column; gap: 7px; }
+    .mq-mini-arcade .mq-mini-arc-title { font-family: 'Press Start 2P', monospace; font-size: 9px; color: #00ffe1; text-shadow: 0 0 4px #00ffe1; text-align: center; letter-spacing: 1px; }
+    .mq-mini-arcade .mq-mini-arc-row { background: rgba(0,255,225,.25); border: 1px solid #00ffe1; height: 11px; border-radius: 1px; }
+    .mq-mini-arcade .mq-mini-arc-row.short { width: 60%; border-color: #ff5af2; background: rgba(255, 90, 242, .25); }
+
+    /* ── Questions card ── */
+    .mq-card {
+        background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+        padding: 24px; box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+    }
+    .mq-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .mq-card-icon {
+        width: 42px; height: 42px; border-radius: 10px;
+        background: linear-gradient(135deg, #013D42, #037984);
+        color: #fff; display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0;
+    }
+    .mq-card-head h3 { margin: 0; font-size: 18px; font-weight: 700; color: #0f172a; }
+    .mq-card-head small { color: #64748b; font-size: 13px; }
+    .mq-card-head small a { color: #037984; }
+    .mq-count {
+        display: inline-block; background: #f1f5f9; color: #475569;
+        padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 600;
+        margin-left: 6px;
+    }
+
+    .mq-empty {
+        text-align: center; padding: 30px;
+        background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px;
+        color: #64748b; font-size: 14px;
+    }
+    .mq-empty a { color: #037984; font-weight: 600; text-decoration: none; }
+    .mq-empty a:hover { text-decoration: underline; }
+
+    .mq-q-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+    .mq-q {
+        border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px;
+        background: #fafbfc; scroll-margin-top: 80px;
+    }
+    .mq-q-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .mq-q-num {
+        background: linear-gradient(135deg, #013D42, #037984); color: #fff;
+        padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+    }
+    .mq-q-correct {
+        font-size: 12px; color: #15803d; font-weight: 600;
+        background: #dcfce7; padding: 3px 10px; border-radius: 999px;
+    }
+    .mq-q-correct b { font-weight: 800; }
+    .mq-q-text { font-size: 16px; color: #0f172a; font-weight: 600; line-height: 1.4; margin: 4px 0 12px; }
+
+    .mq-q-options { display: flex; flex-direction: column; gap: 6px; }
+    .mq-q-opt {
+        display: grid; grid-template-columns: 32px 1fr auto; gap: 12px; align-items: center;
+        padding: 9px 14px; border-radius: 8px; background: #fff;
+        border: 1.5px solid #e2e8f0; transition: background .15s;
+    }
+    .mq-q-opt-letter {
+        width: 28px; height: 28px; border-radius: 6px;
+        background: #f1f5f9; color: #475569;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 13px; flex-shrink: 0;
+    }
+    .mq-q-opt-text { font-size: 14px; color: #334155; }
+    .mq-q-opt-tag {
+        font-size: 11px; font-weight: 700; color: #15803d;
+        background: #dcfce7; padding: 3px 10px; border-radius: 999px;
+        letter-spacing: .5px;
+    }
+    .mq-q-opt.ok {
+        background: linear-gradient(90deg, #dcfce7 0%, #f0fdf4 100%);
+        border-color: #86efac;
+    }
+    .mq-q-opt.ok .mq-q-opt-letter { background: #16a34a; color: #fff; }
+    .mq-q-opt.ok .mq-q-opt-text { color: #14532d; font-weight: 600; }
+</style>
