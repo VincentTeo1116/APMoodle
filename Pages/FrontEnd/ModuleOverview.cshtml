@@ -15,6 +15,7 @@
 <head>
     <title>@ViewData["Title"] - APMoodle</title>
     <link rel="stylesheet" href="~/css/module.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <div id="horizontalNavbar">
     <div class="PageTitle">
@@ -33,6 +34,7 @@
                 </select>
             </div>
             <div class="search-bar">
+                <i class="bi bi-search search-icon"></i>
                 <input type="text" id="searchModule" placeholder="Search modules..." />
             </div>
         </div>
@@ -57,7 +59,7 @@
             {
                 <div class="module-card">
                     <div class="module-cover">
-                        <span>📚</span>
+                        <span><i class="bi bi-book-half" style="color: white;"></i></span>
                     </div>
                     <div class="module-content">
                         <div class="module-code">@module.ModuleCode</div>
@@ -65,7 +67,7 @@
                         <p class="module-description">@(module.Description ?? "No description available")</p>
                     </div>
                     <div class="module-footer">
-                        <span class="module-lecturer">👨‍🏫 @(module.Lecturer?.Name ?? "Staff")</span>
+                        <span class="module-lecturer"><i class="bi bi-mortarboard-fill"></i> @(module.Lecturer?.Name ?? "Staff")</span>
                         <a href="/FrontEnd/TeachingMaterial/@module.ModuleID" class="btn-view">View Module</a>
                     </div>
                 </div>
@@ -74,7 +76,7 @@
         else
         {
             <div class="empty-state">
-                <span>📭</span>
+                <span><i class="bi bi-stack"></i></span>
                 <h3>No Modules Found</h3>
                 @if (userRole == "lecturer")
                 {
@@ -93,3 +95,4 @@
         }
     </div>
 </div>
+<script src="~/js/module.js" asp-append-version="true"></script>

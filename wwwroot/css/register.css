@@ -393,6 +393,7 @@ select option:hover {
     font-size: 13px;
     text-align: center;
     color: #BEE3DB;
+    font-weight: 400;
 }
 
 .register-text a {
@@ -401,6 +402,7 @@ select option:hover {
     position: relative;
     transition: all 0.3s ease;
     color: #BEE3DB;
+    font-weight: 700;
 }
 
 .register-text a::after {

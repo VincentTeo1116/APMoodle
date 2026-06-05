@@ -745,7 +745,7 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .forgot a::after {
@@ -871,7 +871,7 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
     font-size: 13px;
     text-align: center;
     color: #5d4e37;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .register-text a {
@@ -880,6 +880,7 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
     position: relative;
     transition: all 0.3s ease;
     color: #6b5d4f;
+    font-weight: 700;
 }
 
 .register-text a::after {
