@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model APMoodle.Pages.BackEnd.LoginModel
 @{
     Layout = null;
@@ -7,84 +7,217 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - APMoodle</title>
-    <link rel="stylesheet" href="~/css/login.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/loader.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
 
-<div class="login-wrapper">
-
-    <!-- LEFT SIDE -->
-    <div class="login-left">
-        <div class="logo-box">
-            <img src="~/images/logo.png" alt="Logo" />
+    <!-- ───────────── PAGE LOADER ───────────── -->
+    <div id="apm-loader" class="apm-loader apm-loader--rings">
+        <div class="apm-loader-stage">
+            <!-- Paper variant pieces (hidden when --rings class is on parent) -->
+            <svg class="apm-loader-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <g class="tassel-group">
+                    <path class="draw tassel-line" d="M150 60 L150 95" />
+                    <circle class="fill-tassel-bead" cx="150" cy="100" r="6" fill="#f5ebdc" />
+                </g>
+                <path class="draw" d="M100 50 L170 80 L100 110 L30 80 Z" />
+                <path class="fill-cap" d="M100 50 L170 80 L100 110 L30 80 Z" fill="#f5ebdc" />
+                <path class="draw s2" d="M40 90 L40 120 Q70 140 100 130 Q130 140 160 120 L160 90" />
+                <path class="draw s3"
+                      d="M30 135 Q65 155 100 145 Q135 155 170 135 L170 165 Q135 180 100 170 Q65 180 30 165 Z" />
+                <path class="fill-book-left" d="M30 140 Q65 158 100 148 L100 170 Q65 180 30 165 Z" fill="#f5ebdc"
+                      opacity="0.9" />
+                <path class="fill-book-right" d="M170 140 Q135 158 100 148 L100 170 Q135 180 170 165 Z" fill="#f5ebdc"
+                      opacity="0.75" />
+            </svg>
+            <!-- Rings variant (default) -->
+            <div class="apm-loader-rings">
+                <div class="ring r1"></div>
+                <div class="ring r2"></div>
+                <div class="ring r3"></div>
+            </div>
+            <div class="apm-loader-wordmark">APMoodle</div>
+            <div class="apm-loader-subtext">Loading Experience</div>
+            <div class="apm-loader-bar"><span></span></div>
         </div>
     </div>
 
-    <!-- RIGHT SIDE -->
-    <div class="login-right">
+    <div class="login-wrapper">
 
-        <!-- Toggle -->
-        <div class="toggle-box">
-            <button type="button" class="active" id="loginTab">Login</button>
-            <button type="button" id="registerTab">Register</button>
-        </div>
+        <!-- LEFT SIDE -->
+        <div class="login-left">
 
-        <h2>WELCOME BACK !</h2>
+            <!-- Floating particles -->
+            <div class="logo-particles" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+            </div>
 
-        <!-- Login Form -->
-        <form method="post" id="loginForm">
+            <div class="logo-stage">
 
-            @if (!string.IsNullOrEmpty(Model.Message))
-            {
-                <div class="alert-error">
-                    ❌ @Model.Message
+                <!-- Decorative orbit rings -->
+                <div class="logo-orbit" aria-hidden="true"></div>
+                <div class="logo-orbit-inner" aria-hidden="true"></div>
+
+                <!-- Hover sparkle burst (6 particles fly outward when logo is hovered) -->
+                <div class="logo-sparkles" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                    <span></span><span></span><span></span>
                 </div>
-            }
 
-            <label>User ID or Email</label>
-            <input type="text" name="Input.UserId" placeholder="Enter User ID or Email" required />
+                <!-- The animated APMoodle mark: graduation cap + open book + hanging tassel -->
+                <svg class="logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img"
+                     aria-label="APMoodle logo">
 
-            <label>Password</label>
-            <div class="password-box">
-                <input type="password" name="Input.Password" id="password" placeholder="Enter Password" required />
-                <span class="eye" id="togglePassword">
-                    <i class="far fa-eye-slash"></i>
-                </span>
+                    <!-- ───── CAP ─────
+                     Band drawn first (back), then diamond on top so all 4 corners of the
+                     square stay visible and the band peeks out from below the diamond. -->
+
+                    <!-- Cap underside band (back layer) -->
+                    <path class="draw s2" d="M48 92 L48 116 Q75 128 100 126 Q125 128 152 116 L152 92" />
+                    <path class="fill-cap-band"
+                          d="M48 92 L48 116 Q75 128 100 126 Q125 128 152 116 L152 92 Q125 102 100 102 Q75 102 48 92 Z"
+                          fill="#c9b48a" opacity="0.9" />
+
+                    <!-- Mortarboard (top diamond) — drawn AFTER the band so it sits in front -->
+                    <path class="draw" d="M100 38 L175 72 L100 106 L25 72 Z" />
+                    <path class="fill-cap" d="M100 38 L175 72 L100 106 L25 72 Z" fill="#f5ebdc" />
+
+                    <!-- Cap top button (where the tassel attaches) -->
+                    <circle class="cap-button" cx="100" cy="42" r="5" fill="#f5ebdc" stroke="#3d3027"
+                            stroke-width="0.6" />
+
+                    <!-- ───── TASSEL (cord drapes from button over right edge, ball hangs with fringe) ───── -->
+                    <g class="tassel-group">
+                        <!-- Cord drapes from cap-button over the right corner, hangs OUT to the right of the book -->
+                        <path class="draw tassel-line" d="M 100 42 Q 150 50 175 72 Q 196 96 184 118" />
+                        <!-- Hanging ball — clearly to the right of the book -->
+                        <circle class="fill-tassel-bead" cx="184" cy="128" r="10" fill="#f5ebdc" />
+                        <!-- Glossy highlight on ball (3D feel) -->
+                        <circle class="tassel-bead-shine" cx="180" cy="124" r="3" fill="#ffffff" opacity="0.8" />
+                        <!-- Fringe strings hanging beneath the ball -->
+                        <g class="tassel-fringe">
+                            <line x1="184" y1="138" x2="177" y2="154" stroke="#f5ebdc" stroke-width="1.4"
+                                  stroke-linecap="round" />
+                            <line x1="184" y1="138" x2="184" y2="156" stroke="#f5ebdc" stroke-width="1.4"
+                                  stroke-linecap="round" />
+                            <line x1="184" y1="138" x2="191" y2="154" stroke="#f5ebdc" stroke-width="1.4"
+                                  stroke-linecap="round" />
+                        </g>
+                    </g>
+
+                    <!-- ───── OPEN BOOK (V-shape with two pages, spine, text lines) ───── -->
+                    <!-- Page left -->
+                    <path class="draw s3" d="M28 148 L100 132 L100 174 L28 168 Z" />
+                    <path class="fill-book-left" d="M28 148 L100 132 L100 174 L28 168 Z" fill="#f5ebdc" />
+
+                    <!-- Page right -->
+                    <path class="draw s3" d="M172 148 L100 132 L100 174 L172 168 Z" />
+                    <path class="fill-book-right" d="M172 148 L100 132 L100 174 L172 168 Z" fill="#f5ebdc"
+                          opacity="0.92" />
+
+                    <!-- Center spine line -->
+                    <line class="book-spine" x1="100" y1="132" x2="100" y2="174" stroke="#8b7355" stroke-width="1.4"
+                          stroke-linecap="round" />
+
+                    <!-- Soft text-line suggestion (left page, follows page slope) -->
+                    <g class="book-text-lines">
+                        <line x1="40" y1="155" x2="90" y2="146" stroke="#8b7355" stroke-width="1.1"
+                              stroke-linecap="round" />
+                        <line x1="40" y1="161" x2="90" y2="153" stroke="#8b7355" stroke-width="1.1"
+                              stroke-linecap="round" />
+                        <line x1="40" y1="167" x2="90" y2="160" stroke="#8b7355" stroke-width="1.1"
+                              stroke-linecap="round" />
+                    </g>
+
+                    <!-- Soft text-line suggestion (right page) -->
+                    <g class="book-text-lines">
+                        <line x1="110" y1="146" x2="160" y2="155" stroke="#8b7355" stroke-width="1.1"
+                              stroke-linecap="round" />
+                        <line x1="110" y1="153" x2="160" y2="161" stroke="#8b7355" stroke-width="1.1"
+                              stroke-linecap="round" />
+                        <line x1="110" y1="160" x2="160" y2="167" stroke="#8b7355" stroke-width="1.1"
+                              stroke-linecap="round" />
+                    </g>
+                </svg>
+
+                <div class="logo-wordmark">
+                    APMoodle
+                    <span class="tag">LEARN · TEACH · GROW</span>
+                </div>
             </div>
-
-            <div class="forgot">
-                <a href="/ForgotPassword">FORGOT PASSWORD?</a>
-            </div>
-
-            <button type="submit" class="btn-login">SIGN IN</button>
-
-        </form>
-
-        <!-- Divider -->
-        <div class="divider">
-            <span>OR</span>
         </div>
 
-        <!-- Guest Mode Button -->
-        <form method="post" asp-page-handler="Guest">
-            <button type="submit" class="btn-guest">🎭 CONTINUE AS GUEST</button>
-        </form>
+        <!-- RIGHT SIDE -->
+        <div class="login-right">
 
-        <div class="register-text">
-            DON'T HAVE ACCOUNT YET ?
-            <a href="/FrontEnd/Register">JOIN US NOW !</a>
+            <!-- Toggle -->
+            <div class="toggle-box">
+                <button type="button" class="active" id="loginTab">Login</button>
+                <button type="button" id="registerTab">Register</button>
+            </div>
+
+            <h2>WELCOME BACK !</h2>
+
+            <!-- Login Form -->
+            <form method="post" id="loginForm">
+
+                @if (!string.IsNullOrEmpty(Model.Message))
+                {
+                    <div class="alert-error">
+                        ❌ @Model.Message
+                    </div>
+                }
+
+                <label>User ID or Email</label>
+                <input type="text" name="Input.UserId" placeholder="Enter User ID or Email" required />
+
+                <label>Password</label>
+                <div class="password-box">
+                    <input type="password" name="Input.Password" id="password" placeholder="Enter Password" required />
+                    <span class="eye" id="togglePassword">
+                        <i class="far fa-eye-slash"></i>
+                    </span>
+                </div>
+
+                <div class="forgot">
+                    <a href="/ForgotPassword">FORGOT PASSWORD?</a>
+                </div>
+
+                <button type="submit" class="btn-login">SIGN IN</button>
+
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Guest Mode Button -->
+            <form method="post" asp-page-handler="Guest">
+                <button type="submit" class="btn-guest">🎭 CONTINUE AS GUEST</button>
+            </form>
+
+            <div class="register-text">
+                DON'T HAVE ACCOUNT YET ?
+                <a href="/FrontEnd/Register">JOIN US NOW !</a>
+            </div>
+
         </div>
 
     </div>
 
-</div>
-
-<script src="~/js/login.js"></script>
+    <script src="~/js/loader.js" asp-append-version="true"></script>
+    <script src="~/js/login.js" asp-append-version="true"></script>
 
 </body>
+
 </html>

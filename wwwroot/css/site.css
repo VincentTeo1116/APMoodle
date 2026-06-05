@@ -472,7 +472,207 @@ body:has(.expandable-vertical-menu.expanded) .container {
     font-size: 0.875rem;
 }
 
-/* Success Popup Styles */
+/* ========== RESPONSIVE STYLES ========== */
+@media (max-width: 768px) {
+    body {
+        padding-top: 55px;
+    }
+    
+    body:has(.expandable-vertical-menu) .container {
+        margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .expandable-vertical-menu {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .expandable-vertical-menu.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .announcement-stats-grid {
+        flex-direction: column;
+    }
+    
+    .announcement-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ========== REUSABLE MODAL STYLES ========== */
+/* Modal Overlay - can be used for any modal (error, confirm, success, etc.) */
+.modal-overlay-full {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 100000;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal Container - base container for all modals */
+.modal-container {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    text-align: center;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+/* Modal Icon Base */
+.modal-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.modal-icon i {
+    font-size: 64px;
+}
+
+/* Modal Icon Variants */
+.error-icon {
+    color: #ef4444;
+}
+
+.success-icon {
+    color: #28a745;
+}
+
+.warning-icon {
+    color: #f59e0b;
+}
+
+.info-icon {
+    color: #3b82f6;
+}
+
+.question-icon {
+    color: #3b82f6;
+}
+
+/* Modal Title */
+.modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #1e293b;
+}
+
+/* Modal Message */
+.modal-message {
+    color: #64748b;
+    margin-bottom: 24px;
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+/* Modal Warning */
+.modal-warning {
+    background: #fef3c7;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.modal-warning i {
+    color: #f59e0b;
+    font-size: 18px;
+}
+
+.modal-warning span {
+    color: #92400e;
+    font-size: 13px;
+}
+
+/* Modal Actions Buttons Container */
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Modal Buttons Base */
+.modal-btn {
+    padding: 12px 32px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 14px;
+    min-width: 120px;
+}
+
+/* Modal Button Variants */
+.modal-btn.modal-cancel {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.modal-btn.modal-cancel:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+}
+
+.modal-btn.modal-confirm {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+.modal-btn.modal-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.modal-btn.modal-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.modal-btn.modal-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.modal-btn.modal-success {
+    background: linear-gradient(135deg, #28a745, #059669);
+    color: white;
+}
+
+.modal-btn.modal-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+/* Modal Animation */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Success Popup Styles (Reusable) */
 #successPopup {
     position: fixed;
     top: 0;
@@ -543,36 +743,5 @@ body:has(.expandable-vertical-menu.expanded) .container {
     to {
         opacity: 1;
         transform: translateY(0);
-    }
-}
-
-/* ========== RESPONSIVE STYLES ========== */
-@media (max-width: 768px) {
-    body {
-        padding-top: 55px;
-    }
-    
-    body:has(.expandable-vertical-menu) .container {
-        margin-left: 0;
-        width: 100%;
-        max-width: 100%;
-    }
-    
-    .expandable-vertical-menu {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }
-    
-    .expandable-vertical-menu.mobile-open {
-        transform: translateX(0);
-    }
-    
-    .announcement-stats-grid {
-        flex-direction: column;
-    }
-    
-    .announcement-card-header {
-        flex-direction: column;
-        align-items: flex-start;
     }
 }

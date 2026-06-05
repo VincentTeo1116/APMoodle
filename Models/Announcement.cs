@@ -35,5 +35,12 @@ namespace APMoodle.Models
 
         [ForeignKey("DeletedBy")]
         public virtual Admin? Deleter { get; set; }
+
+        [Column(TypeName = "timestamp with time zone")]
+        public DateTime? LastModifiedAt {get; set;}
+        public int? LastModifiedBy {get; set;}
+        [ForeignKey("LastModifiedBy")]
+        public virtual Admin? LastModifier {get; set;}
+        
     }
 }

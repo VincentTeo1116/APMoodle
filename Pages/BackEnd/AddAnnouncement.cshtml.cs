@@ -70,12 +70,14 @@ namespace APMoodle.Pages.BackEnd
                 Title = Title.Trim(),
                 Message = Message.Trim(),
                 CreatedBy = currentUserId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Status = "Active"
             };
 
             try
             {
-                await _announcementService.CreateAnnouncementAsync(announcement);
+                // Pass the currentUserId as the createdByAdminId parameter
+                await _announcementService.CreateAnnouncementAsync(announcement, currentUserId);
                 
                 // Set flag to show popup on GET request
                 TempData["ShowSuccessPopup"] = true;
@@ -104,7 +106,7 @@ namespace APMoodle.Pages.BackEnd
                 return sessionUserId.Value;
             }
 
-            return 1;
+            return 1; // Default fallback
         }
     }
 }

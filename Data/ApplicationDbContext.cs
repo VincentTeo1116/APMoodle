@@ -266,7 +266,15 @@ namespace APMoodle.Data
                         v => v.HasValue ? v.Value.ToUniversalTime() : v,
                         v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v
                     );
+                
+                entity.Property(a => a.LastModifiedAt)
+                    .HasColumnType("timestamp with time zone")
+                    .HasConversion(
+                        v => v.HasValue ? v.Value.ToUniversalTime() : v,
+                        v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) :v
+                    );
 
+                entity.Property(a => a.LastModifiedBy);
                 entity.HasIndex(a => a.Status);
 
                 // Relationships

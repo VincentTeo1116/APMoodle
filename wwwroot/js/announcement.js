@@ -37,7 +37,6 @@ function initializeElements() {
 
 // Attach main event listeners
 function attachEventListeners() {
-    // Search and Filter
     if (searchInput) {
         searchInput.addEventListener('input', filterTable);
     }
@@ -48,7 +47,6 @@ function attachEventListeners() {
         filterCreatedBy.addEventListener('change', filterTable);
     }
     
-    // Modal close events
     if (modalClose) {
         modalClose.addEventListener('click', closeModal);
     }
@@ -56,7 +54,6 @@ function attachEventListeners() {
         modalCloseBtn.addEventListener('click', closeModal);
     }
     
-    // Close modal when clicking outside
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             closeModal();
@@ -78,22 +75,18 @@ function checkDateFilter(createdDate, filterValue) {
             const todayEnd = new Date(today);
             todayEnd.setHours(23, 59, 59, 999);
             return announcementDate >= todayStart && announcementDate <= todayEnd;
-            
         case 'week':
             const weekAgo = new Date(today);
             weekAgo.setDate(today.getDate() - 7);
             return announcementDate >= weekAgo;
-            
         case 'month':
             const monthAgo = new Date(today);
             monthAgo.setMonth(today.getMonth() - 1);
             return announcementDate >= monthAgo;
-            
         case 'year':
             const yearAgo = new Date(today);
             yearAgo.setFullYear(today.getFullYear() - 1);
             return announcementDate >= yearAgo;
-            
         default:
             return true;
     }
@@ -107,7 +100,6 @@ function filterTable() {
     const dateFilter = filterDateRange.value;
     const creatorFilter = filterCreatedBy.value;
     
-    // Re-query rows to get current state
     const currentRows = tableBody.querySelectorAll('tr:not(.empty-row)');
     let visibleCount = 0;
     
@@ -129,12 +121,10 @@ function filterTable() {
         }
     });
     
-    // Update filtered count
     if (filteredCountSpan) {
         filteredCountSpan.textContent = visibleCount;
     }
     
-    // Show/hide empty message if no visible rows
     const emptyMessage = tableBody.querySelector('.empty-row');
     
     if (visibleCount === 0 && !emptyMessage && currentRows.length > 0) {
@@ -156,21 +146,18 @@ function updateFilteredCount() {
     }
 }
 
-// Initialize all action buttons (View, Edit, Delete)
+// Initialize all action buttons
 function initializeActionButtons() {
-    // View buttons
     document.querySelectorAll('.view-btn').forEach(btn => {
         btn.removeEventListener('click', handleViewClick);
         btn.addEventListener('click', handleViewClick);
     });
     
-    // Edit buttons
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.removeEventListener('click', handleEditClick);
         btn.addEventListener('click', handleEditClick);
     });
     
-    // Delete buttons
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.removeEventListener('click', handleDeleteClick);
         btn.addEventListener('click', handleDeleteClick);
@@ -183,36 +170,43 @@ async function handleViewClick(e) {
     const id = btn.getAttribute('data-id');
     
     try {
-        showLoadingModal();
+        modalContent.innerHTML = '<div style="text-align:center; padding: 40px;"><div class="loading-spinner"></div><p style="margin-top: 16px;">Loading announcement details...</p></div>';
+        modal.style.display = 'flex';
         
         const response = await fetch(`?handler=Details&id=${id}`);
         if (!response.ok) throw new Error('Failed to load details');
         
         const data = await response.json();
         
-        const content = `
-            <div class="detail-item">
-                <strong>Title:</strong>
-                <p>${escapeHtml(data.title)}</p>
+        if (modalTitle) {
+            modalTitle.textContent = 'Announcements';
+        }
+        
+        const html = `
+            <div class="detail-header">
+                <h2 class="detail-title">${escapeHtml(data.title)}</h2>
+                <div class="detail-meta">
+                    <span class="meta-creator">
+                        <i class="bi bi-person-circle"></i>
+                        Created by ${escapeHtml(data.createdBy)}
+                    </span>
+                    <span class="meta-date">
+                        <i class="bi bi-calendar3"></i>
+                        ${escapeHtml(data.createdAt)}
+                    </span>
+                </div>
             </div>
-            <div class="detail-item">
-                <strong>Message:</strong>
-                <p>${escapeHtml(data.message)}</p>
-            </div>
-            <div class="detail-item">
-                <strong>Created By:</strong>
-                <p>${escapeHtml(data.createdBy)}</p>
-            </div>
-            <div class="detail-item">
-                <strong>Created At:</strong>
-                <p>${escapeHtml(data.createdAt)}</p>
+            <div class="detail-divider"></div>
+            <div class="detail-content">
+                ${escapeHtml(data.message).replace(/\n/g, '<br>')}
             </div>
         `;
         
-        openModal('Announcement Details', content);
+        modalContent.innerHTML = html;
+        
     } catch (error) {
         console.error('Error:', error);
-        showTemporaryMessage('Error loading announcement details', 'error');
+        modalContent.innerHTML = '<div style="text-align:center; padding: 40px; color: #ef4444;"><i class="bi bi-exclamation-triangle-fill" style="font-size: 48px;"></i><p style="margin-top: 16px;">Error loading announcement details</p></div>';
     }
 }
 
@@ -220,47 +214,42 @@ async function handleViewClick(e) {
 function handleEditClick(e) {
     const btn = e.currentTarget;
     const id = btn.getAttribute('data-id');
-    window.location.href = `/BackEnd/EditAnnouncement?id=${id}`;
+    window.location.href = `/FrontEnd/EditAnnouncement?id=${id}`;
 }
 
-// Handle Delete button click - Show custom modal
+// Handle Delete button click
 function handleDeleteClick(e) {
     const btn = e.currentTarget;
     const id = btn.getAttribute('data-id');
     const row = btn.closest('tr');
     const title = row.querySelector('.title-cell').textContent;
-    
-    // Show confirmation modal
     showDeleteModal(id, row, title);
 }
 
-// Create and add delete confirmation modal to the page
+// Create delete confirmation modal
 function createDeleteModal() {
-    // Check if modal already exists
     if (document.getElementById('deleteConfirmModal')) return;
     
     const modalHtml = `
-        <div id="deleteConfirmModal" class="delete-modal" style="display: none;">
-            <div class="delete-modal-overlay"></div>
-            <div class="delete-modal-container">
-                <div class="delete-modal-content">
-                    <div class="delete-modal-icon">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                    </div>
-                    <h3>Confirm Delete</h3>
-                    <p>Are you sure you want to delete this announcement?</p>
-                    <p id="deleteTitle" class="delete-title"></p>
-                    <p class="delete-warning">This action cannot be undone.</p>
-                    <div class="delete-modal-actions">
-                        <button class="delete-modal-btn cancel-btn" id="deleteCancelBtn">
-                            <i class="bi bi-x-circle"></i>
-                            Cancel
-                        </button>
-                        <button class="delete-modal-btn confirm-btn" id="deleteConfirmBtn">
-                            <i class="bi bi-trash"></i>
-                            Delete
-                        </button>
-                    </div>
+        <div id="deleteConfirmModal" class="modal-overlay-full" style="display: none;">
+            <div class="modal-container">
+                <div class="modal-icon warning-icon">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <h3 class="modal-title">Confirm Delete</h3>
+                <p class="modal-message">Are you sure you want to delete this announcement?</p>
+                <p id="deleteTitle" style="font-weight: 600; color: #ef4444; background: #fef2f2; padding: 10px; border-radius: 10px; margin: 16px 0;"></p>
+                <div class="modal-warning">
+                    <i class="bi bi-shield-exclamation"></i>
+                    <span>This action cannot be undone.</span>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-cancel" id="deleteCancelBtn">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </button>
+                    <button class="modal-btn modal-danger" id="deleteConfirmBtn">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -268,16 +257,21 @@ function createDeleteModal() {
     
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     
-    // Add event listeners to modal buttons
     const cancelBtn = document.getElementById('deleteCancelBtn');
     const confirmBtn = document.getElementById('deleteConfirmBtn');
-    const overlay = document.querySelector('.delete-modal-overlay');
     
-    if (cancelBtn) cancelBtn.addEventListener('click', closeDeleteModal);
-    if (confirmBtn) confirmBtn.addEventListener('click', confirmDelete);
-    if (overlay) overlay.addEventListener('click', closeDeleteModal);
+    if (cancelBtn) {
+        const newCancelBtn = cancelBtn.cloneNode(true);
+        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+        newCancelBtn.addEventListener('click', closeDeleteModal);
+    }
     
-    // Close on Escape key
+    if (confirmBtn) {
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        newConfirmBtn.addEventListener('click', confirmDelete);
+    }
+    
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             const modal = document.getElementById('deleteConfirmModal');
@@ -316,6 +310,7 @@ function closeDeleteModal() {
     pendingDeleteTitle = null;
 }
 
+// Confirm delete
 async function confirmDelete() {
     if (!pendingDeleteId) return;
 
@@ -426,41 +421,62 @@ function showTemporaryMessage(message, type) {
     }, 3000);
 }
 
-// Show loading state in modal
-function showLoadingModal() {
-    openModal('Loading', '<div style="text-align:center; padding: 40px;"><div class="loading-spinner"></div><p style="margin-top: 16px;">Loading announcement details...</p></div>');
-}
-
-// Modal functions
-function openModal(title, content) {
-    if (!modal || !modalTitle || !modalContent) return;
-    modalTitle.textContent = title;
-    modalContent.innerHTML = content;
-    modal.style.display = 'flex';
-}
-
+// Show success popup after delete
 function showSuccessPopup() {
-    const modal = document.getElementById('successPopupModal');
-    const closeBtn = document.getElementById('successCloseBtn');
-
-    if (modal) {
-        modal.style.display = 'flex';
+    let modal = document.getElementById('successDeleteModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'successDeleteModal';
+        modal.className = 'modal-overlay-full';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-container">
+                <div class="modal-icon success-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h3 class="modal-title">Deleted Successfully</h3>
+                <p class="modal-message">The announcement has been removed.</p>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-success" id="successDeleteCloseBtn">
+                        <i class="bi bi-check-circle"></i> OK
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
     }
-
-    if (closeBtn) {
-        closeBtn.onclick = function () {
+    
+    modal.style.display = 'flex';
+    
+    const closeBtn = document.getElementById('successDeleteCloseBtn');
+    const newCloseBtn = closeBtn.cloneNode(true);
+    closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+    
+    newCloseBtn.onclick = function() {
+        modal.style.display = 'none';
+    };
+    
+    modal.onclick = function(e) {
+        if (e.target === modal) {
             modal.style.display = 'none';
-        };
-    }
+        }
+    };
     
     setTimeout(() => {
         if (modal) modal.style.display = 'none';
     }, 2500);
 }
 
+// Close main modal
 function closeModal() {
     if (modal) {
         modal.style.display = 'none';
+        if (modalTitle) {
+            modalTitle.textContent = 'Announcement Details';
+        }
+        if (modalContent) {
+            modalContent.innerHTML = '';
+        }
     }
 }
 
@@ -472,12 +488,12 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Re-initialize action buttons when table content changes
+// Re-initialize action buttons
 function refreshActionButtons() {
     initializeActionButtons();
 }
 
-// Export for debugging if needed
+// Export for debugging
 window.announcementHelpers = {
     filterTable,
     refreshActionButtons,

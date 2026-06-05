@@ -13,11 +13,12 @@ body {
     align-items: center;
     justify-content: center;
 
+    /* Warm vintage paper background */
     background:
-        radial-gradient(circle at top left, #BEE3DB, transparent),
-        radial-gradient(circle at bottom right, #BEE3DB, transparent),
-        radial-gradient(circle at center, #025b63, transparent),
-        #0b1220;
+        radial-gradient(circle at top left, #f4e4c1, transparent),
+        radial-gradient(circle at bottom right, #e8d5b7, transparent),
+        radial-gradient(circle at center, #d4c4a8, transparent),
+        #c9b697;
 
     overflow: hidden;
 }
@@ -31,14 +32,14 @@ body {
     border-radius: 20px;
     overflow: hidden;
 
-    background: rgba(1, 61, 66, 0.15);
+    background: rgba(245, 235, 220, 0.3);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 
-    border: 1px solid rgba(190, 227, 219, 0.3);
+    border: 1px solid rgba(139, 115, 85, 0.3);
 
-    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-    
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+
     animation: fadeInUp 0.8s ease-out;
 }
 
@@ -53,19 +54,24 @@ body {
     }
 }
 
-/* ───────────────── LEFT ───────────────── */
+/* ───────────────── LEFT (Vintage tan with animated stage) ───────────────── */
 .login-left {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: rgba(1, 61, 66, 0.85);
+    background:
+        radial-gradient(circle at 30% 20%, rgba(245,235,220,0.18), transparent 55%),
+        radial-gradient(circle at 70% 80%, rgba(61,48,39,0.25), transparent 60%),
+        #b7a47b;
     backdrop-filter: blur(20px);
 
     position: relative;
+    overflow: hidden;
 }
 
+/* big soft pulsing blob (kept from original) */
 .login-left::after {
     content: "";
     position: absolute;
@@ -73,7 +79,7 @@ body {
     width: 300px;
     height: 300px;
 
-    background: rgba(1, 61, 66, 0.35);
+    background: #907f57;
 
     border-radius: 50%;
 
@@ -81,8 +87,9 @@ body {
     left: -80px;
 
     filter: blur(40px);
-    
+
     animation: pulse 4s ease-in-out infinite;
+    z-index: 0;
 }
 
 @keyframes pulse {
@@ -96,7 +103,371 @@ body {
     }
 }
 
-/* ───────────────── LOGO ───────────────── */
+/* ───────────────── ANIMATED LOGO STAGE ───────────────── */
+.logo-stage {
+    position: relative;
+    width: 320px;
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* Decorative orbit ring */
+.logo-orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 280px;
+    height: 280px;
+    margin-top: -160px;
+    margin-left: -140px;
+    border: 1px dashed rgba(245, 235, 220, 0.45);
+    border-radius: 50%;
+    opacity: 0;
+    animation:
+        orbitIn 1.4s ease-out 1.6s forwards,
+        orbitSpin 22s linear 1.6s infinite;
+}
+
+.logo-orbit::before,
+.logo-orbit::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f5ebdc;
+    box-shadow: 0 0 14px rgba(245, 235, 220, 0.9);
+}
+
+.logo-orbit::before { top: -5px; left: 50%; transform: translateX(-50%); }
+.logo-orbit::after  { bottom: -5px; left: 50%; transform: translateX(-50%); background: #3d3027; box-shadow: 0 0 10px rgba(61,48,39,0.6); }
+
+@keyframes orbitIn {
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: 1; transform: scale(1); }
+}
+@keyframes orbitSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Inner counter-rotating ring */
+.logo-orbit-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 220px;
+    height: 220px;
+    margin-top: -130px;
+    margin-left: -110px;
+    border: 1px solid rgba(245, 235, 220, 0.25);
+    border-radius: 50%;
+    opacity: 0;
+    animation:
+        orbitIn 1.4s ease-out 1.8s forwards,
+        orbitSpin 30s linear 1.8s infinite reverse;
+}
+
+/* Floating particles */
+.logo-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.logo-particles span {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f5ebdc;
+    box-shadow: 0 0 12px rgba(245, 235, 220, 0.8);
+    opacity: 0;
+    animation: floatUp 7s linear infinite;
+}
+
+.logo-particles span:nth-child(1) { left: 10%; bottom: -10px; animation-delay: 2.2s; }
+.logo-particles span:nth-child(2) { left: 25%; bottom: -20px; animation-delay: 3.4s; width: 4px; height: 4px; }
+.logo-particles span:nth-child(3) { left: 40%; bottom: -30px; animation-delay: 4.1s; }
+.logo-particles span:nth-child(4) { left: 60%; bottom: -10px; animation-delay: 2.8s; width: 5px; height: 5px; }
+.logo-particles span:nth-child(5) { left: 75%; bottom: -25px; animation-delay: 3.9s; }
+.logo-particles span:nth-child(6) { left: 88%; bottom: -15px; animation-delay: 5.0s; width: 4px; height: 4px; }
+.logo-particles span:nth-child(7) { left: 50%; bottom: -5px;  animation-delay: 4.6s; }
+.logo-particles span:nth-child(8) { left: 18%; bottom: -25px; animation-delay: 6.1s; width: 5px; height: 5px; }
+
+@keyframes floatUp {
+    0%   { transform: translateY(0) scale(0.6); opacity: 0; }
+    15%  { opacity: 1; }
+    80%  { opacity: 0.8; }
+    100% { transform: translateY(-380px) scale(1.1); opacity: 0; }
+}
+
+/* The SVG logo itself */
+.logo-svg {
+    width: 210px;
+    height: 210px;
+    position: relative;
+    z-index: 3;
+    /* Allow the swinging tassel ball to render OUTSIDE the 200x200 viewBox
+       (it crosses x=200 at the far-right of its arc). SVGs clip to viewBox
+       by default — this opts out. */
+    overflow: visible;
+    filter: drop-shadow(0 12px 22px rgba(61,48,39,0.55));
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                filter 0.45s ease;
+}
+
+/* All strokes start invisible, draw in */
+.logo-svg .draw {
+    fill: transparent;
+    stroke: #f5ebdc;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: drawStroke 1.6s ease-out forwards;
+}
+
+.logo-svg .draw.s2 { animation-delay: 0.4s; }
+.logo-svg .draw.s3 { animation-delay: 0.8s; }
+.logo-svg .draw.tassel-line { animation-delay: 1.0s; stroke-dasharray: 200; stroke-dashoffset: 200; }
+
+/* Filled shapes that bloom in after strokes finish */
+.logo-svg .fill-cap,
+.logo-svg .fill-cap-band,
+.logo-svg .cap-button,
+.logo-svg .fill-book-left,
+.logo-svg .fill-book-right,
+.logo-svg .fill-tassel-bead,
+.logo-svg .tassel-bead-shine,
+.logo-svg .book-spine,
+.logo-svg .tassel-fringe {
+    opacity: 0;
+    transform-origin: center;
+    animation: bloomFill 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.logo-svg .fill-cap         { animation-delay: 1.45s; }
+.logo-svg .fill-cap-band    { animation-delay: 1.55s; }
+.logo-svg .cap-button       { animation-delay: 1.65s; }
+.logo-svg .fill-book-left   { animation-delay: 1.70s; }
+.logo-svg .fill-book-right  { animation-delay: 1.80s; }
+.logo-svg .book-spine       { animation-delay: 1.85s; }
+.logo-svg .fill-tassel-bead { animation-delay: 1.95s; }
+.logo-svg .tassel-bead-shine{ animation-delay: 2.10s; }
+.logo-svg .tassel-fringe    { animation-delay: 2.20s; }
+
+/* Book text lines: stagger-fade after pages settle */
+.logo-svg .book-text-lines line {
+    opacity: 0;
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: drawStroke 0.5s ease-out forwards,
+               fadeOnly 0.4s ease-out forwards;
+}
+.logo-svg .book-text-lines line:nth-child(1) { animation-delay: 2.10s, 2.10s; }
+.logo-svg .book-text-lines line:nth-child(2) { animation-delay: 2.18s, 2.18s; }
+.logo-svg .book-text-lines line:nth-child(3) { animation-delay: 2.26s, 2.26s; }
+
+@keyframes fadeOnly {
+    to { opacity: 0.6; }
+}
+
+/* Tassel sways forever after drawing — pivots at the cap top button (100, 42 in viewBox units) */
+.logo-svg .tassel-group {
+    transform-origin: 100px 42px;
+    transform-box: view-box;
+    animation: tasselSway 3.2s ease-in-out 2.4s infinite;
+}
+
+/* ────────────── HOVER · "Graduation Celebration" ──────────────
+   - Whole mark lifts and brightens
+   - Halo behind the stage glows
+   - Tassel does a dramatic pendulum swing
+   - 6 cream-gold sparkles burst outward from the cap
+*/
+
+.logo-stage {
+    cursor: pointer;
+}
+
+/* Halo behind the logo (pseudo-element of the stage) */
+.logo-stage::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 260px;
+    height: 260px;
+    margin-top: -130px;
+    margin-left: -130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 235, 220, 0.55), transparent 60%);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(2px);
+}
+
+.logo-stage:hover::before {
+    opacity: 1;
+    transform: scale(1.05);
+    animation: haloPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes haloPulse {
+    0%, 100% { transform: scale(1.05); }
+    50%      { transform: scale(1.15); }
+}
+
+/* The logo lifts and glows */
+.logo-stage:hover .logo-svg {
+    transform: translateY(-10px) scale(1.05);
+    filter: drop-shadow(0 28px 40px rgba(61, 48, 39, 0.7))
+            drop-shadow(0 0 18px rgba(245, 235, 220, 0.5))
+            brightness(1.08);
+}
+
+/* Tassel swings dramatically on hover (pendulum with overshoot) */
+.logo-stage:hover .tassel-group {
+    animation: tasselSwingHover 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Outer orbit rings — pulse-glow on hover (no duration change so they don't restart) */
+.logo-stage:hover .logo-orbit,
+.logo-stage:hover .logo-orbit-inner {
+    box-shadow: 0 0 30px rgba(245, 235, 220, 0.4),
+                inset 0 0 20px rgba(245, 235, 220, 0.3);
+    border-color: rgba(245, 235, 220, 0.7);
+}
+
+.logo-orbit,
+.logo-orbit-inner {
+    transition: box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+/* Wordmark gets brighter on hover */
+.logo-stage:hover ~ .logo-wordmark,
+.logo-wordmark { transition: text-shadow 0.4s ease, transform 0.4s ease; }
+
+.logo-stage:hover .logo-wordmark {
+    text-shadow: 0 4px 14px rgba(61, 48, 39, 0.6),
+                 0 0 22px rgba(245, 235, 220, 0.7);
+    transform: translateY(-2px);
+}
+
+/* Sparkle burst — 6 cream particles fly outward */
+.logo-sparkles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.logo-sparkles span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    margin-top: -5px;
+    margin-left: -5px;
+    border-radius: 50%;
+    background: #f5ebdc;
+    box-shadow: 0 0 12px rgba(245, 235, 220, 0.95),
+                0 0 22px rgba(255, 220, 150, 0.45);
+    opacity: 0;
+    transform: scale(0.3);
+}
+
+.logo-stage:hover .logo-sparkles span {
+    animation: sparkleBurst 0.95s ease-out forwards;
+}
+
+.logo-sparkles span:nth-child(1) { --dx: -110px; --dy: -70px;  animation-delay: 0.05s; }
+.logo-sparkles span:nth-child(2) { --dx:  110px; --dy: -70px;  animation-delay: 0.10s; }
+.logo-sparkles span:nth-child(3) { --dx: -130px; --dy:  10px;  animation-delay: 0.15s; }
+.logo-sparkles span:nth-child(4) { --dx:  130px; --dy:  10px;  animation-delay: 0.20s; }
+.logo-sparkles span:nth-child(5) { --dx:  -50px; --dy: -130px; animation-delay: 0s;    }
+.logo-sparkles span:nth-child(6) { --dx:   50px; --dy: -130px; animation-delay: 0.05s; }
+
+@keyframes drawStroke {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes bloomFill {
+    0%   { opacity: 0; transform: scale(0.4); }
+    70%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Wider pendulum swing so the ball is clearly seen swinging back and forth */
+@keyframes tasselSway {
+    0%   { transform: rotate(0deg); }
+    25%  { transform: rotate(16deg); }
+    50%  { transform: rotate(0deg); }
+    75%  { transform: rotate(-16deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes tasselSwingHover {
+    0%   { transform: rotate(0deg); }
+    20%  { transform: rotate(-22deg); }
+    45%  { transform: rotate(18deg); }
+    65%  { transform: rotate(-12deg); }
+    85%  { transform: rotate(6deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes sparkleBurst {
+    0%   { opacity: 0; transform: translate(0, 0) scale(0.3); }
+    25%  { opacity: 1; transform: translate(calc(var(--dx) * 0.35), calc(var(--dy) * 0.35)) scale(1.3); }
+    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.6); }
+}
+
+/* Wordmark beneath logo */
+.logo-wordmark {
+    margin-top: 18px;
+    color: #f5ebdc;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-shadow: 0 4px 14px rgba(61,48,39,0.6);
+    position: relative;
+    z-index: 4;
+    opacity: 0;
+    animation: wordmarkIn 0.9s ease-out 2.2s forwards;
+}
+
+.logo-wordmark .tag {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    color: rgba(245, 235, 220, 0.7);
+    text-shadow: none;
+    opacity: 0;
+    animation: wordmarkIn 0.9s ease-out 2.6s forwards;
+}
+
+@keyframes wordmarkIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Old image hover/styling kept for backward compatibility if used elsewhere */
 .logo-box img {
     width: 180px;
     filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
@@ -108,7 +479,7 @@ body {
     filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
 }
 
-/* ───────────────── RIGHT ───────────────── */
+/* ───────────────── RIGHT (Old Paper Theme) ───────────────── */
 .login-right {
     flex: 1;
     display: flex;
@@ -118,7 +489,11 @@ body {
 
     padding: 40px;
 
-    background: rgba(1, 61, 66, 0.15);
+    /* Old paper texture */
+    background: linear-gradient(135deg,
+        rgba(245, 235, 220, 0.95),
+        rgba(238, 224, 203, 0.95)
+    );
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
     overflow-y: auto;
@@ -142,10 +517,11 @@ h2 {
     margin-bottom: -1px;
     font-size: 38px;
     font-weight: 700;
-    color: #EDF6F9;
+    color: #3d3027;
     text-align: center;
     letter-spacing: 2px;
-    
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+
     animation: slideInLeft 0.6s ease-out;
 }
 
@@ -164,8 +540,8 @@ h2 {
 .toggle-box {
     display: flex;
     justify-content: center;
-    background: rgba(1, 61, 66, 0.25);
-    border: 1px solid rgba(190, 227, 219, 0.3);
+    background: rgba(139, 115, 85, 0.15);
+    border: 1px solid rgba(139, 115, 85, 0.3);
     border-radius: 30px;
     padding: 5px;
     margin-bottom: 10px;
@@ -177,7 +553,7 @@ h2 {
     padding: 10px 25px;
     border-radius: 25px;
     font-weight: 600;
-    color: #BEE3DB;
+    color: #5d4e37;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -191,7 +567,7 @@ h2 {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(190, 227, 219, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(139, 115, 85, 0.2), transparent);
     transition: left 0.5s ease;
 }
 
@@ -200,36 +576,37 @@ h2 {
 }
 
 .toggle-box button:hover {
-    color: #EDF6F9;
+    color: #3d3027;
     transform: translateY(-2px);
 }
 
 .toggle-box .active {
-    background: linear-gradient(135deg, #013D42, #025b63);
-    color: #EDF6F9;
-    box-shadow: 0 5px 15px rgba(1, 61, 66, 0.5);
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
+    color: #f5ebdc;
+    box-shadow: 0 5px 15px rgba(61, 48, 39, 0.3);
     animation: glowPulse 2s ease-in-out infinite;
 }
 
 @keyframes glowPulse {
     0%, 100% {
-        box-shadow: 0 5px 15px rgba(1, 61, 66, 0.4);
+        box-shadow: 0 5px 15px rgba(61, 48, 39, 0.25);
     }
     50% {
-        box-shadow: 0 8px 25px rgba(1, 61, 66, 0.6);
+        box-shadow: 0 8px 25px rgba(61, 48, 39, 0.4);
     }
 }
 
 /* ALERT MESSAGES */
 .alert-success {
-    background-color: rgba(1, 61, 66, 0.3);
-    color: #0a6c6e;
+    background-color: rgba(139, 115, 85, 0.2);
+    color: #3d3027;
     padding: 12px 15px;
     border-radius: 12px;
     margin-bottom: 20px;
     text-align: center;
-    border: 1px solid rgba(10, 108, 110, 0.3);
+    border: 1px solid rgba(139, 115, 85, 0.4);
     font-size: 13px;
+    font-weight: 600;
     width: 100%;
     max-width: 330px;
     box-sizing: border-box;
@@ -237,15 +614,14 @@ h2 {
 }
 
 .alert-error {
-    background-color: rgba(190, 227, 219, 0.1);
-    color: #e74c3c;
+    background-color: rgba(180, 100, 80, 0.15);
+    color: #8b4513;
     font-weight: 600;
-    background: rgba(255, 255, 255, 0.5);
     padding: 12px 15px;
     border-radius: 12px;
     margin-bottom: 20px;
     text-align: center;
-    border: 1px solid rgba(231, 76, 60, 0.3);
+    border: 1px solid rgba(139, 69, 19, 0.4);
     font-size: 13px;
     width: 100%;
     max-width: 330px;
@@ -259,38 +635,56 @@ label {
     margin-top: 12px;
     font-size: 13px;
     font-weight: 600;
-    color: #BEE3DB;
+    color: #5d4e37;
     transition: all 0.3s ease;
 }
 
-/* ───────────────── INPUT ───────────────── */
-input {
+/* ───────────────── INPUT + SELECT ───────────────── */
+input,
+select {
     width: 100%;
     padding: 12px 14px;
     margin-top: 6px;
     border-radius: 30px;
-    background: rgba(1, 61, 66, 0.25);
-    border: 1px solid rgba(190, 227, 219, 0.3);
-    color: #EDF6F9;
+    background: rgba(255, 250, 240, 0.7);
+    border: 1px solid rgba(139, 115, 85, 0.4);
+    color: #3d3027;
     outline: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+/* Custom dropdown arrow for select (replaces native chevron) */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%235d4e37' d='M6 8L0 0h12z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    padding-right: 38px;
+    cursor: pointer;
 }
 
 input::placeholder {
-    color: rgba(190, 227, 219, 0.55);
+    color: rgba(93, 78, 55, 0.5);
     transition: all 0.3s ease;
 }
 
-input:hover {
-    background: rgba(1, 61, 66, 0.35);
+input:hover,
+select:hover {
+    background-color: rgba(255, 250, 240, 0.85);
     transform: translateY(-1px);
+    border-color: rgba(139, 115, 85, 0.6);
 }
 
-input:focus {
-    border-color: #0a6c6e;
-    box-shadow: 0 0 0 4px rgba(10, 108, 110, 0.25);
-    background: rgba(1, 61, 66, 0.35);
+input:focus,
+select:focus {
+    border-color: #8b7355;
+    box-shadow: 0 0 0 4px rgba(139, 115, 85, 0.15);
+    background-color: rgba(255, 255, 255, 0.9);
     transform: translateY(-2px);
 }
 
@@ -299,13 +693,45 @@ input:focus::placeholder {
     transform: translateX(10px);
 }
 
-/* ───────────────── PASSWORD BOX (NO EYE ICON) ───────────────── */
+/* ───────────────── PASSWORD BOX WITH EYE ICON ───────────────── */
 .password-box {
     position: relative;
     width: 100%;
 }
 
-/* Eye icon styles completely removed */
+.password-box input {
+    padding-right: 45px;
+}
+
+/* Hide Edge built-in password reveal button */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-caps-lock-indicator,
+input[type="password"]::-webkit-contacts-auto-fill-button {
+    display: none !important;
+}
+
+/* Eye icon styles */
+.eye {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b5d4f;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    font-size: 16px;
+}
+
+.eye:hover {
+    color: #3d3027;
+    transform: translateY(-50%) scale(1.1);
+}
 
 /* ───────────────── FORGOT PASSWORD ───────────────── */
 .forgot {
@@ -315,10 +741,11 @@ input:focus::placeholder {
 
 .forgot a {
     font-size: 12px;
-    color: #BEE3DB;
+    color: #6b5d4f;
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
+    font-weight: 600;
 }
 
 .forgot a::after {
@@ -328,12 +755,12 @@ input:focus::placeholder {
     left: 0;
     width: 0;
     height: 1px;
-    background: linear-gradient(135deg, #013D42, #0a6c6e);
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
     transition: width 0.3s ease;
 }
 
 .forgot a:hover {
-    color: #0a6c6e;
+    color: #3d3027;
 }
 
 .forgot a:hover::after {
@@ -347,8 +774,8 @@ input:focus::placeholder {
     padding: 12px;
     border: none;
     border-radius: 12px;
-    background: linear-gradient(135deg, #013D42, #025b63);
-    color: #EDF6F9;
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
+    color: #f5ebdc;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
@@ -364,13 +791,14 @@ input:focus::placeholder {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(190, 227, 219, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.5s ease;
 }
 
 .btn-login:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(1, 61, 66, 0.5);
+    box-shadow: 0 15px 30px rgba(61, 48, 39, 0.3);
+    background: linear-gradient(135deg, #9d8365, #7b6d5f);
 }
 
 .btn-login:hover::before {
@@ -386,23 +814,23 @@ input:focus::placeholder {
     width: 100%;
     margin-top: 12px;
     padding: 12px;
-    border: 1px solid rgba(190, 227, 219, 0.4);
+    border: 1px solid rgba(139, 115, 85, 0.5);
     border-radius: 12px;
-    background: rgba(1, 61, 66, 0.3);
-    color: #BEE3DB;
+    background: rgba(255, 250, 240, 0.6);
+    color: #5d4e37;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
 }
 
 .btn-guest:hover {
-    background: rgba(1, 61, 66, 0.5);
-    border-color: #0a6c6e;
+    background: rgba(255, 250, 240, 0.9);
+    border-color: #8b7355;
     transform: translateY(-2px);
-    color: #EDF6F9;
-    box-shadow: 0 5px 15px rgba(1, 61, 66, 0.3);
+    color: #3d3027;
+    box-shadow: 0 5px 15px rgba(61, 48, 39, 0.2);
 }
 
 .btn-guest:active {
@@ -415,8 +843,9 @@ input:focus::placeholder {
     align-items: center;
     text-align: center;
     margin: 20px 0 12px;
-    color: #BEE3DB;
+    color: #6b5d4f;
     font-size: 12px;
+    font-weight: 600;
     width: 100%;
     max-width: 360px;
 }
@@ -425,7 +854,7 @@ input:focus::placeholder {
 .divider::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid rgba(190, 227, 219, 0.3);
+    border-bottom: 1px solid rgba(139, 115, 85, 0.4);
 }
 
 .divider::before {
@@ -441,7 +870,8 @@ input:focus::placeholder {
     margin-top: 18px;
     font-size: 13px;
     text-align: center;
-    color: #BEE3DB;
+    color: #5d4e37;
+    font-weight: 500;
 }
 
 .register-text a {
@@ -449,7 +879,7 @@ input:focus::placeholder {
     text-decoration: none;
     position: relative;
     transition: all 0.3s ease;
-    color: #BEE3DB;
+    color: #6b5d4f;
 }
 
 .register-text a::after {
@@ -459,46 +889,17 @@ input:focus::placeholder {
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(135deg, #013D42, #0a6c6e);
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
     transition: width 0.3s ease;
 }
 
 .register-text a:hover {
-    color: #0a6c6e;
+    color: #3d3027;
     transform: translateX(5px);
 }
 
 .register-text a:hover::after {
     width: 100%;
-}
-
-/* --- Password Toggle Eye Icon --- */
-.password-box {
-    position: relative;
-    width: 100%;
-}
-
-.password-box .eye {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #BEE3DB;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.password-box .eye:hover {
-    color: #0a6c6e;
-    transform: translateY(-50%) scale(1.1);
-}
-.password-box input {
-    padding-right: 40px;
 }
 
 /* Animation for form fields - staggered entrance */
@@ -522,14 +923,3 @@ form > .password-box { animation-delay: 0.3s; }
 .divider { animation-delay: 0.55s; }
 .btn-guest { animation-delay: 0.6s; }
 .register-text { animation-delay: 0.7s; }
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}

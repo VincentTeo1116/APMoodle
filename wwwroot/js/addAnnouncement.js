@@ -13,7 +13,6 @@ function initializeSuccessPopup() {
     if (popup) {
         console.log('Success popup found');
         
-        // Force the popup to be visible and centered
         popup.style.display = 'flex';
         popup.style.position = 'fixed';
         popup.style.top = '0';
@@ -25,7 +24,6 @@ function initializeSuccessPopup() {
         popup.style.justifyContent = 'center';
         popup.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
         
-        // Handle continue button click
         if (continueBtn) {
             continueBtn.onclick = function(e) {
                 e.preventDefault();
@@ -33,7 +31,6 @@ function initializeSuccessPopup() {
             };
         }
         
-        // Click on overlay to close
         const overlay = popup.querySelector('.popup-overlay');
         if (overlay) {
             overlay.onclick = function() {
@@ -43,6 +40,115 @@ function initializeSuccessPopup() {
     }
 }
 
+// Show error modal - uses CSS from site.css
+function showErrorModal(message) {
+    let modal = document.getElementById('errorModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'errorModal';
+        modal.className = 'modal-overlay-full';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-container">
+                <div class="modal-icon error-icon">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <h3 class="modal-title">Validation Error</h3>
+                <p class="modal-message" id="errorModalMessage"></p>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-confirm" id="errorModalOkBtn">
+                        <i class="bi bi-check-circle"></i> OK
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    const messageSpan = document.getElementById('errorModalMessage');
+    if (messageSpan) {
+        messageSpan.textContent = message;
+    }
+    
+    modal.style.display = 'flex';
+    
+    const okBtn = document.getElementById('errorModalOkBtn');
+    const newOkBtn = okBtn.cloneNode(true);
+    okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+    
+    newOkBtn.onclick = function() {
+        modal.style.display = 'none';
+    };
+    
+    modal.onclick = function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
+
+// Show cancel confirmation modal
+function showCancelConfirmModal() {
+    let modal = document.getElementById('cancelConfirmModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'cancelConfirmModal';
+        modal.className = 'modal-overlay-full';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-container">
+                <div class="modal-icon warning-icon">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <h3 class="modal-title">Cancel Creation</h3>
+                <p class="modal-message">Are you sure you want to cancel? Your announcement will not be saved.</p>
+                <div class="modal-warning">
+                    <i class="bi bi-shield-exclamation"></i>
+                    <span>Any unsaved changes will be lost.</span>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-cancel" id="cancelModalStayBtn">
+                        <i class="bi bi-x-circle"></i> Stay
+                    </button>
+                    <button class="modal-btn modal-danger" id="cancelModalLeaveBtn">
+                        <i class="bi bi-trash3"></i> Leave
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    modal.style.display = 'flex';
+    
+    const stayBtn = document.getElementById('cancelModalStayBtn');
+    const leaveBtn = document.getElementById('cancelModalLeaveBtn');
+    
+    // Remove old listeners
+    const newStayBtn = stayBtn.cloneNode(true);
+    stayBtn.parentNode.replaceChild(newStayBtn, stayBtn);
+    
+    const newLeaveBtn = leaveBtn.cloneNode(true);
+    leaveBtn.parentNode.replaceChild(newLeaveBtn, leaveBtn);
+    
+    newStayBtn.onclick = () => {
+        console.log('Stay button clicked - staying on page');
+        modal.style.display = 'none';
+    };
+    
+    newLeaveBtn.onclick = () => {
+        console.log('Leave button clicked - redirecting to list');
+        modal.style.display = 'none';
+        window.location.href = '/FrontEnd/AnnouncementList';
+    };
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
+
 // Make sure to call this when DOM loads
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded - initializing');
@@ -50,6 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     attachEventListeners();
     initializeSuccessPopup();
 });
+
 // Initialize character counters
 function initializeCharacterCounters() {
     const titleInput = document.getElementById('title');
@@ -94,7 +201,11 @@ function attachEventListeners() {
         backToReview.addEventListener('click', () => goToStep(2));
     }
     if (cancelBtn) {
-        cancelBtn.addEventListener('click', cancelAnnouncement);
+        cancelBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // ALWAYS show the modal, even if nothing is entered
+            showCancelConfirmModal();
+        });
     }
     if (publishForm) {
         publishForm.addEventListener('submit', validateAndSubmit);
@@ -110,24 +221,26 @@ function goToReview() {
     const message = messageInput ? messageInput.value.trim() : '';
 
     if (!title) {
-        alert('Please enter an announcement title');
+        showErrorModal('Please enter an announcement title');
         if (titleInput) titleInput.focus();
         return;
     }
 
     if (!message) {
-        alert('Please enter an announcement message');
+        showErrorModal('Please enter an announcement message');
         if (messageInput) messageInput.focus();
         return;
     }
 
     if (title.length > 200) {
-        alert('Title cannot exceed 200 characters');
+        showErrorModal('Title cannot exceed 200 characters');
+        if (titleInput) titleInput.focus();
         return;
     }
 
     if (message.length > 2000) {
-        alert('Message cannot exceed 2000 characters');
+        showErrorModal('Message cannot exceed 2000 characters');
+        if (messageInput) messageInput.focus();
         return;
     }
 
@@ -198,14 +311,9 @@ function updateProgressBar(step) {
 function validateAndSubmit(event) {
     if (!formData.title || !formData.message) {
         event.preventDefault();
-        alert('Please complete all steps before publishing');
+        showErrorModal('Please complete all steps before publishing');
         goToStep(1);
         return false;
     }
     return true;
-}
-
-// Cancel announcement creation
-function cancelAnnouncement() {
-    window.location.href = '/FrontEnd/AnnouncementList';
 }

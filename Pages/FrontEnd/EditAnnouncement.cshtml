@@ -1,0 +1,235 @@
+﻿@page
+@model APMoodle.Pages.BackEnd.EditAnnouncementModel
+@{
+    ViewData["Title"] = "Edit Announcement";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/editAnnouncement.css">
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<form method="post" id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+
+<div class="announcement-page">
+    <!-- Header Section -->
+    <div class="announcement-header-section">
+        <h1>Edit Announcement</h1>
+        <p class="announcement-subtitle">Update your announcement details</p>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="edit-two-columns">
+        <!-- Left Column - Edit Form -->
+        <div class="edit-left-column">
+            <div class="form-card">
+                <div class="edit-header-info">
+                    <div class="announcement-id-badge">
+                        <i class="bi bi-hash"></i>
+                        Announcement #@Model.Announcement.AnnouncementID
+                    </div>
+                </div>
+
+                <form method="post" id="editForm">
+                    <input type="hidden" name="id" value="@Model.Announcement.AnnouncementID" />
+                    
+                    <!-- Title Field -->
+                    <div class="form-group">
+                        <label for="title" class="form-label">
+                            <i class="bi bi-megaphone"></i>
+                            Announcement Title <span class="required">*</span>
+                        </label>
+                        <input type="text" id="title" name="Announcement.Title" class="form-control" 
+                               value="@Model.Announcement.Title"
+                               placeholder="Enter announcement title" maxlength="200" />
+                        <div class="char-counter">
+                            <span id="titleCount">@Model.Announcement.Title.Length</span> / 200 characters
+                        </div>
+                    </div>
+
+                    <!-- Message Field -->
+                    <div class="form-group">
+                        <label for="message" class="form-label">
+                            <i class="bi bi-chat-text"></i>
+                            Announcement Message <span class="required">*</span>
+                        </label>
+                        <textarea id="message" name="Announcement.Message" class="form-control" 
+                                  rows="12" placeholder="Enter announcement message..." maxlength="2000">@Model.Announcement.Message</textarea>
+                        <div class="char-counter">
+                            <span id="messageCount">@Model.Announcement.Message.Length</span> / 2000 characters
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="cancelBtn">
+                            <i class="bi bi-x-circle"></i>
+                            Cancel
+                        </button>
+                        <button type="button" class="btn-delete" id="deleteBtn">
+                            <i class="bi bi-trash3"></i>
+                            Delete
+                        </button>
+                        <button type="button" class="btn-publish" id="saveBtn">
+                            <i class="bi bi-check-lg"></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column - Information & Preview -->
+        <div class="edit-right-column">
+            <!-- Record Information Card -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <h3>Record Information</h3>
+                </div>
+                <div class="info-card-content">
+                    <div class="info-row">
+                        <div class="info-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <div class="info-details">
+                            <span class="info-label">Created By</span>
+                            <span class="info-value">@Model.CreatorName</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-icon">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                        <div class="info-details">
+                            <span class="info-label">Created At</span>
+                            <span class="info-value">@Model.FormattedCreatedAt</span>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.LastModifierName) && Model.LastModifierName != "Not modified yet")
+                    {
+                        <div class="info-row">
+                            <div class="info-icon">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                            <div class="info-details">
+                                <span class="info-label">Last Modified By</span>
+                                <span class="info-value">@Model.LastModifierName</span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div class="info-details">
+                                <span class="info-label">Last Modified At</span>
+                                <span class="info-value">@Model.FormattedLastModifiedAt</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Live Preview Card -->
+            <div class="preview-card">
+                <div class="preview-card-header">
+                    <div class="preview-header-left">
+                        <i class="bi bi-eye"></i>
+                        <h3>Live Preview</h3>
+                    </div>
+                    <button type="button" class="refresh-preview" id="refreshPreview" title="Refresh Preview">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                </div>
+                <div class="preview-content">
+                    <div class="preview-title" id="previewTitle">@Model.Announcement.Title</div>
+                    <div class="preview-divider"></div>
+                    <div class="preview-message" id="previewMessage">
+                        @Html.Raw(Model.Announcement.Message.Replace("\n", "<br />"))
+                    </div>
+                </div>
+                <div class="preview-footer">
+                    <i class="bi bi-clock"></i>
+                    <span>Preview updates automatically as you type</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal-overlay-full" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <h3 class="modal-title">Delete Announcement?</h3>
+        <p class="modal-message">You are about to delete <strong id="deleteAnnouncementTitle">@Model.Announcement.Title</strong></p>
+        <div class="modal-warning">
+            <i class="bi bi-shield-exclamation"></i>
+            <span>This action cannot be undone. All data will be permanently removed.</span>
+        </div>
+        <div class="modal-actions">
+            <button class="modal-btn modal-cancel" id="modalCancelBtn">
+                <i class="bi bi-x-circle"></i>
+                Cancel
+            </button>
+            <button class="modal-btn modal-confirm" id="modalConfirmBtn">
+                <i class="bi bi-trash3"></i>
+                Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/editAnnouncement.js"></script>
+
+@* <script>
+    // Pass Razor model data to JavaScript using JSON serialization (fixes encoding issues)
+    window.announcementData = {
+        id: @Model.Announcement.AnnouncementID,
+        title: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Announcement.Title)),
+        message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Announcement.Message))
+    };
+</script> *@
+
+<script>
+    // Pass Razor model data to JavaScript
+    window.announcementData = {
+        id: @Model.Announcement.AnnouncementID,
+        title: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Announcement.Title)),
+        message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Announcement.Message))
+    };
+</script>
+
+@if (TempData["ShowSuccessPopup"] != null && (bool)TempData["ShowSuccessPopup"])
+{
+    <div id="successPopup">
+        <div>
+            <div>
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <h2>Success!</h2>
+            <p>Announcement updated successfully!</p>
+            <button id="popupContinueBtn">Continue</button>
+        </div>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorPopup">
+        <div>
+            <div>
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h2>Error!</h2>
+            <p>@TempData["ErrorMessage"]</p>
+            <button id="errorPopupContinueBtn">Continue</button>
+        </div>
+    </div>
+}

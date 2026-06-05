@@ -30,20 +30,33 @@ namespace APMoodle.Services.Interfaces
                 .FirstOrDefaultAsync(a => a.AnnouncementID == id);
         }
 
-        public async Task<Announcement> CreateAnnouncementAsync(Announcement announcement)
+        public async Task<Announcement> CreateAnnouncementAsync(Announcement announcement, int createdByAdminId)
         {
+            announcement.CreatedBy = createdByAdminId;
             announcement.CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
             announcement.Status = "Active";
             _context.Announcements.Add(announcement);
             await _context.SaveChangesAsync();
-            return announcement;
+             return await GetAnnouncementByIdAsync(announcement.AnnouncementID) ?? announcement;
         }
 
-        public async Task<Announcement> UpdateAnnouncementAsync(Announcement announcement)
+        public async Task<Announcement> UpdateAnnouncementAsync(int id, Announcement announcement, int modifiedByAdminId)
         {
-            _context.Entry(announcement).State = EntityState.Modified;
+            var existingAnnouncement = await _context.Announcements.FindAsync(id);
+            if (existingAnnouncement == null)
+                throw new KeyNotFoundException($"Announcement with ID {id} not found");
+
+            existingAnnouncement.Title = announcement.Title;
+            existingAnnouncement.Message = announcement.Message;
+            existingAnnouncement.Status = announcement.Status;
+            existingAnnouncement.LastModifiedBy = modifiedByAdminId;
+            existingAnnouncement.LastModifiedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+
+            _context.Entry(existingAnnouncement).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return announcement;
+            
+            // Reload with navigation properties
+            return await GetAnnouncementByIdAsync(id) ?? existingAnnouncement;
         }
 
         public async Task<bool> DeleteAnnouncementAsync(int id, int deletedByAdminId)
