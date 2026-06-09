@@ -21,6 +21,7 @@
     <title>@ViewData["Title"] - APMoodle</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </head>
 
 <body>
@@ -68,7 +69,7 @@
                                 </li>
                                 <li class="nav-login">
                                     <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout"
-                                       style="background: linear-gradient(-135deg, #dc3545, #95111e);">Logout</a>
+                                       style="background: linear-gradient(135deg, #8b7355, #6b5d4f);">Logout</a>
                                 </li>
                             }
                             else
@@ -94,70 +95,58 @@
                         @if (userRole == "lecturer")
                         {
                             <a href="/FrontEnd/LecturerDashboard" class="menu-item">
-                                <span class="menu-icon">📊</span>
+                                <span class="menu-icon" title="View Lecturer Dashboard"><i class="bi bi-speedometer"></i></span>
                                 <span>View Dashboard</span>
                             </a>
                             <a href="/FrontEnd/ModuleOverview" class="menu-item">
-                                <span class="menu-icon">📚</span>
+                                <span class="menu-icon" title="View Module List"><i class="bi bi-book-half"></i></span>
                                 <span>View Module List</span>
                             </a>
                             <a href="/FrontEnd/Chat" class="menu-item">
-                                <span class="menu-icon">💬</span>
+                                <span class="menu-icon" title="Open Chat"><i class="bi bi-chat-left-dots-fill"></i></span>
                                 <span>View Chat</span>
                             </a>
-                            @* <a href="/FrontEnd/AnnouncementList" class="menu-item">
-                                <span class="menu-icon">📚</span>
+                            <a href="/FrontEnd/AnnouncementList" class="menu-item">
+                                <span class="menu-icon" title="View Announcement"><i class="bi bi-megaphone-fill"></i></span>
                                 <span>Announcements</span>
-                            </a> *@
-                            <a href="/FrontEnd/Settings" class="menu-item">
-                                <span class="menu-icon">⚙️</span>
-                                <span>Settings</span>
                             </a>
                         }
                         else if (userRole == "student")
                         {
                             <a href="/FrontEnd/StudentDashboard" class="menu-item">
-                                <span class="menu-icon">📊</span>
+                                <span class="menu-icon" title="View Student Dashboard"><i class="bi bi-speedometer"></i></span>
                                 <span>View Dashboard</span>
                             </a>
                             <a href="/FrontEnd/ModuleOverview" class="menu-item">
-                                <span class="menu-icon">📚</span>
+                                <span class="menu-icon" title="View Module Enrolled"><i class="bi bi-book-half"></i></span>
                                 <span>View Module</span>
                             </a>
                             <a href="/FrontEnd/Chat" class="menu-item">
-                                <span class="menu-icon">💬</span>
+                                <span class="menu-icon" title="Open Chat"><i class="bi bi-chat-left-dots-fill"></i></span>
                                 <span>Chat</span>
                             </a>
-                            @* <a href="/FrontEnd/AnnouncementList" class="menu-item">
-                                <span class="menu-icon">📚</span>
+                            <a href="/FrontEnd/AnnouncementList" class="menu-item">
+                                <span class="menu-icon" title="View Announcement"><i class="bi bi-megaphone-fill"></i></span>
                                 <span>Announcements</span>
-                            </a> *@
-                            <a href="/FrontEnd/Settings" class="menu-item">
-                                <span class="menu-icon">⚙️</span>
-                                <span>Settings</span>
                             </a>
                         }
                         else if (userRole == "admin")
                         {
                             <a href="/FrontEnd/AdminDashboard" class="menu-item">
-                                <span class="menu-icon">📊</span>
+                                <span class="menu-icon" title="View Admin Dashboard"><i class="bi bi-speedometer"></i></span>
                                 <span>Home</span>
                             </a>
                             <a href="/FrontEnd/AnnouncementList" class="menu-item">
-                                <span class="menu-icon">📚</span>
+                                <span class="menu-icon" title="View Announcement"><i class="bi bi-megaphone-fill"></i></span>
                                 <span>Announcements</span>
                             </a>
                             <a href="/FrontEnd/ModuleOverview" class="menu-item">
-                                <span class="menu-icon">📚</span>
+                                <span class="menu-icon" title="View Module List"><i class="bi bi-book-half"></i></span>
                                 <span>View Module List</span>
                             </a>
                             <a href="/FrontEnd/TestDB" class="menu-item">
-                                <span class="menu-icon">🗄️</span>
+                                <span class="menu-icon" title="View Database"><i class="bi bi-database-check"></i></span>
                                 <span>View Database</span>
-                            </a>
-                            <a href="/FrontEnd/Settings" class="menu-item">
-                                <span class="menu-icon">⚙️</span>
-                                <span>Settings</span>
                             </a>
                         }
                     </div>
@@ -168,10 +157,6 @@
                         <span class="expand-text">Expand</span>
                     </div>
 
-                    <!-- Footer -->
-                    <div class="menu-footer">
-                        <span>v1.0</span>
-                    </div>
                 </div>
             </div>
         }

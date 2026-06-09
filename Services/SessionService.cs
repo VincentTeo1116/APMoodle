@@ -86,7 +86,11 @@ namespace APMoodle.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SubmitSessionAsync error: {ex.Message}");
+                // Log the full exception chain (inner DB error included) so a failure
+                // here is never silently hidden behind the generic UI message again.
+                Console.WriteLine($"SubmitSessionAsync error: {ex}");
+                if (ex.InnerException != null)
+                    Console.WriteLine($"  Inner: {ex.InnerException.Message}");
                 return false;
             }
         }

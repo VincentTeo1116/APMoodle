@@ -6,13 +6,18 @@
 }
 
 @*
-    Front-end / styling: Moses
+    Front-end / styling: Moses — matches the APMoodle dashboard design system (dashboard.css tokens).
     The PageModel binds:
         Input.InvitationCode  (string, required)
     Server output:
-        Model.Message         (string, nullable — error to show)
-        Model.IsSuccess       (bool — true on success but flow redirects to ModuleOverview with TempData["JoinSuccess"])
+        Model.Message  (string, nullable — error to show)
+        Model.IsSuccess (bool)  — success path redirects to ModuleOverview with TempData["JoinSuccess"]
 *@
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+</head>
 
 <div id="horizontalNavbar">
     <div class="PageTitle">
@@ -20,21 +25,151 @@
     </div>
 
     <div class="PageComponent">
-        @if (!string.IsNullOrEmpty(Model.Message))
-        {
-            <div class="alert">@Model.Message</div>
-        }
+        <div class="jm-page">
+            <div class="jm-card">
+                <div class="jm-hero">
+                    <div class="jm-hero-ico"><i class="fas fa-ticket"></i></div>
+                    <h2>Join a Module</h2>
+                    <p>Enter the invitation code your lecturer shared with you to enroll instantly.</p>
+                </div>
 
-        <form method="post">
-            <label asp-for="Input.InvitationCode"></label>
-            <input asp-for="Input.InvitationCode" maxlength="20" autocomplete="off" />
-            <span asp-validation-for="Input.InvitationCode"></span>
+                @if (!string.IsNullOrEmpty(Model.Message))
+                {
+                    <div class="jm-alert @(Model.IsSuccess ? "ok" : "err")">
+                        <i class="fas @(Model.IsSuccess ? "fa-circle-check" : "fa-circle-exclamation")"></i>
+                        <span>@Model.Message</span>
+                    </div>
+                }
 
-            <a href="/FrontEnd/ModuleOverview">Cancel</a>
-            <button type="submit">Join Module</button>
-        </form>
+                <form method="post" class="jm-form">
+                    <label asp-for="Input.InvitationCode" class="jm-label">Invitation Code</label>
+                    <div class="jm-input-wrap">
+                        <i class="fas fa-key"></i>
+                        <input asp-for="Input.InvitationCode" maxlength="20" autocomplete="off"
+                               placeholder="e.g. AB12CD34" class="jm-input"
+                               oninput="this.value=this.value.toUpperCase()" />
+                    </div>
+                    <span asp-validation-for="Input.InvitationCode" class="jm-val"></span>
+
+                    <div class="jm-actions">
+                        <button type="submit" class="jm-btn jm-btn-primary">
+                            <i class="fas fa-right-to-bracket"></i> Join Module
+                        </button>
+                        <a href="/FrontEnd/ModuleOverview" class="jm-btn jm-btn-ghost">Cancel</a>
+                    </div>
+                </form>
+
+                <div class="jm-hint">
+                    <i class="fas fa-circle-info"></i>
+                    <span>Don't have a code? Ask your lecturer for the module's invitation code.</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    /* ===== APMoodle Join Module — design tokens mirror dashboard.css ===== */
+
+    /* The card carries its own "Join a Module" heading, so hide the page title */
+    #horizontalNavbar > .PageTitle { display: none; }
+
+    .jm-page {
+        --primary: #4f46e5;
+        --primary-light: #818cf8;
+        --dark: #1f2937;
+        --gray: #6b7280;
+        --gray-light: #9ca3af;
+        --line: #e5e7eb;
+        --light: #f9fafb;
+        font-family: 'Inter', system-ui, sans-serif;
+        display: flex;
+        justify-content: center;
+        padding: 2rem 1.25rem 3rem;
+        color: var(--dark);
+    }
+
+    .jm-card {
+        position: relative;
+        width: 100%;
+        max-width: 460px;
+        background: #fff;
+        border-radius: 1.5rem;
+        padding: 2.25rem 2.25rem 2rem;
+        box-shadow: 0 12px 36px rgba(31, 41, 55, .1);
+        overflow: hidden;
+        animation: jmFade .45s ease both;
+    }
+    .jm-card::before {
+        content: ''; position: absolute; inset: 0 0 auto 0; height: 5px;
+        background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    }
+
+    /* Hero */
+    .jm-hero { text-align: center; margin-bottom: 1.5rem; }
+    .jm-hero-ico {
+        width: 4rem; height: 4rem; margin: .25rem auto 1rem;
+        border-radius: 1.1rem; display: flex; align-items: center; justify-content: center;
+        font-size: 1.6rem; color: #fff;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        box-shadow: 0 10px 24px rgba(79, 70, 229, .35);
+        animation: jmPop .5s cubic-bezier(.34, 1.4, .64, 1) both;
+    }
+    .jm-hero h2 { font-size: 1.5rem; font-weight: 800; margin: 0 0 .4rem; }
+    .jm-hero p { color: var(--gray); font-size: .9rem; line-height: 1.5; margin: 0 auto; max-width: 320px; }
+
+    /* Alert */
+    .jm-alert {
+        display: flex; align-items: center; gap: .6rem;
+        padding: .8rem 1rem; border-radius: .8rem;
+        font-size: .85rem; font-weight: 600; margin-bottom: 1.25rem;
+    }
+    .jm-alert.err { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .jm-alert.ok  { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .jm-alert i { font-size: 1rem; flex-shrink: 0; }
+
+    /* Form */
+    .jm-form { display: flex; flex-direction: column; }
+    .jm-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--gray); margin-bottom: .5rem; }
+    .jm-input-wrap { position: relative; display: flex; align-items: center; }
+    .jm-input-wrap i {
+        position: absolute; left: 1rem; color: var(--gray-light); font-size: .95rem; pointer-events: none;
+    }
+    .jm-input {
+        width: 100%; padding: .9rem 1rem .9rem 2.75rem;
+        border: 2px solid var(--line); border-radius: .85rem;
+        font-family: inherit; font-size: 1.05rem; font-weight: 700;
+        letter-spacing: .12em; text-transform: uppercase; color: var(--dark);
+        transition: border-color .18s, box-shadow .18s;
+    }
+    .jm-input::placeholder { font-weight: 500; letter-spacing: normal; text-transform: none; color: var(--gray-light); }
+    .jm-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, .12); }
+    .jm-val { color: #dc2626; font-size: .78rem; font-weight: 600; margin-top: .4rem; min-height: 1rem; }
+
+    /* Actions */
+    .jm-actions { display: flex; flex-direction: column; gap: .65rem; margin-top: 1rem; }
+    .jm-btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+        padding: .85rem 1.5rem; border-radius: .85rem;
+        font-family: inherit; font-weight: 700; font-size: .95rem;
+        text-decoration: none; cursor: pointer; border: none; transition: all .18s;
+    }
+    .jm-btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; box-shadow: 0 6px 18px rgba(79, 70, 229, .35); }
+    .jm-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(79, 70, 229, .45); }
+    .jm-btn-ghost { background: var(--light); color: var(--gray); }
+    .jm-btn-ghost:hover { background: #f1f1f4; color: var(--dark); }
+
+    /* Hint */
+    .jm-hint {
+        display: flex; align-items: flex-start; gap: .55rem;
+        margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed var(--line);
+        font-size: .8rem; color: var(--gray-light); line-height: 1.5;
+    }
+    .jm-hint i { color: var(--primary-light); margin-top: .1rem; }
+
+    @@keyframes jmFade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    @@keyframes jmPop  { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: scale(1); } }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

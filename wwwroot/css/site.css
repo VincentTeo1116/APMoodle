@@ -31,7 +31,7 @@ body {
 }
 
 .custom-navbar {
-  background: #BEE3DB;
+  background: rgba(255, 230, 193, 0.95);
   font-weight: 500;
   z-index: 100;
   position: fixed;
@@ -50,7 +50,7 @@ body {
 }
 
 .nav-link-login {
-    background: linear-gradient(135deg, #013D42, #037984);
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
     color: white !important;
     border-radius: 5px;
     padding: 10px 24px !important;
@@ -67,7 +67,7 @@ body {
     transform: translateY(-1px);
     border-radius: 10px;
     box-shadow: 0 8px 20px rgba(162, 85, 18, 0.3);
-    background: linear-gradient(135deg, #012b2f, #025259);
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
     color: white !important;
 }
 
@@ -86,7 +86,7 @@ body {
 }
 
 .nav-link-logout {
-    background: linear-gradient(-135deg, #dc3545, #95111e);
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
     color: white !important;
     border-radius: 5px;
     padding: 10px 24px !important;
@@ -102,7 +102,7 @@ body {
     transform: translateY(-1px);
     border-radius: 10px;
     box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
-    background: linear-gradient(-135deg, #b02a37, #7a1a1a);
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
     color: white !important;
 }
 
@@ -112,13 +112,13 @@ body {
     border-radius: 50%;
     object-fit: cover;
     transition: all 0.3s ease;
-    border: 2px solid #BEE3DB;
+    border: 2px solid #ffeab8;
 }
 
 .profile-icon:hover {
     transform: scale(1.1);
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-    border-color: #013D42;
+    border-color: #fff3d7;
 }
 
 .nav-item {
@@ -131,7 +131,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* ========== FIXED SIDEBAR STYLES ========== */
 /* Adjust body padding to account for fixed navbar and sidebar */
 body {
     padding-top: 55px;
@@ -161,7 +160,7 @@ body:has(.expandable-vertical-menu.expanded) .container {
     position: fixed;
     left: 0;
     top: 55px;
-    z-index: 999;
+    z-index: 10;
     width: 60px;
     height: calc(100vh - 55px);
     transition: width 0.3s ease;
@@ -176,7 +175,7 @@ body:has(.expandable-vertical-menu.expanded) .container {
 .menu-panel {
     width: 60px;
     height: 100%;
-    background: linear-gradient(180deg, #013D42, #0a5a60);
+    background: linear-gradient(135deg, #44311e, #9b8168);
     backdrop-filter: blur(10px);
     transition: width 0.3s ease;
     overflow: hidden;
@@ -210,13 +209,13 @@ body:has(.expandable-vertical-menu.expanded) .container {
 }
 
 .menu-item:hover {
-    background: rgba(190, 227, 219, 0.15);
+    background: #6b5d4f;
     padding-left: 22px;
     color: #EDF6F9;
 }
 
 .menu-item.active {
-    background: rgba(190, 227, 219, 0.25);
+    background: #56483b;
     border-right: 3px solid #BEE3DB;
     color: #BEE3DB;
 }
@@ -237,7 +236,7 @@ body:has(.expandable-vertical-menu.expanded) .container {
 
 /* Expand/Collapse Button at BOTTOM */
 .btn-expand-menu {
-    background: linear-gradient(135deg, #025b63, #1d767e);
+    background: linear-gradient(135deg, #9b8168, #a68f7a);
     width: 100%;
     height: 45px;
     display: flex;

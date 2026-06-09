@@ -3,18 +3,38 @@
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Quiz Result";
+
+    var score = Model.CurrentSession?.TotalScore ?? 0;
+    var band = score >= 80 ? "good" : score >= 60 ? "ok" : score >= 40 ? "low" : "bad";
+    var bandLabel = score >= 80 ? "Excellent work!"
+        : score >= 60 ? "Well done!"
+        : score >= 40 ? "Good effort — keep going!"
+        : "Keep practicing, you'll get there!";
+    var bandIcon = score >= 80 ? "fa-trophy"
+        : score >= 60 ? "fa-thumbs-up"
+        : score >= 40 ? "fa-arrow-trend-up"
+        : "fa-book-open-reader";
+    var incorrect = Model.TotalQuestions - Model.CorrectCount;
+    var mins = Model.TotalTimeUsed / 60;
+    var secs = Model.TotalTimeUsed % 60;
+
+    // Only true right after a fresh submit (ViewQuiz adds ?celebrate=1 to the redirect)
+    var celebrate = Model.HttpContext.Request.Query["celebrate"].ToString() == "1";
 }
 
 @*
-    Front-end / styling: Moses
+    Front-end / styling: Moses — matches the APMoodle dashboard design system (dashboard.css tokens).
     Backend contract:
-        Model.CurrentQuiz       — Quiz (Title, Subject, Theme)
-        Model.CurrentSession    — Session (TotalScore, Timestamp)
-        Model.Reviews           — list of QuestionReview { Question, GivenAnswer, IsCorrect, TimeUsed }
-        Model.CorrectCount      — int
-        Model.TotalQuestions    — int
-        Model.TotalTimeUsed     — int (seconds)
+        Model.CurrentQuiz     — Quiz (Title, Subject, Theme)
+        Model.CurrentSession  — Session (TotalScore, Timestamp)
+        Model.Reviews         — list of QuestionReview { Question, GivenAnswer, IsCorrect, TimeUsed }
+        Model.CorrectCount / Model.TotalQuestions / Model.TotalTimeUsed
 *@
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+</head>
 
 <div id="horizontalNavbar">
     <div class="PageTitle">
@@ -24,33 +44,443 @@
     <div class="PageComponent">
         @if (Model.CurrentQuiz != null && Model.CurrentSession != null)
         {
-            <div class="score-card">
-                <h2>@Model.CurrentQuiz.Title</h2>
-                <p>Score: <strong>@Model.CurrentSession.TotalScore%</strong></p>
-                <p>Correct: @Model.CorrectCount / @Model.TotalQuestions</p>
-                <p>Time used: @Model.TotalTimeUsed seconds</p>
-                <p>Attempted on: @Model.CurrentSession.Timestamp.ToString("dd MMM yyyy HH:mm")</p>
-            </div>
+            <div class="qr-page qr-band-@band">
 
-            <h3>Review</h3>
-            @for (int i = 0; i < Model.Reviews.Count; i++)
-            {
-                var r = Model.Reviews[i];
-                var q = r.Question;
-                <div class="question-card @(r.IsCorrect ? "correct" : "incorrect")">
-                    <h4>Q@(i + 1). @q.QuestionText</h4>
-                    <p>A. @q.Option1</p>
-                    <p>B. @q.Option2</p>
-                    <p>C. @q.Option3</p>
-                    <p>D. @q.Option4</p>
-                    <p>Your answer: <strong>@r.GivenAnswer</strong> @(r.IsCorrect ? "✔" : "✘")</p>
-                    <p>Correct answer: <strong>@q.CorrectAnswer</strong></p>
-                    <p>Time: @r.TimeUsed s</p>
+                @if (celebrate)
+                {
+                    <!-- ===== One-time congrats celebration (confetti + popup) ===== -->
+                    <div class="qr-celebrate" id="qrCelebrate" onclick="if(event.target===this)qrDismissCelebrate()">
+                        <canvas class="qr-confetti" id="qrConfetti"></canvas>
+                        <div class="qr-congrats-card">
+                            <div class="qr-congrats-emoji">🎉</div>
+                            <div class="qr-congrats-icon"><i class="fas @bandIcon"></i></div>
+                            <h2>Congratulations!</h2>
+                            <p>You completed <strong>@Model.CurrentQuiz.Title</strong></p>
+                            <div class="qr-congrats-score">@score<small>%</small></div>
+                            <p class="qr-congrats-sub">@bandLabel</p>
+                            <button type="button" class="qr-btn qr-btn-primary" onclick="qrDismissCelebrate()">
+                                <i class="fas fa-eye"></i> View My Results
+                            </button>
+                        </div>
+                    </div>
+                }
+
+                <!-- ===== Score summary hero ===== -->
+                <div class="qr-hero">
+                    <div class="qr-hero-glow"></div>
+
+                    <div class="qr-ring" style="--val:@score">
+                        <div class="qr-ring-inner">
+                            <span class="qr-ring-val">@score<small>%</small></span>
+                            <span class="qr-ring-sub">SCORE</span>
+                        </div>
+                    </div>
+
+                    <div class="qr-hero-info">
+                        <div class="qr-hero-pill"><i class="fas @bandIcon"></i> @bandLabel</div>
+                        <h2 class="qr-hero-title">@Model.CurrentQuiz.Title</h2>
+                        @if (!string.IsNullOrWhiteSpace(Model.CurrentQuiz.Subject))
+                        {
+                            <div class="qr-hero-subject"><i class="fas fa-book"></i> @Model.CurrentQuiz.Subject</div>
+                        }
+
+                        <div class="qr-stats">
+                            <div class="qr-stat">
+                                <div class="qr-stat-ico qr-ico-correct"><i class="fas fa-circle-check"></i></div>
+                                <div>
+                                    <div class="qr-stat-val">@Model.CorrectCount<span>/@Model.TotalQuestions</span></div>
+                                    <div class="qr-stat-lbl">Correct</div>
+                                </div>
+                            </div>
+                            <div class="qr-stat">
+                                <div class="qr-stat-ico qr-ico-wrong"><i class="fas fa-circle-xmark"></i></div>
+                                <div>
+                                    <div class="qr-stat-val">@incorrect</div>
+                                    <div class="qr-stat-lbl">Incorrect</div>
+                                </div>
+                            </div>
+                            <div class="qr-stat">
+                                <div class="qr-stat-ico qr-ico-time"><i class="fas fa-stopwatch"></i></div>
+                                <div>
+                                    <div class="qr-stat-val">@mins:@secs.ToString("D2")</div>
+                                    <div class="qr-stat-lbl">Time Used</div>
+                                </div>
+                            </div>
+                            <div class="qr-stat">
+                                <div class="qr-stat-ico qr-ico-date"><i class="far fa-calendar-check"></i></div>
+                                <div>
+                                    <div class="qr-stat-val qr-stat-val-sm">@Model.CurrentSession.Timestamp.ToLocalTime().ToString("dd MMM yyyy")</div>
+                                    <div class="qr-stat-lbl">@Model.CurrentSession.Timestamp.ToLocalTime().ToString("hh:mm tt")</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            }
 
-            <a href="/FrontEnd/QuizHistory">View Quiz History</a>
-            <a href="/FrontEnd/ModuleOverview">Back to Modules</a>
+                <!-- ===== Review ===== -->
+                <div class="qr-review-head">
+                    <h3><i class="fas fa-list-check"></i> Answer Review</h3>
+                    <span class="qr-review-sub">@Model.CorrectCount of @Model.TotalQuestions correct</span>
+                </div>
+
+                <div class="qr-questions">
+                    @for (int i = 0; i < Model.Reviews.Count; i++)
+                    {
+                        var r = Model.Reviews[i];
+                        var q = r.Question;
+                        var opts = new[]
+                        {
+                            ("A", q.Option1), ("B", q.Option2), ("C", q.Option3), ("D", q.Option4)
+                        };
+                        <div class="qr-qcard @(r.IsCorrect ? "is-correct" : "is-wrong")">
+                            <div class="qr-qhead">
+                                <span class="qr-qnum">Q@(i + 1)</span>
+                                <p class="qr-qtext">@q.QuestionText</p>
+                                <span class="qr-qbadge @(r.IsCorrect ? "ok" : "no")">
+                                    <i class="fas @(r.IsCorrect ? "fa-check" : "fa-xmark")"></i>
+                                    @(r.IsCorrect ? "Correct" : "Incorrect")
+                                </span>
+                            </div>
+
+                            <div class="qr-opts">
+                                @foreach (var (letter, text) in opts)
+                                {
+                                    var isCorrect = string.Equals(letter, q.CorrectAnswer, StringComparison.OrdinalIgnoreCase);
+                                    var isGiven = string.Equals(letter, r.GivenAnswer, StringComparison.OrdinalIgnoreCase);
+                                    var cls = isCorrect ? "correct" : (isGiven && !r.IsCorrect ? "wrong" : "");
+                                    <div class="qr-opt @cls">
+                                        <span class="qr-opt-letter">@letter</span>
+                                        <span class="qr-opt-text">@text</span>
+                                        @if (isCorrect)
+                                        {
+                                            <span class="qr-opt-tag qr-tag-correct"><i class="fas fa-check"></i> Correct answer</span>
+                                        }
+                                        else if (isGiven)
+                                        {
+                                            <span class="qr-opt-tag qr-tag-wrong"><i class="fas fa-xmark"></i> Your answer</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="qr-qfoot">
+                                <span><i class="fas fa-stopwatch"></i> @r.TimeUsed s on this question</span>
+                                @if (!r.IsCorrect)
+                                {
+                                    <span class="qr-yourpick">
+                                        You picked: <strong>@(r.GivenAnswer == "-" ? "No answer" : r.GivenAnswer)</strong>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- ===== Actions ===== -->
+                <div class="qr-actions">
+                    <a class="qr-btn qr-btn-primary" href="/FrontEnd/ViewQuiz/@Model.CurrentQuiz.QuizID">
+                        <i class="fas fa-rotate-right"></i> Retake Quiz
+                    </a>
+                    <a class="qr-btn qr-btn-ghost" href="/FrontEnd/QuizHistory">
+                        <i class="fas fa-clock-rotate-left"></i> Quiz History
+                    </a>
+                    <a class="qr-btn qr-btn-ghost" href="/FrontEnd/ModuleOverview">
+                        <i class="fas fa-layer-group"></i> Back to Modules
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="qr-page">
+                <div class="qr-empty">
+                    <i class="fas fa-circle-question"></i>
+                    <p>This result could not be found.</p>
+                    <a class="qr-btn qr-btn-primary" href="/FrontEnd/QuizHistory">
+                        <i class="fas fa-clock-rotate-left"></i> Go to Quiz History
+                    </a>
+                </div>
+            </div>
         }
     </div>
 </div>
+
+<style>
+    /* ===== APMoodle Quiz Result — design tokens mirror dashboard.css ===== */
+
+    /* Center the page title at the top (instead of left-aligned) */
+    #horizontalNavbar > .PageTitle { text-align: center; }
+    #horizontalNavbar > .PageTitle h1 { display: inline-block; }
+
+    .qr-page {
+        --primary: #4f46e5;
+        --primary-light: #818cf8;
+        --dark: #1f2937;
+        --gray: #6b7280;
+        --gray-light: #9ca3af;
+        --line: #e5e7eb;
+        --light: #f9fafb;
+        /* performance accent (overridden per band) */
+        --accent: #4f46e5;
+        --accent-2: #818cf8;
+        font-family: 'Inter', system-ui, sans-serif;
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 1.5rem 1.25rem 3rem;
+        color: var(--dark);
+    }
+
+    .qr-band-good { --accent: #10b981; --accent-2: #34d399; }
+    .qr-band-ok   { --accent: #f59e0b; --accent-2: #fbbf24; }
+    .qr-band-low  { --accent: #f97316; --accent-2: #fb923c; }
+    .qr-band-bad  { --accent: #ef4444; --accent-2: #f87171; }
+
+    /* ---- Hero ---- */
+    .qr-hero {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        background: #fff;
+        border-radius: 1.5rem;
+        padding: 2rem 2.25rem;
+        box-shadow: 0 10px 30px rgba(31, 41, 55, .08);
+        overflow: hidden;
+        animation: qrFade .45s ease both;
+    }
+    .qr-hero::before {
+        content: '';
+        position: absolute; inset: 0 0 auto 0; height: 5px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+    .qr-hero-glow {
+        position: absolute; top: -60%; right: -10%;
+        width: 320px; height: 320px; border-radius: 50%;
+        background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%);
+        pointer-events: none;
+    }
+
+    /* Score ring (conic gauge) */
+    .qr-ring {
+        --val: 0;
+        flex-shrink: 0;
+        width: 168px; height: 168px; border-radius: 50%;
+        background: conic-gradient(var(--accent) calc(var(--val) * 1%), #eef0f4 0);
+        display: flex; align-items: center; justify-content: center;
+        position: relative; z-index: 1;
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 30%, transparent);
+        animation: qrPop .5s cubic-bezier(.34, 1.4, .64, 1) both;
+    }
+    .qr-ring-inner {
+        width: 130px; height: 130px; border-radius: 50%;
+        background: #fff;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .qr-ring-val { font-size: 2.6rem; font-weight: 800; line-height: 1; color: var(--accent); }
+    .qr-ring-val small { font-size: 1.1rem; font-weight: 700; }
+    .qr-ring-sub { font-size: .7rem; letter-spacing: .18em; color: var(--gray-light); font-weight: 700; margin-top: .35rem; }
+
+    .qr-hero-info { flex: 1; min-width: 240px; position: relative; z-index: 1; }
+    .qr-hero-pill {
+        display: inline-flex; align-items: center; gap: .5rem;
+        background: color-mix(in srgb, var(--accent) 14%, transparent);
+        color: var(--accent);
+        font-size: .8rem; font-weight: 700;
+        padding: .35rem .85rem; border-radius: 999px; margin-bottom: .75rem;
+    }
+    .qr-hero-title { font-size: 1.65rem; font-weight: 800; margin: 0 0 .35rem; line-height: 1.2; }
+    .qr-hero-subject { color: var(--gray); font-size: .9rem; display: flex; align-items: center; gap: .45rem; margin-bottom: 1.25rem; }
+    .qr-hero-subject i { color: var(--accent); }
+
+    /* Stat chips */
+    .qr-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+    @@media (max-width: 640px) { .qr-stats { grid-template-columns: repeat(2, 1fr); } }
+    .qr-stat { display: flex; align-items: center; gap: .65rem; background: var(--light); border-radius: .85rem; padding: .7rem .8rem; }
+    .qr-stat-ico { width: 2.2rem; height: 2.2rem; flex-shrink: 0; border-radius: .6rem; display: flex; align-items: center; justify-content: center; color: #fff; font-size: .95rem; }
+    .qr-ico-correct { background: linear-gradient(135deg, #10b981, #34d399); }
+    .qr-ico-wrong   { background: linear-gradient(135deg, #ef4444, #f87171); }
+    .qr-ico-time    { background: linear-gradient(135deg, #6366f1, #818cf8); }
+    .qr-ico-date    { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
+    .qr-stat-val { font-size: 1.15rem; font-weight: 800; color: var(--dark); line-height: 1; }
+    .qr-stat-val span { font-size: .8rem; color: var(--gray-light); font-weight: 600; }
+    .qr-stat-val-sm { font-size: .85rem; }
+    .qr-stat-lbl { font-size: .68rem; color: var(--gray-light); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-top: .2rem; }
+
+    /* ---- Review header ---- */
+    .qr-review-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 2rem .25rem 1rem; }
+    .qr-review-head h3 { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: .55rem; margin: 0; }
+    .qr-review-head h3 i { color: var(--primary); }
+    .qr-review-sub { font-size: .8rem; color: var(--gray-light); font-weight: 600; }
+
+    /* ---- Question cards ---- */
+    .qr-questions { display: flex; flex-direction: column; gap: 1rem; }
+    .qr-qcard {
+        background: #fff; border-radius: 1rem; padding: 1.25rem 1.4rem;
+        box-shadow: 0 4px 14px rgba(31, 41, 55, .06);
+        border-left: 5px solid var(--line);
+        animation: qrFade .45s ease both;
+    }
+    .qr-qcard.is-correct { border-left-color: #10b981; }
+    .qr-qcard.is-wrong   { border-left-color: #ef4444; }
+
+    .qr-qhead { display: flex; align-items: flex-start; gap: .85rem; margin-bottom: 1rem; }
+    .qr-qnum {
+        flex-shrink: 0; min-width: 2.2rem; height: 2.2rem; padding: 0 .5rem;
+        border-radius: .6rem; background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: #fff; font-weight: 800; font-size: .85rem;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .qr-qtext { flex: 1; font-size: 1.02rem; font-weight: 600; color: var(--dark); margin: .2rem 0; line-height: 1.45; }
+    .qr-qbadge { flex-shrink: 0; display: inline-flex; align-items: center; gap: .35rem; font-size: .72rem; font-weight: 700; padding: .3rem .65rem; border-radius: 999px; white-space: nowrap; }
+    .qr-qbadge.ok { background: #d1fae5; color: #059669; }
+    .qr-qbadge.no { background: #fee2e2; color: #dc2626; }
+
+    .qr-opts { display: flex; flex-direction: column; gap: .5rem; }
+    .qr-opt {
+        display: flex; align-items: center; gap: .75rem;
+        padding: .7rem .85rem; border-radius: .7rem;
+        border: 1.5px solid var(--line); background: #fff;
+        transition: all .15s;
+    }
+    .qr-opt-letter {
+        flex-shrink: 0; width: 1.85rem; height: 1.85rem; border-radius: .5rem;
+        background: #f3f4f6; color: var(--gray);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: .82rem;
+    }
+    .qr-opt-text { flex: 1; font-size: .92rem; color: #374151; }
+    .qr-opt-tag { flex-shrink: 0; display: inline-flex; align-items: center; gap: .3rem; font-size: .7rem; font-weight: 700; padding: .25rem .55rem; border-radius: 999px; }
+    .qr-tag-correct { background: #10b981; color: #fff; }
+    .qr-tag-wrong { background: #ef4444; color: #fff; }
+
+    .qr-opt.correct { border-color: #10b981; background: #ecfdf5; }
+    .qr-opt.correct .qr-opt-letter { background: #10b981; color: #fff; }
+    .qr-opt.correct .qr-opt-text { color: #065f46; font-weight: 600; }
+    .qr-opt.wrong { border-color: #ef4444; background: #fef2f2; }
+    .qr-opt.wrong .qr-opt-letter { background: #ef4444; color: #fff; }
+    .qr-opt.wrong .qr-opt-text { color: #991b1b; font-weight: 600; }
+
+    .qr-qfoot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; margin-top: .95rem; padding-top: .8rem; border-top: 1px dashed var(--line); font-size: .78rem; color: var(--gray-light); }
+    .qr-qfoot i { color: var(--gray-light); margin-right: .3rem; }
+    .qr-yourpick { color: var(--gray); }
+    .qr-yourpick strong { color: #dc2626; }
+
+    /* ---- Actions ---- */
+    .qr-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+    .qr-btn {
+        display: inline-flex; align-items: center; gap: .55rem;
+        padding: .8rem 1.5rem; border-radius: .85rem;
+        font-weight: 700; font-size: .9rem; text-decoration: none;
+        transition: all .18s; cursor: pointer; border: none;
+    }
+    .qr-btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; box-shadow: 0 6px 18px rgba(79, 70, 229, .35); }
+    .qr-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(79, 70, 229, .45); color: #fff; }
+    .qr-btn-ghost { background: #fff; color: var(--dark); box-shadow: inset 0 0 0 1.5px var(--line); }
+    .qr-btn-ghost:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1.5px var(--primary-light); color: var(--primary); }
+
+    /* ---- Empty state ---- */
+    .qr-empty { text-align: center; padding: 4rem 1rem; color: var(--gray-light); }
+    .qr-empty i { font-size: 3rem; opacity: .5; margin-bottom: 1rem; display: block; }
+    .qr-empty p { margin-bottom: 1.5rem; font-size: .95rem; }
+
+    @@keyframes qrFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @@keyframes qrPop  { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+
+    /* ---- Congrats celebration overlay ---- */
+    .qr-celebrate {
+        position: fixed; inset: 0; z-index: 1000;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(17, 24, 39, .55);
+        backdrop-filter: blur(4px);
+        animation: qrFade .35s ease both;
+    }
+    .qr-celebrate.qr-hide { opacity: 0; transition: opacity .5s ease; }
+    .qr-confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .qr-congrats-card {
+        position: relative; z-index: 1;
+        background: #fff; border-radius: 1.5rem;
+        padding: 2.5rem 2.75rem; text-align: center;
+        max-width: 380px; width: 90%;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, .3);
+        animation: qrCongrats .55s cubic-bezier(.34, 1.5, .6, 1) both;
+    }
+    .qr-congrats-emoji { font-size: 3rem; animation: qrBounce 1.1s ease infinite; }
+    .qr-congrats-icon {
+        width: 3.5rem; height: 3.5rem; margin: .25rem auto .5rem;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 1.5rem;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+    .qr-congrats-card h2 { font-size: 1.6rem; font-weight: 800; margin: .25rem 0; color: var(--dark); }
+    .qr-congrats-card p { color: var(--gray); font-size: .92rem; margin: .15rem 0; }
+    .qr-congrats-score { font-size: 3rem; font-weight: 800; color: var(--accent); line-height: 1; margin: .6rem 0 .1rem; }
+    .qr-congrats-score small { font-size: 1.3rem; }
+    .qr-congrats-sub { font-weight: 700; color: var(--accent) !important; margin-bottom: 1.4rem !important; }
+    .qr-congrats-card .qr-btn { width: 100%; justify-content: center; }
+
+    @@keyframes qrCongrats { from { opacity: 0; transform: scale(.8) translateY(20px); } to { opacity: 1; transform: none; } }
+    @@keyframes qrBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+</style>
+
+@if (celebrate)
+{
+    <script>
+        function qrDismissCelebrate() {
+            var el = document.getElementById('qrCelebrate');
+            if (!el) return;
+            el.classList.add('qr-hide');
+            setTimeout(function () { el.style.display = 'none'; }, 500);
+        }
+
+        (function () {
+            var overlay = document.getElementById('qrCelebrate');
+            var canvas = document.getElementById('qrConfetti');
+            if (!overlay || !canvas) return;
+            var ctx = canvas.getContext('2d');
+
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            resize();
+            window.addEventListener('resize', resize);
+
+            var colors = ['#4f46e5', '#818cf8', '#10b981', '#f59e0b', '#ef4444', '#0ea5e9', '#ec4899'];
+            var pieces = [];
+            for (var i = 0; i < 150; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * -canvas.height,
+                    w: 5 + Math.random() * 7,
+                    c: colors[(Math.random() * colors.length) | 0],
+                    vy: 2 + Math.random() * 4,
+                    vx: -2 + Math.random() * 4,
+                    rot: Math.random() * Math.PI,
+                    vr: -0.2 + Math.random() * 0.4
+                });
+            }
+
+            var start = Date.now();
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (var i = 0; i < pieces.length; i++) {
+                    var p = pieces[i];
+                    p.y += p.vy; p.x += p.vx; p.rot += p.vr;
+                    if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot);
+                    ctx.fillStyle = p.c;
+                    ctx.fillRect(-p.w / 2, -p.w / 2, p.w, p.w * 0.6);
+                    ctx.restore();
+                }
+                if (Date.now() - start < 6500) { requestAnimationFrame(draw); }
+                else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+            }
+            draw();
+
+            // Auto-dismiss the popup after a few seconds (confetti fades shortly after)
+            setTimeout(qrDismissCelebrate, 4500);
+        })();
+    </script>
+}

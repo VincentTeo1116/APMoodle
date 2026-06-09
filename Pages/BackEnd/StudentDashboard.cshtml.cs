@@ -10,15 +10,18 @@ namespace APMoodle.Pages.BackEnd
         private readonly IEnrollmentService _enrollmentService;
         private readonly ISessionService _sessionService;
         private readonly IStudentService _studentService;
+        private readonly IAnnouncementService _announcementService;
 
         public StudentDashboardModel(
             IEnrollmentService enrollmentService,
             ISessionService sessionService,
-            IStudentService studentService)
+            IStudentService studentService,
+            IAnnouncementService announcementService)
         {
             _enrollmentService = enrollmentService;
             _sessionService = sessionService;
             _studentService = studentService;
+            _announcementService = announcementService;
         }
 
         public string StudentName { get; set; } = "Student";
@@ -28,11 +31,13 @@ namespace APMoodle.Pages.BackEnd
         public int EnrolledModuleCount { get; set; }
         public int CompletedQuizCount { get; set; }
         public int AverageScore { get; set; } // rounded percentage 0..100
-        public int BestScore { get; set; }    // 0..100
+        public int BestScore { get; set; } // 0..100
 
         // Listings
         public List<Module> EnrolledModules { get; set; } = new();
-        public List<Session> RecentAttempts { get; set; } = new();
+        public List<Session> RecentAttempts { get; set; } = new(); // 5 newest, for the activity feed
+        public List<Session> TrendAttempts { get; set; } = new();  // wider window, for the score-trend chart
+        public List<Announcement> Announcements { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -86,6 +91,13 @@ namespace APMoodle.Pages.BackEnd
 
             // Last 5 attempts for the activity feed
             RecentAttempts = sessions.Take(5).ToList();
+
+            // Wider window (last 20 attempts) for the quiz-score trend chart so the
+            // line spans more than just the few most recent attempts.
+            TrendAttempts = sessions.Take(20).ToList();
+
+            // Active announcements (newest first) — managed from the Announcement List page
+            Announcements = await _announcementService.GetAllAnnouncementsAsync();
 
             return Page();
         }

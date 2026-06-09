@@ -1,32 +1,14 @@
-@page
-@using System.Text.Json
-@model APMoodle.Pages.BackEnd.StudentDashboardModel
+﻿@page
+@model APMoodle.Pages.BackEnd.LecturerDashboardModel
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Student Dashboard";
-
-    var attemptsChrono = Model.TrendAttempts.AsEnumerable().Reverse().ToList();
-    var byDay = attemptsChrono
-        .GroupBy(s => s.Timestamp.Date)
-        .OrderBy(g => g.Key)
-        .ToList();
-    var scoreLabels = byDay.Select(g => g.Key.ToString("dd MMM")).ToList();
-    var scoreValues = byDay.Select(g => (int)System.Math.Round(g.Average(s => (double)(s.TotalScore ?? 0)))).ToList();
-    var scoreDetails = byDay
-        .Select(g => g.OrderBy(s => s.Timestamp)
-            .Select(s => new
-            {
-                title = s.Quiz?.Title ?? "Quiz",
-                score = s.TotalScore ?? 0,
-                time = s.Timestamp.ToString("hh:mm tt")
-            }).ToList())
-        .ToList();
+    ViewData["Title"] = "Lecturer Dashboard";
 }
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["title"] - APMoodle</title>
+    <title>Student Dashboard | APMoodle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="~/css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -38,7 +20,7 @@
     <div class="dashboard-header">
         <div class="header-title">
             <h1>Student Dashboard</h1>
-            <p>Welcome back, @Model.StudentName@(string.IsNullOrEmpty(Model.StudentCode) ? "" : $" · {Model.StudentCode}") — here's your learning at a glance.</p>
+            <p>Welcome back, @Model.LecturerName@(string.IsNullOrEmpty(Model.LecturerCode) ? "" : $" · {Model.LecturerCode}") — here's your learning at a glance.</p>
         </div>
         <div class="header-date">
             <i class="far fa-calendar-alt"></i>

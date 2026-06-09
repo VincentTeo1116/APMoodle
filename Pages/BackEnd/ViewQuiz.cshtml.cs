@@ -117,7 +117,9 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
-            return RedirectToPage("/FrontEnd/QuizResult", new { id = sessionId });
+            // celebrate=1 triggers the one-time congrats animation on the result page
+            // (it won't fire when the same result is opened later from Quiz History).
+            return RedirectToPage("/FrontEnd/QuizResult", new { id = sessionId, celebrate = 1 });
         }
 
         private async Task ReloadQuestionsForRender(int quizId)

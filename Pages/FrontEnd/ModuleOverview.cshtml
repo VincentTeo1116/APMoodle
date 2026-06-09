@@ -42,7 +42,63 @@
 
     @if (TempData["JoinSuccess"] != null)
     {
-        <div class="alert alert-success">@TempData["JoinSuccess"]</div>
+        <div class="join-ok-overlay" id="joinOkModal" onclick="if(event.target===this)this.remove()">
+            <div class="join-ok-card">
+                <div class="join-ok-check">
+                    <span class="join-ok-ring"></span>
+                    <i class="bi bi-check-lg"></i>
+                </div>
+                <h3>You're In! 🎉</h3>
+                <p>@TempData["JoinSuccess"]</p>
+                <button type="button" class="join-ok-btn" onclick="document.getElementById('joinOkModal').remove()">
+                    <i class="bi bi-arrow-right-circle"></i> Continue
+                </button>
+            </div>
+        </div>
+
+        <style>
+            .join-ok-overlay {
+                position: fixed; inset: 0; z-index: 2000;
+                display: flex; align-items: center; justify-content: center;
+                background: rgba(17, 24, 39, .55); backdrop-filter: blur(4px);
+                font-family: 'Inter', system-ui, sans-serif;
+                animation: joinOkFade .3s ease both;
+            }
+            .join-ok-card {
+                background: #fff; border-radius: 1.5rem;
+                padding: 2.5rem 2.5rem 2rem; text-align: center;
+                width: 90%; max-width: 380px;
+                box-shadow: 0 25px 60px rgba(0, 0, 0, .3);
+                animation: joinOkPop .5s cubic-bezier(.34, 1.5, .6, 1) both;
+            }
+            .join-ok-check {
+                position: relative; width: 5rem; height: 5rem; margin: 0 auto 1.25rem;
+                border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                background: linear-gradient(135deg, #10b981, #34d399);
+                color: #fff; font-size: 2.5rem;
+                box-shadow: 0 10px 26px rgba(16, 185, 129, .4);
+                animation: joinOkCheck .55s cubic-bezier(.34, 1.6, .6, 1) both;
+            }
+            .join-ok-ring {
+                position: absolute; inset: 0; border-radius: 50%;
+                border: 3px solid #10b981; animation: joinOkRing 1.1s ease-out infinite;
+            }
+            .join-ok-card h3 { font-size: 1.5rem; font-weight: 800; color: #1f2937; margin: 0 0 .5rem; }
+            .join-ok-card p { color: #6b7280; font-size: .95rem; line-height: 1.5; margin: 0 0 1.5rem; }
+            .join-ok-btn {
+                display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+                width: 100%; padding: .85rem 1.5rem; border: none; border-radius: .85rem;
+                font-family: inherit; font-weight: 700; font-size: .95rem; cursor: pointer; color: #fff;
+                background: linear-gradient(135deg, #4f46e5, #818cf8);
+                box-shadow: 0 6px 18px rgba(79, 70, 229, .35); transition: all .18s;
+            }
+            .join-ok-btn:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(79, 70, 229, .45); }
+
+            @@keyframes joinOkFade { from { opacity: 0; } to { opacity: 1; } }
+            @@keyframes joinOkPop { from { opacity: 0; transform: scale(.8) translateY(20px); } to { opacity: 1; transform: none; } }
+            @@keyframes joinOkCheck { 0% { transform: scale(0) rotate(-30deg); } 100% { transform: scale(1) rotate(0); } }
+            @@keyframes joinOkRing { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(1.5); opacity: 0; } }
+        </style>
     }
 
     @if (userRole == "student")
