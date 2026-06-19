@@ -29,7 +29,19 @@
         <nav
             class="custom-navbar navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/FrontEnd/Index" title="Back to main page">APMoodle</a>
+                @if (userRole == "admin")
+                {
+                    <a class="navbar-brand" href="/FrontEnd/AdminDashboard" title="Back to main page">APMoodle</a>
+                }
+                else if (userRole == "lecturer")
+                {
+                    <a class="navbar-brand" href="/FrontEnd/LecturerDashboard" title="Back to main page">APMoodle</a>
+                }
+                else if (userRole == "student")
+                {
+                    <a class="navbar-brand" href="/FrontEnd/StudentDashboard" title="Back to main page">APMoodle</a>
+                }
+                
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

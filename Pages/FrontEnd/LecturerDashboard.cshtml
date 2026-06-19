@@ -3,15 +3,25 @@
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Lecturer Dashboard";
+
+    // Map an average score to one of the dashboard score-band gradients
+    // (same thresholds the admin score circles use, computed here so this
+    // page doesn't need the shared dashboard.js).
+    string ScoreGradient(double score)
+    {
+        if (score >= 80) return "linear-gradient(135deg, #10b981, #059669)";
+        if (score >= 60) return "linear-gradient(135deg, #f59e0b, #d97706)";
+        if (score >= 40) return "linear-gradient(135deg, #f97316, #ea580c)";
+        return "linear-gradient(135deg, #ef4444, #dc2626)";
+    }
 }
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard | APMoodle</title>
+    <title>Lecturer Dashboard | APMoodle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="~/css/dashboard.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <div class="dashboard-container">
@@ -19,8 +29,11 @@
     <!-- Header -->
     <div class="dashboard-header">
         <div class="header-title">
-            <h1>Student Dashboard</h1>
-            <p>Welcome back, @Model.LecturerName@(string.IsNullOrEmpty(Model.LecturerCode) ? "" : $" · {Model.LecturerCode}") — here's your learning at a glance.</p>
+            <h1>Lecturer Dashboard</h1>
+            <p>
+                Welcome back, @Model.LecturerName@(string.IsNullOrEmpty(Model.LecturerCode) ? "" : $" ({Model.LecturerCode})")
+                — here's your teaching at a glance.
+            </p>
         </div>
         <div class="header-date">
             <i class="far fa-calendar-alt"></i>
@@ -28,8 +41,8 @@
         </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-grid">
+    <!-- Stats Cards (3 across) -->
+    <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
         <div class="stat-card">
             <div class="stat-icon module-icon">
                 <i class="fas fa-book"></i>
@@ -37,40 +50,29 @@
             <div class="stat-details">
                 <h3>Enrolled Modules</h3>
                 <div class="stat-value">@Model.EnrolledModuleCount</div>
-                <span class="stat-label">Active Courses</span>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon enrollment-icon">
-                <i class="fas fa-circle-check"></i>
-            </div>
-            <div class="stat-details">
-                <h3>Quizzes Completed</h3>
-                <div class="stat-value">@Model.CompletedQuizCount</div>
-                <span class="stat-label">Total Attempts</span>
+                <span class="stat-label">Modules You Teach</span>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-icon student-icon">
-                <i class="fas fa-chart-line"></i>
+                <i class="fas fa-users"></i>
             </div>
             <div class="stat-details">
-                <h3>Average Score</h3>
-                <div class="stat-value">@(Model.CompletedQuizCount > 0 ? $"{Model.AverageScore}%" : "—")</div>
-                <span class="stat-label">Across All Quizzes</span>
+                <h3>Students Joined</h3>
+                <div class="stat-value">@Model.StudentsJoinedCount</div>
+                <span class="stat-label">Across Your Modules</span>
             </div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon lecturer-icon">
-                <i class="fas fa-trophy"></i>
+            <div class="stat-icon enrollment-icon">
+                <i class="fas fa-clipboard-question"></i>
             </div>
             <div class="stat-details">
-                <h3>Best Score</h3>
-                <div class="stat-value">@(Model.CompletedQuizCount > 0 ? $"{Model.BestScore}%" : "—")</div>
-                <span class="stat-label">Personal Best</span>
+                <h3>Quizzes Created</h3>
+                <div class="stat-value">@Model.QuizzesCreatedCount</div>
+                <span class="stat-label">In Your Materials</span>
             </div>
         </div>
     </div>
@@ -141,101 +143,24 @@
         </div>
     </div>
 
-    <!-- Quiz Score Trend + Recent Quiz Attempts (same row) -->
+    <!-- Two panels side by side: Your Modules + Quiz Average Score (Top 5) -->
     <div class="charts-row">
-
-        <!-- Quiz Score Trend -->
-        <div class="chart-card">
-            <div class="card-header">
-                <h3><i class="fas fa-chart-line"></i> Quiz Score Trend</h3>
-                <span class="card-subtitle">Your recent quiz results</span>
-            </div>
-            <div class="card-body">
-                @if (scoreValues.Any())
-                {
-                    <div style="position: relative; height: 300px;">
-                        <canvas id="scoreChart"></canvas>
-                    </div>
-                }
-                else
-                {
-                    <div class="no-data-message">
-                        <i class="fas fa-chart-line"></i>
-                        <p>No quiz results yet — take a quiz to see your progress here</p>
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- Recent Quiz Attempts -->
-        <div class="activities-card">
-            <div class="card-header">
-                <h3><i class="fas fa-clock-rotate-left"></i> Recent Quiz Attempts</h3>
-                @if (Model.RecentAttempts.Any())
-                {
-                    <a href="/FrontEnd/QuizHistory" class="view-all-link">Full History <i class="fas fa-arrow-right"></i></a>
-                }
-            </div>
-            <div class="card-body">
-                @if (Model.RecentAttempts.Any())
-                {
-                    <div class="activities-list">
-                        @foreach (var s in Model.RecentAttempts)
-                        {
-                            var sc = s.TotalScore ?? -1;
-                            var scoreBand = sc < 0 ? "score-none"
-                                : sc >= 80 ? "score-good"
-                                : sc >= 60 ? "score-ok"
-                                : sc >= 40 ? "score-low"
-                                : "score-bad";
-                            <a class="activity-item" href="/FrontEnd/QuizResult/@s.SessionID" style="text-decoration:none;">
-                                <div class="activity-icon @scoreBand">
-                                    <i class="fas fa-pen-to-square"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <div class="activity-description">
-                                        <strong>@(s.TotalScore.HasValue ? $"{s.TotalScore}%" : "—")</strong>
-                                        on @(s.Quiz?.Title ?? "Quiz")
-                                    </div>
-                                    <div class="activity-time">
-                                        <i class="far fa-clock"></i>
-                                        @s.Timestamp.ToString("MMM dd, yyyy • hh:mm tt")
-                                    </div>
-                                </div>
-                                <i class="fas fa-chevron-right module-go"></i>
-                            </a>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="no-data-message">
-                        <i class="fas fa-clock-rotate-left"></i>
-                        <p>No quiz attempts yet</p>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-
-    <!-- Your Modules (below Quiz Score) + Quick Actions -->
-    <div class="bottom-row">
 
         <!-- Your Modules -->
         <div class="top-students-card">
             <div class="card-header">
                 <h3><i class="fas fa-layer-group"></i> Your Modules</h3>
-                @if (Model.EnrolledModules.Any())
+                @if (Model.Modules.Any())
                 {
                     <a href="/FrontEnd/ModuleOverview" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
                 }
             </div>
             <div class="card-body">
-                @if (Model.EnrolledModules.Any())
+                @if (Model.Modules.Any())
                 {
                     <div class="students-list">
                         @{ int moduleColorIndex = 0; }
-                        @foreach (var m in Model.EnrolledModules.Take(5))
+                        @foreach (var m in Model.Modules.Take(6))
                         {
                             var avatarColor = "c" + ((moduleColorIndex % 5) + 1);
                             moduleColorIndex++;
@@ -247,7 +172,11 @@
                                 </div>
                                 <div class="student-info">
                                     <div class="student-name">@m.Name</div>
-                                    <div class="student-code">@m.ModuleCode &nbsp;·&nbsp; 👨‍🏫 @(m.Lecturer?.Name ?? "Staff")</div>
+                                    <div class="student-code">
+                                        @m.ModuleCode
+                                        &nbsp;·&nbsp; <i class="fas fa-user-graduate"></i> @m.StudentCount student@(m.StudentCount == 1 ? "" : "s")
+                                        &nbsp;·&nbsp; <i class="fas fa-clipboard-question"></i> @m.QuizCount quiz@(m.QuizCount == 1 ? "" : "zes")
+                                    </div>
                                 </div>
                                 <i class="fas fa-chevron-right module-go"></i>
                             </a>
@@ -257,133 +186,58 @@
                 else
                 {
                     <div class="no-data-message">
-                        <i class="fas fa-book"></i>
-                        <p>You haven't joined any modules yet</p>
-                        <a href="/FrontEnd/JoinModule" class="dash-link-btn">
-                            <i class="fas fa-plus"></i> Join a Module
-                        </a>
+                        <i class="fas fa-layer-group"></i>
+                        <p>You haven't created any modules yet</p>
                     </div>
                 }
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="trend-card">
+        <!-- Quiz Average Score — Top 5 -->
+        <div class="top-students-card">
             <div class="card-header">
-                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                <h3><i class="fas fa-trophy"></i> Quiz Average Score</h3>
+                <span class="card-subtitle">Top 5 by average score</span>
             </div>
             <div class="card-body">
-                <div class="quick-actions">
-                    <a class="quick-action qa1" href="/FrontEnd/ModuleOverview">
-                        <i class="fas fa-book"></i>
-                        <span>Browse My Modules</span>
-                        <i class="fas fa-arrow-right qa-arrow"></i>
-                    </a>
-                    <a class="quick-action qa2" href="/FrontEnd/JoinModule">
-                        <i class="fas fa-plus"></i>
-                        <span>Join a Module</span>
-                        <i class="fas fa-arrow-right qa-arrow"></i>
-                    </a>
-                    <a class="quick-action qa3" href="/FrontEnd/QuizHistory">
-                        <i class="fas fa-clock-rotate-left"></i>
-                        <span>Quiz History</span>
-                        <i class="fas fa-arrow-right qa-arrow"></i>
-                    </a>
-                    <a class="quick-action qa4" href="/FrontEnd/Chat">
-                        <i class="fas fa-comments"></i>
-                        <span>Open Chat</span>
-                        <i class="fas fa-arrow-right qa-arrow"></i>
-                    </a>
-                </div>
+                @if (Model.TopQuizzes.Any())
+                {
+                    <div class="students-list">
+                        @for (int i = 0; i < Model.TopQuizzes.Count; i++)
+                        {
+                            var q = Model.TopQuizzes[i];
+                            var avg = (int)Math.Round(q.AverageScore);
+                            <div class="student-item">
+                                <div class="student-rank rank-@(i + 1)">@(i + 1)</div>
+                                <div class="student-info">
+                                    <div class="student-name">@q.Title</div>
+                                    <div class="student-code">
+                                        @(string.IsNullOrEmpty(q.ModuleName) ? q.Subject : q.ModuleName)
+                                        &nbsp;·&nbsp; @q.AttemptCount attempt@(q.AttemptCount == 1 ? "" : "s")
+                                    </div>
+                                </div>
+                                <div class="student-score">
+                                    <div class="score-circle" style="background: @ScoreGradient(q.AverageScore);">
+                                        <span>@avg%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="no-data-message">
+                        <i class="fas fa-trophy"></i>
+                        <p>No quiz attempts yet — scores will appear once students take your quizzes</p>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    window.scoreTrend = {
-        labels: @Html.Raw(JsonSerializer.Serialize(scoreLabels)),
-        values: @Html.Raw(JsonSerializer.Serialize(scoreValues)),
-        details: @Html.Raw(JsonSerializer.Serialize(scoreDetails))
-    };
-
-    (function () {
-        var canvas = document.getElementById('scoreChart');
-        if (!canvas || !window.scoreTrend || !window.scoreTrend.values.length) return;
-
-        new Chart(canvas.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: window.scoreTrend.labels,
-                datasets: [{
-                    label: 'Score',
-                    data: window.scoreTrend.values,
-                    borderColor: '#4f46e5',
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#4f46e5',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 8,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1f2937',
-                        titleColor: '#ffffff',
-                        bodyColor: '#e5e7eb',
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: false,
-                        callbacks: {
-                            // Title = the day; if more than one quiz, note the count + average
-                            title: function (items) {
-                                var i = items[0].dataIndex;
-                                var day = window.scoreTrend.labels[i];
-                                var list = (window.scoreTrend.details && window.scoreTrend.details[i]) || [];
-                                if (list.length > 1) {
-                                    return day + '  ·  ' + list.length + ' quizzes (avg ' + items[0].raw + '%)';
-                                }
-                                return day;
-                            },
-                            // Body = one line per quiz taken that day
-                            label: function (context) {
-                                var list = (window.scoreTrend.details && window.scoreTrend.details[context.dataIndex]) || [];
-                                if (list.length === 0) {
-                                    return 'Score: ' + context.raw + '%';
-                                }
-                                if (list.length === 1) {
-                                    return list[0].title + ': ' + list[0].score + '%';
-                                }
-                                return list.map(function (q) {
-                                    return '• ' + q.title + ': ' + q.score + '%';
-                                });
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        grid: { color: '#e5e7eb' },
-                        ticks: { callback: function (v) { return v + '%'; } }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-    })();
-
     // ── Announcements horizontal slider ──────────────────────
     (function () {
         var track = document.getElementById('annTrack');
