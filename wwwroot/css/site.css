@@ -18,7 +18,7 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  margin-bottom: 0px !important;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -1104,5 +1104,105 @@ body:has(.expandable-vertical-menu.expanded) .container {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ========== FOOTER ========== */
+footer.footer {
+    background: linear-gradient(135deg, #3d3027 0%, #5d4e37 50%, #3d3027 100%);
+    color: #f5ebdc;
+    padding: 1.2rem 0 1.2rem;
+    margin-top: 2rem;
+    bottom: 0px;
+    border-top: 1px solid rgba(139, 115, 85, 0.3);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+    position: relative;
+}
+
+/* Subtle top glow */
+footer.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #c9b48a, #f5ebdc, #c9b48a, transparent);
+    opacity: 0.3;
+}
+
+footer.footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+footer.footer .footer-brand {
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0px;
+    color: #f5ebdc;
+}
+
+footer.footer .footer-brand i {
+    color: #c9b48a;
+    margin-right: 6px;
+}
+
+footer.footer .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+footer.footer .footer-links a {
+    color: rgba(245, 235, 220, 0.7);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    position: relative;
+}
+
+footer.footer .footer-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #c9b48a;
+    transition: width 0.25s ease;
+}
+
+footer.footer .footer-links a:hover {
+    color: #f5ebdc;
+}
+
+footer.footer .footer-links a:hover::after {
+    width: 100%;
+}
+
+footer.footer .footer-copy {
+    font-size: 0.75rem;
+    color: rgba(245, 235, 220, 0.45);
+    letter-spacing: 0.3px;
+}
+
+footer.footer .footer-copy i {
+    color: #c9b48a;
+    margin: 0 3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    footer.footer {
+        padding: 1.2rem 0 0.8rem;
+    }
+    footer.footer .footer-links {
+        gap: 1rem;
+        font-size: 0.8rem;
     }
 }

@@ -14,7 +14,6 @@
 <head>
     <title>@ViewData["Title"] - APMoodle</title>
     <link rel="stylesheet" href="~/css/profile.css" />
-    <!-- Cropper.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
 </head>
 
@@ -213,7 +212,6 @@
             }
         };
         reader.readAsDataURL(file);
-        // Reset file input so same file can be re-uploaded
         fileInput.value = '';
     });
 
