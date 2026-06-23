@@ -25,5 +25,6 @@ namespace APMoodle.Services.Interfaces
         Task<int> GetPendingCountAsync();
         Task<List<Student>> GetPendingStudentsAsync();
         Task<List<Student>> SearchStudentsAsync(string searchTerm);
+        Task<bool> UpdatePasswordAsync(int studentId, string newHashedPassword);
     }
 }

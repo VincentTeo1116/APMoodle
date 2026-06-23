@@ -70,6 +70,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ForgotPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRm9yZ290UGFzc3dvcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

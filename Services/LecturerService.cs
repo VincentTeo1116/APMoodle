@@ -74,5 +74,21 @@ namespace APMoodle.Services
                 .Take(10)
                 .ToListAsync();
         }
+
+        public async Task<bool> UpdatePasswordAsync(int lecturerId, string newHashedPassword)
+        {
+            try
+            {
+                var lecturer = await _context.Lecturers.FindAsync(lecturerId);
+                if (lecturer == null) return false;
+                lecturer.Password = newHashedPassword;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

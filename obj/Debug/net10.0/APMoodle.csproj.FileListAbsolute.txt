@@ -7,7 +7,6 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.runtimeconfig.json
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\APMoodle.pdb
-C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\BCrypt.Net-Next.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\BouncyCastle.Cryptography.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Google.Apis.dll
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\Google.Apis.Auth.dll
@@ -223,3 +222,4 @@ C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\ne
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\moyk8s0qgm-{0}-yfff351dvw-yfff351dvw.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\th5zepmf5h-{0}-o5ne464zqu-o5ne464zqu.gz
 C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\obj\Debug\net10.0\compressed\41075pknu5-{0}-bvodyfijcs-bvodyfijcs.gz
+C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\bin\Debug\net10.0\BCrypt-Net-Next.dll

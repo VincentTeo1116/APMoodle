@@ -9,5 +9,6 @@ namespace APMoodle.Services.Interfaces
         Task<Admin?> GetAdminByEmailAsync(string email);
         Task<Admin?> GetAdminByCodeOrEmailAsync(string userId);
         Task<bool> UpdateAdminAsync(Admin admin);
+        Task<bool> UpdatePasswordAsync(int adminId, string newHashedPassword);
     }
 }

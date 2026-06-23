@@ -59,5 +59,20 @@ namespace APMoodle.Services
                 return false;
             }
         }
+        public async Task<bool> UpdatePasswordAsync(int adminId, string newHashedPassword)
+        {
+            try
+            {
+                var admin = await _context.Admins.FindAsync(adminId);
+                if (admin == null) return false;
+                admin.Password = newHashedPassword;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
