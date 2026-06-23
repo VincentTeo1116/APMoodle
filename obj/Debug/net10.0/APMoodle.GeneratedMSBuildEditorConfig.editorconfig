@@ -34,6 +34,10 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQWRkQW5ub3VuY2VtZW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/AddModule.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQWRkTW9kdWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/AdminDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQWRtaW5EYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -60,6 +64,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/EditMaterial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRWRpdE1hdGVyaWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/EditModule.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRWRpdE1vZHVsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/EditQuiz.cshtml]
@@ -100,6 +108,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ManageQuiz.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTWFuYWdlUXVpei5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ModuleList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTW9kdWxlTGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ModuleOverview.cshtml]

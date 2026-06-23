@@ -14,6 +14,8 @@
 <head>
     <title>@ViewData["Title"] - APMoodle</title>
     <link rel="stylesheet" href="~/css/profile.css" />
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
 </head>
 
 <div id="horizontalNavbar">
@@ -29,26 +31,31 @@
         </div>
     }
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" id="profileForm">
         <div class="profile-dashboard">
             <!-- Left Section: Profile Picture -->
             <div class="profile-picture">
-                <div class="picture">
+                <div class="picture" id="profilePictureContainer">
                     @if (!string.IsNullOrEmpty(Model.ProfilePic))
                     {
-                        <img src="@Model.ProfilePic" alt="Profile Picture" class="profile-img" />
+                        <img src="@Model.ProfilePic" alt="Profile Picture" class="profile-img" id="profileImg" />
                     }
                     else
                     {
-                        <div class="default-avatar">
-                            @(string.IsNullOrEmpty(Model.Name) ? "👤" : Model.Name.Substring(0, 1).ToUpper())
+                        <div class="default-avatar" id="defaultAvatar">
+                            @{
+                                var displayName = string.IsNullOrEmpty(Model.Name) ? "👤" : 
+                                    (Model.Name.Length >= 2 ? Model.Name.Substring(0, 2).ToUpper() : Model.Name.ToUpper());
+                            }
+                            @displayName
                         </div>
                     }
                 </div>
-                <div class="upload-picture">
+                <div class="upload-actions">
                     <label for="profilePic" class="upload-btn">Change Profile</label>
                     <input type="file" id="profilePic" name="profilePic" accept="image/*" style="display: none;" />
-                    <p class="upload-hint">Click to upload (JPG, PNG)</p>
+                    <button type="button" class="remove-btn" id="removePhotoBtn">Remove Photo</button>
+                    <p class="upload-hint">Click "Change Profile" to upload a new photo</p>
                 </div>
             </div>
 
@@ -58,15 +65,15 @@
                 {
                     <div class="info-group">
                         <label class="info-label">Student Code</label>
-                        <input type="text" value="@Model.UserCode" readonly disabled class="readonly-input" />
+                        <input type="text" value="@Model.UserCode" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Name</label>
-                        <input type="text" name="Name" value="@Model.Name" required />
+                        <input type="text" value="@Model.Name" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Email</label>
-                        <input type="email" value="@Model.Email" readonly disabled class="readonly-input" />
+                        <input type="email" value="@Model.Email" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Phone Number</label>
@@ -74,30 +81,26 @@
                     </div>
                     <div class="info-group">
                         <label class="info-label">Date of Birth</label>
-                        <input type="date" name="DOB" value="@Model.DOB?.ToString("yyyy-MM-dd")" required />
+                        <input type="date" value="@Model.DOB?.ToString("yyyy-MM-dd")" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Gender</label>
-                        <select name="Gender" required>
-                            <option value="Male" selected="@(Model.Gender == "Male")">Male</option>
-                            <option value="Female" selected="@(Model.Gender == "Female")">Female</option>
-                            <option value="Other" selected="@(Model.Gender == "Other")">Other</option>
-                        </select>
+                        <input type="text" value="@Model.Gender" readonly class="readonly-input" />
                     </div>
                 }
                 else if (userRole == "lecturer")
                 {
                     <div class="info-group">
                         <label class="info-label">Lecturer Code</label>
-                        <input type="text" value="@Model.UserCode" readonly disabled class="readonly-input" />
+                        <input type="text" value="@Model.UserCode" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Name</label>
-                        <input type="text" name="Name" value="@Model.Name" required />
+                        <input type="text" value="@Model.Name" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Email</label>
-                        <input type="email" value="@Model.Email" readonly disabled class="readonly-input" />
+                        <input type="email" value="@Model.Email" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Phone Number</label>
@@ -105,34 +108,30 @@
                     </div>
                     <div class="info-group">
                         <label class="info-label">Date of Birth</label>
-                        <input type="date" name="DOB" value="@Model.DOB?.ToString("yyyy-MM-dd")" required />
+                        <input type="date" value="@Model.DOB?.ToString("yyyy-MM-dd")" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Department</label>
-                        <input type="text" name="Department" value="@Model.Department" required />
+                        <input type="text" value="@Model.Department" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Gender</label>
-                        <select name="Gender" required>
-                            <option value="Male" selected="@(Model.Gender == "Male")">Male</option>
-                            <option value="Female" selected="@(Model.Gender == "Female")">Female</option>
-                            <option value="Other" selected="@(Model.Gender == "Other")">Other</option>
-                        </select>
+                        <input type="text" value="@Model.Gender" readonly class="readonly-input" />
                     </div>
                 }
                 else if (userRole == "admin")
                 {
                     <div class="info-group">
                         <label class="info-label">Admin Code</label>
-                        <input type="text" value="@Model.UserCode" readonly disabled class="readonly-input" />
+                        <input type="text" value="@Model.UserCode" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Name</label>
-                        <input type="text" name="Name" value="@Model.Name" required />
+                        <input type="text" value="@Model.Name" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Email</label>
-                        <input type="email" value="@Model.Email" readonly disabled class="readonly-input" />
+                        <input type="email" value="@Model.Email" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Phone Number</label>
@@ -140,15 +139,11 @@
                     </div>
                     <div class="info-group">
                         <label class="info-label">Date of Birth</label>
-                        <input type="date" name="DOB" value="@Model.DOB?.ToString("yyyy-MM-dd")" required />
+                        <input type="date" value="@Model.DOB?.ToString("yyyy-MM-dd")" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
                         <label class="info-label">Gender</label>
-                        <select name="Gender" required>
-                            <option value="Male" selected="@(Model.Gender == "Male")">Male</option>
-                            <option value="Female" selected="@(Model.Gender == "Female")">Female</option>
-                            <option value="Other" selected="@(Model.Gender == "Other")">Other</option>
-                        </select>
+                        <input type="text" value="@Model.Gender" readonly class="readonly-input" />
                     </div>
                 }
             </div>
@@ -160,25 +155,135 @@
     </form>
 </div>
 
+<!-- Cropper Modal -->
+<div id="cropModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:700px;">
+        <div class="modal-header">
+            <h3>Crop Profile Picture</h3>
+            <span class="modal-close" id="cropModalClose">&times;</span>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+            <div style="max-height:400px; overflow:hidden;">
+                <img id="cropImage" src="" alt="Crop Image" />
+            </div>
+        </div>
+        <div class="modal-footer" style="display:flex; gap:12px; justify-content:flex-end; padding:16px 24px;">
+            <button class="btn-secondary" id="cropCancelBtn">Cancel</button>
+            <button class="btn-primary" id="cropSaveBtn">Crop & Upload</button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden input to signal photo removal -->
+<input type="hidden" name="RemovePhoto" id="removePhotoInput" value="false" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
-    document.querySelector('.upload-picture').addEventListener('click', function() {
-        document.getElementById('profilePic').click();
+    let cropper = null;
+    const modal = document.getElementById('cropModal');
+    const cropImage = document.getElementById('cropImage');
+    const fileInput = document.getElementById('profilePic');
+    const removePhotoBtn = document.getElementById('removePhotoBtn');
+    const removePhotoInput = document.getElementById('removePhotoInput');
+    const profileImg = document.getElementById('profileImg');
+    const defaultAvatar = document.getElementById('defaultAvatar');
+    const container = document.getElementById('profilePictureContainer');
+
+    // Trigger file input when "Change Profile" clicked
+    document.querySelector('.upload-picture').addEventListener('click', function(e) {
+        // Prevent triggering if clicking the remove button inside
+        if (e.target.classList.contains('remove-btn')) return;
+        fileInput.click();
     });
 
-    document.getElementById('profilePic').addEventListener('change', function(e) {
-        if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = document.querySelector('.profile-img');
-                const defaultAvatar = document.querySelector('.default-avatar');
-                if (img) {
-                    img.src = event.target.result;
-                } else {
-                    const pictureDiv = document.querySelector('.picture');
-                    pictureDiv.innerHTML = `<img src="${event.target.result}" alt="Profile Picture" class="profile-img" />`;
-                }
-            };
-            reader.readAsDataURL(e.target.files[0]);
+    // Handle file selection
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            cropImage.src = event.target.result;
+            // Show modal
+            modal.style.display = 'flex';
+            // Initialize cropper after image loads
+            if (cropImage.complete) {
+                initCropper();
+            } else {
+                cropImage.onload = initCropper;
+            }
+        };
+        reader.readAsDataURL(file);
+        // Reset file input so same file can be re-uploaded
+        fileInput.value = '';
+    });
+
+    function initCropper() {
+        if (cropper) {
+            cropper.destroy();
+        }
+        cropper = new Cropper(cropImage, {
+            aspectRatio: 1, // Square crop
+            viewMode: 1,
+            autoCropArea: 1,
+            movable: true,
+            zoomable: true,
+            rotatable: false,
+            scalable: false,
+        });
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+    }
+
+    // Cancel crop
+    document.getElementById('cropCancelBtn').addEventListener('click', closeModal);
+    document.getElementById('cropModalClose').addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+
+    // Save cropped image
+    document.getElementById('cropSaveBtn').addEventListener('click', function() {
+        if (!cropper) return;
+        // Get cropped canvas as blob
+        cropper.getCroppedCanvas().toBlob(function(blob) {
+            // Create a file from the blob
+            const file = new File([blob], 'profile_cropped.jpg', { type: 'image/jpeg' });
+            // Create a new FormData and append the cropped file
+            const formData = new FormData();
+            formData.append('profilePic', file);
+            // Also send the other form fields (PhoneNumber)
+            const phoneInput = document.querySelector('input[name="PhoneNumber"]');
+            if (phoneInput) formData.append('PhoneNumber', phoneInput.value);
+            // Send via AJAX
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Reload the page to show updated profile picture
+                window.location.reload();
+            })
+            .catch(error => {
+                alert('Error uploading cropped image.');
+            });
+        }, 'image/jpeg', 0.9);
+        closeModal();
+    });
+
+    // Remove photo
+    removePhotoBtn.addEventListener('click', function() {
+        if (confirm('Are you sure you want to remove your profile picture?')) {
+            removePhotoInput.value = 'true';
+            // Submit the form with removal flag
+            document.getElementById('profileForm').submit();
         }
     });
+
 </script>

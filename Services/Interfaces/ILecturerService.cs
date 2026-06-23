@@ -12,5 +12,6 @@ namespace APMoodle.Services.Interfaces
         Task<bool> UpdateLecturerAsync(Lecturer lecturer);
         Task<List<Lecturer>> SearchLecturersAsync(string searchTerm);
         Task<bool> UpdatePasswordAsync(int lecturerId, string newHashedPassword);
+        Task<List<Lecturer>> GetAllLecturersAsync();
     }
 }

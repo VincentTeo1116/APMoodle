@@ -101,7 +101,8 @@ namespace APMoodle.Services
                 var module = await _context.Modules.FindAsync(moduleId);
                 if (module == null) return false;
 
-                _context.Modules.Remove(module);
+                // _context.Modules.Remove(module);
+                module.Status = "Removed";
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -162,6 +163,29 @@ namespace APMoodle.Services
             return await _context.Modules
                 .Include(m => m.Lecturer)
                 .FirstOrDefaultAsync(m => m.InvitationCode == invitationCode);
+        }
+
+        public async Task<bool> ModuleExistsAsync(string moduleCode)
+        {
+            return await _context.Modules.AnyAsync(m => m.ModuleCode == moduleCode);
+        }
+
+        public async Task<string> GenerateNextModuleCodeAsync()
+        {
+            var last = await _context.Modules
+                .OrderByDescending(m => m.ModuleCode)
+                .FirstOrDefaultAsync();
+            if (last == null || string.IsNullOrEmpty(last.ModuleCode))
+                return "MDL001";
+            var numPart = last.ModuleCode.Replace("MDL", "");
+            if (int.TryParse(numPart, out int num))
+                return $"MDL{(num + 1):D3}";
+            return "MDL001";
+        }
+
+        public async Task<int> GetTotalCountAsync()
+        {
+            return await _context.Modules.CountAsync();
         }
     }
 }

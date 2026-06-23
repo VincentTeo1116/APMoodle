@@ -57,6 +57,7 @@ namespace APMoodle.Pages.BackEnd
         {
             var userId = HttpContext.Session.GetString("UserID");
             var userRole = HttpContext.Session.GetString("UserRole");
+            var removePhoto = Request.Form["RemovePhoto"].ToString() == "true";
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -64,10 +65,8 @@ namespace APMoodle.Pages.BackEnd
             }
 
             var id = int.Parse(userId);
-            var name = Request.Form["Name"].ToString();
+
             var phoneNumber = Request.Form["PhoneNumber"].ToString();
-            var dob = DateTime.TryParse(Request.Form["DOB"], out var dobResult) ? dobResult : (DateTime?)null;
-            var gender = Request.Form["Gender"].ToString();
             
             // Handle profile picture upload
             var profilePicUrl = await HandleProfilePictureUpload();
@@ -79,27 +78,39 @@ namespace APMoodle.Pages.BackEnd
                 var student = await _studentService.GetStudentByIdAsync(id);
                 if (student != null)
                 {
-                    student.Name = name;
+                    // Only update PhoneNumber and ProfilePic
                     student.PhoneNumber = phoneNumber;
-                    if (dob.HasValue) student.DOB = DateOnly.FromDateTime(dob.Value);
-                    student.Gender = gender;
                     if (!string.IsNullOrEmpty(profilePicUrl)) student.ProfilePic = profilePicUrl;
                     success = await _studentService.UpdateStudentAsync(student);
+                }
+
+                if (removePhoto)
+                {
+
+                    student.ProfilePic = null;
+                }
+                else if (!string.IsNullOrEmpty(profilePicUrl))
+                {
+                    student.ProfilePic = profilePicUrl;
                 }
             }
             else if (userRole == "lecturer")
             {
-                var department = Request.Form["Department"].ToString();
                 var lecturer = await _lecturerService.GetLecturerByIdAsync(id);
                 if (lecturer != null)
                 {
-                    lecturer.Name = name;
                     lecturer.PhoneNumber = phoneNumber;
-                    if (dob.HasValue) lecturer.DOB = DateOnly.FromDateTime(dob.Value);
-                    lecturer.Gender = gender;
-                    lecturer.Department = department;
                     if (!string.IsNullOrEmpty(profilePicUrl)) lecturer.ProfilePic = profilePicUrl;
                     success = await _lecturerService.UpdateLecturerAsync(lecturer);
+                }
+                if (removePhoto)
+                {
+
+                    lecturer.ProfilePic = null;
+                }
+                else if (!string.IsNullOrEmpty(profilePicUrl))
+                {
+                    lecturer.ProfilePic = profilePicUrl;
                 }
             }
             else if (userRole == "admin")
@@ -107,12 +118,18 @@ namespace APMoodle.Pages.BackEnd
                 var admin = await _adminService.GetAdminByIdAsync(id);
                 if (admin != null)
                 {
-                    admin.Name = name;
                     admin.PhoneNumber = phoneNumber;
-                    if (dob.HasValue) admin.DOB = DateOnly.FromDateTime(dob.Value);
-                    admin.Gender = gender;
                     if (!string.IsNullOrEmpty(profilePicUrl)) admin.ProfilePic = profilePicUrl;
                     success = await _adminService.UpdateAdminAsync(admin);
+                }
+                if (removePhoto)
+                {
+
+                    admin.ProfilePic = null;
+                }
+                else if (!string.IsNullOrEmpty(profilePicUrl))
+                {
+                    admin.ProfilePic = profilePicUrl;
                 }
             }
 
@@ -120,16 +137,16 @@ namespace APMoodle.Pages.BackEnd
             {
                 Message = "Profile updated successfully!";
                 IsSuccess = true;
-                // Refresh session name
-                HttpContext.Session.SetString("UserName", name);
+                // Reload data to reflect changes
+                await LoadUserData(id, userRole ?? "");
             }
             else
             {
                 Message = "Failed to update profile. Please try again.";
                 IsSuccess = false;
+                await LoadUserData(id, userRole ?? "");
             }
 
-            await LoadUserData(id, userRole ?? "");
             return Page();
         }
 
@@ -137,6 +154,16 @@ namespace APMoodle.Pages.BackEnd
         {
             var file = Request.Form.Files.GetFile("profilePic");
             if (file == null || file.Length == 0)
+                return null;
+
+            // Validate file size (5MB limit)
+            if (file.Length > 5 * 1024 * 1024)
+                return null;
+
+            // Validate file extension
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (!allowedExtensions.Contains(ext))
                 return null;
 
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "profiles");

@@ -1,0 +1,88 @@
+﻿@page "{id}"
+@model APMoodle.Pages.BackEnd.EditModuleModel
+@{
+    ViewData["Title"] = "Edit Module";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/announcement.css">
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<div class="announcement-page">
+    <div class="announcement-header-section">
+        <h1>Edit Module</h1>
+        <p class="announcement-subtitle">Update module details</p>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert-error">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="form-card" style="max-width:700px; margin:0 auto;">
+        <form method="post">
+            <input type="hidden" name="ModuleID" value="@Model.ModuleID" />
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-code"></i> Module Code</label>
+                <input type="text" class="form-control" value="@Model.ModuleCode" disabled />
+                <small class="text-muted">Module code cannot be changed.</small>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-book"></i> Module Name <span class="required">*</span></label>
+                <input type="text" name="Name" class="form-control" value="@Model.Name" required />
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-text-paragraph"></i> Description</label>
+                <textarea name="Description" class="form-control" rows="4">@Model.Description</textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-person-badge"></i> Lecturer <span class="required">*</span></label>
+                <select name="LecturerID" class="form-control" required>
+                    @foreach (var lecturer in Model.Lecturers)
+                    {
+                        <option value="@lecturer.LecturerID" selected="@(lecturer.LecturerID == Model.LecturerID)">@lecturer.Name (@lecturer.LecturerCode)</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-calendar-check"></i> Start Date <span class="required">*</span></label>
+                <input type="date" name="StartDate" class="form-control" value="@Model.StartDate.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-calendar-x"></i> End Date <span class="required">*</span></label>
+                <input type="date" name="EndDate" class="form-control" value="@Model.EndDate.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="form-actions" style="justify-content:flex-end;">
+                <a href="/FrontEnd/ModuleList" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-next">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.ShowSuccessPopup)
+{
+    <div id="successPopup">
+        <div>
+            <i class="bi bi-check-circle-fill"></i>
+            <h2>Success!</h2>
+            <p>Module updated successfully!</p>
+            <button id="popupContinueBtn">Continue</button>
+        </div>
+    </div>
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const popup = document.getElementById('successPopup');
+        const btn = document.getElementById('popupContinueBtn');
+        if (popup) {
+            popup.style.display = 'flex';
+            if (btn) btn.onclick = function() { window.location.href = '/FrontEnd/ModuleList'; };
+        }
+    });
+</script>

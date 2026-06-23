@@ -733,6 +733,368 @@ body:has(.expandable-vertical-menu.expanded) .container {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
+/* ========== FORGOT PASSWORD PAGE ========== */
+.forgot-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.forgot-card {
+    background: rgba(255, 250, 240, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 36px 32px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(139, 115, 85, 0.25);
+}
+
+.forgot-card h2 {
+    color: #3d3027;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+}
+
+.forgot-card h2 i {
+    color: #8b7355;
+    margin-right: 8px;
+}
+
+.forgot-card .subtitle {
+    color: #6b5d4f;
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+/* --- Forgot Password Steps --- */
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 360px;
+}
+
+.step-dot {
+    height: 8px;
+    border-radius: 10px;
+    background: rgba(139, 115, 85, 0.25);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 8px;
+}
+
+.step-dot.active {
+    background: #8b7355;
+    width: 32px;
+}
+
+.step-dot.done {
+    background: #6b8c6b;
+    width: 8px;
+}
+
+.otp-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.otp-row input {
+    flex: 1;
+}
+
+.btn-resend {
+    background: none;
+    border: none;
+    color: #6b5d4f;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.btn-resend::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: #8b7355;
+    transition: width 0.3s ease;
+}
+
+.btn-resend:hover {
+    color: #3d3027;
+}
+
+.btn-resend:hover::after {
+    width: 100%;
+}
+
+/* Form Groups */
+.forgot-card .form-group {
+    margin-bottom: 20px;
+}
+
+.forgot-card .form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+    color: #5d4e37;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+}
+
+.forgot-card .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid rgba(139, 115, 85, 0.35);
+    border-radius: 30px;
+    background: rgba(255, 250, 240, 0.6);
+    font-size: 14px;
+    color: #3d3027;
+    transition: all 0.3s ease;
+    outline: none;
+    font-family: inherit;
+}
+
+.forgot-card .form-group input:focus {
+    border-color: #8b7355;
+    box-shadow: 0 0 0 4px rgba(139, 115, 85, 0.12);
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+}
+
+.forgot-card .form-group input::placeholder {
+    color: rgba(93, 78, 55, 0.5);
+}
+
+.forgot-card .form-group input:focus::placeholder {
+    opacity: 0.5;
+    transform: translateX(6px);
+}
+
+/* OTP Row */
+.otp-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.otp-row input {
+    flex: 1;
+}
+
+.otp-row .btn-resend {
+    background: none;
+    border: none;
+    color: #6b5d4f;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.otp-row .btn-resend::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: #8b7355;
+    transition: width 0.3s ease;
+}
+
+.otp-row .btn-resend:hover {
+    color: #3d3027;
+}
+
+.otp-row .btn-resend:hover::after {
+    width: 100%;
+}
+
+.otp-row .btn-resend:active {
+    transform: scale(0.97);
+}
+
+.text-muted {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #8b7355;
+}
+
+/* Buttons */
+.forgot-card .btn-primary {
+    background: linear-gradient(135deg, #8b7355, #6b5d4f);
+    color: #f5ebdc;
+    border: none;
+    padding: 13px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 14px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(61, 48, 39, 0.2);
+}
+
+.forgot-card .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: left 0.5s ease;
+}
+
+.forgot-card .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(61, 48, 39, 0.3);
+    background: linear-gradient(135deg, #9d8365, #7b6d5f);
+}
+
+.forgot-card .btn-primary:hover::before {
+    left: 100%;
+}
+
+.forgot-card .btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Alerts */
+.forgot-card .alert {
+    padding: 14px 18px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 4px solid transparent;
+}
+
+.forgot-card .alert i {
+    font-size: 18px;
+}
+
+.forgot-card .alert-success {
+    background: rgba(107, 140, 107, 0.15);
+    color: #3d6b3d;
+    border-left-color: #6b8c6b;
+}
+
+.forgot-card .alert-danger {
+    background: rgba(180, 100, 80, 0.12);
+    color: #8b4513;
+    border-left-color: #b46a4a;
+}
+
+.forgot-card .alert-info {
+    background: rgba(139, 115, 85, 0.12);
+    color: #5d4e37;
+    border-left-color: #8b7355;
+}
+
+/* Back Link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    color: #6b5d4f;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 4px 0;
+    position: relative;
+}
+
+.back-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: #8b7355;
+    transition: width 0.3s ease;
+}
+
+.back-link:hover {
+    color: #3d3027;
+}
+
+.back-link:hover::after {
+    width: 100%;
+}
+
+.back-link i {
+    transition: transform 0.3s ease;
+}
+
+.back-link:hover i {
+    transform: translateX(-4px);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.g-recaptcha {
+    padding-top: 5px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 5px;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .forgot-card {
+        padding: 24px 20px;
+    }
+    
+    .forgot-card h2 {
+        font-size: 20px;
+    }
+    
+    .otp-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .otp-row .btn-resend {
+        padding: 6px 0;
+    }
+    
+    .otp-row .btn-resend::after {
+        bottom: 2px;
+    }
+}
 
 @keyframes popupSlideIn {
     from {

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using APMoodle.Services.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using System.Text.RegularExpressions;
 
 namespace APMoodle.Pages.BackEnd
 {
@@ -15,6 +14,7 @@ namespace APMoodle.Pages.BackEnd
         private readonly IEmailService _emailService;
         private readonly IMemoryCache _cache;
         private readonly IConfiguration _config;
+        private readonly ILogger<ForgotPasswordModel> _logger;
 
         public ForgotPasswordModel(
             IStudentService studentService,
@@ -22,7 +22,8 @@ namespace APMoodle.Pages.BackEnd
             IAdminService adminService,
             IEmailService emailService,
             IMemoryCache cache,
-            IConfiguration config)
+            IConfiguration config,
+            ILogger<ForgotPasswordModel> logger)
         {
             _studentService = studentService;
             _lecturerService = lecturerService;
@@ -30,6 +31,7 @@ namespace APMoodle.Pages.BackEnd
             _emailService = emailService;
             _cache = cache;
             _config = config;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -63,50 +65,45 @@ namespace APMoodle.Pages.BackEnd
 
         public void OnGet()
         {
-            // Clear any previous state
             IsOtpSent = false;
             Message = null;
-
+            IsSuccess = false;
             ViewData["RecaptchaSiteKey"] = _config["Recaptcha:SiteKey"];
         }
 
         public async Task<IActionResult> OnPostSendOtpAsync()
         {
-            // Validate email
             if (string.IsNullOrEmpty(Input.Email) || !IsValidEmail(Input.Email))
             {
                 Message = "Please enter a valid email address.";
                 return Page();
             }
 
-            // Check if email exists in any user table
             var user = await FindUserByEmailAsync(Input.Email);
             if (user == null)
             {
-                // For security, don't reveal if email exists or not
+                // Security: do not reveal existence
                 Message = "If the email exists, an OTP has been sent. Please check your inbox.";
                 IsOtpSent = true;
-                Email = Input.Email; // Still store email for next step
+                Email = Input.Email;
                 return Page();
             }
 
-            // Verify reCAPTCHA
-            var recaptchaResponse = Request.Form["g-recaptcha-response"];
-            var isValidCaptcha = await VerifyRecaptchaAsync(recaptchaResponse);
-            if (!isValidCaptcha)
+            // Skip reCAPTCHA on localhost
+            if (Request.Host.Host != "localhost" && Request.Host.Host != "127.0.0.1")
             {
-                Message = "Please complete the CAPTCHA.";
-                return Page();
+                var recaptchaResponse = Request.Form["g-recaptcha-response"];
+                if (string.IsNullOrEmpty(recaptchaResponse) || !await VerifyRecaptchaAsync(recaptchaResponse))
+                {
+                    Message = "Please complete the CAPTCHA.";
+                    return Page();
+                }
             }
 
-            // Generate 6-digit OTP
             var otp = new Random().Next(100000, 999999).ToString();
-
-            // Store OTP in cache with expiration (5 minutes)
             var cacheKey = $"OTP_{Input.Email}";
             _cache.Set(cacheKey, otp, TimeSpan.FromMinutes(5));
 
-            // Send email
             var emailBody = $@"
                 <h2>Password Reset Request</h2>
                 <p>You requested to reset your password for APMoodle.</p>
@@ -117,7 +114,12 @@ namespace APMoodle.Pages.BackEnd
 
             try
             {
-                await _emailService.SendEmailAsync(Input.Email, "APMoodle - Password Reset OTP", emailBody);
+                var sent = await _emailService.SendEmailAsync(Input.Email, "APMoodle - Password Reset OTP", emailBody);
+                if (!sent)
+                {
+                    Message = "Failed to send OTP. Please check your email configuration.";
+                    return Page();
+                }
                 Message = "OTP sent successfully! Please check your email.";
                 IsOtpSent = true;
                 Email = Input.Email;
@@ -125,44 +127,45 @@ namespace APMoodle.Pages.BackEnd
             catch (Exception ex)
             {
                 Message = "Failed to send OTP. Please try again later.";
-                // Log error
+                _logger.LogError(ex, "Error sending OTP");
             }
 
             return Page();
         }
 
+        public async Task<IActionResult> OnPostVerifyOtpAsync([FromBody] VerifyOtpRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Otp))
+                return new JsonResult(new { success = false, message = "Invalid request." });
+
+            var cacheKey = $"OTP_{request.Email}";
+            if (!_cache.TryGetValue(cacheKey, out string? storedOtp) || storedOtp != request.Otp)
+                return new JsonResult(new { success = false, message = "Invalid or expired OTP." });
+
+            // OTP verified – keep it valid for 10 more minutes (for reset step)
+            _cache.Set(cacheKey, storedOtp, TimeSpan.FromMinutes(10));
+            return new JsonResult(new { success = true });
+        }
+
         public async Task<IActionResult> OnPostResetPasswordAsync()
         {
-            if (string.IsNullOrEmpty(Input.Otp) || Input.Otp.Length != 6)
-            {
-                Message = "Please enter a valid 6-digit OTP.";
-                return Page();
-            }
-
+            // Validate OTP again (should be verified, but double-check)
             var cacheKey = $"OTP_{Input.Email}";
-            if (!_cache.TryGetValue(cacheKey, out string? storedOtp))
+            if (!_cache.TryGetValue(cacheKey, out string? storedOtp) || storedOtp != Input.Otp)
             {
                 Message = "OTP has expired or is invalid. Please request a new one.";
-                return Page();
-            }
-
-            if (storedOtp != Input.Otp)
-            {
-                Message = "Invalid OTP. Please try again.";
                 return Page();
             }
 
             var user = await FindUserByEmailAsync(Input.Email);
             if (user == null)
             {
-                Message = "User not found. Please try again.";
+                Message = "User not found.";
                 return Page();
             }
 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(Input.NewPassword);
             bool updated = false;
-
-            // Deconstruct the tuple
             var (role, userId, _) = user.Value;
 
             switch (role)
@@ -181,8 +184,19 @@ namespace APMoodle.Pages.BackEnd
             if (updated)
             {
                 _cache.Remove(cacheKey);
-                Message = "Password has been reset successfully! You can now login.";
+                Message = "Password has been reset successfully! You will be redirected to login.";
                 IsSuccess = true;
+
+                // Send notification email
+                await _emailService.SendEmailAsync(
+                    Input.Email,
+                    "Password Reset Successful",
+                    $@"
+                        <h2>Password Reset Notification</h2>
+                        <p>Your APMoodle password has been reset successfully.</p>
+                        <p>If you did not perform this action, please contact support immediately.</p>
+                    "
+                );
             }
             else
             {
@@ -191,6 +205,7 @@ namespace APMoodle.Pages.BackEnd
 
             return Page();
         }
+
 
         // Helper methods
         private bool IsValidEmail(string email)
@@ -220,7 +235,7 @@ namespace APMoodle.Pages.BackEnd
 
             // Check Admins
             var admin = await _adminService.GetAdminByEmailAsync(email);
-            if (admin != null)
+            if (admin != null && admin.Status == "Active")
                 return ("admin", admin.AdminID, admin.Password);
 
             return null;
@@ -228,18 +243,32 @@ namespace APMoodle.Pages.BackEnd
 
         private async Task<bool> VerifyRecaptchaAsync(string token)
         {
+            var secretKey = _config["Recaptcha:SecretKey"];
+            if (string.IsNullOrEmpty(secretKey))
+            {
+                _logger.LogWarning("reCAPTCHA secret key is not configured.");
+                return false;
+            }
+
             using var client = new HttpClient();
             var response = await client.PostAsync(
                 "https://www.google.com/recaptcha/api/siteverify",
                 new FormUrlEncodedContent(new Dictionary<string, string>
                 {
-                    {"secret", _config["Recaptcha:SecretKey"]},
+                    {"secret", secretKey},
                     {"response", token}
                 })
             );
             var json = await response.Content.ReadAsStringAsync();
+            _logger.LogDebug("reCAPTCHA response: {Response}", json);
+            
             dynamic? result = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
             return result?.success == true;
         }
+            public class VerifyOtpRequest
+            {
+                public string Email { get; set; } = "";
+                public string Otp { get; set; } = "";
+            }
     }
 }

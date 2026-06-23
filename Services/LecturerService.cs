@@ -90,5 +90,11 @@ namespace APMoodle.Services
                 return false;
             }
         }
+        public async Task<List<Lecturer>> GetAllLecturersAsync()
+        {
+            return await _context.Lecturers
+                .OrderBy(l => l.Name)
+                .ToListAsync();
+        }
     }
 }

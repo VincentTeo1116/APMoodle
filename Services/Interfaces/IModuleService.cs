@@ -27,7 +27,9 @@ namespace APMoodle.Services.Interfaces
 
         Task<bool> IsInvitationCodeExistsAsync(string code);
 
-        // Look up a module by its invitation code (used by student join-module flow)
         Task<Module?> GetModuleByInvitationCodeAsync(string invitationCode);
+        Task<bool> ModuleExistsAsync(string moduleCode);
+        Task<string> GenerateNextModuleCodeAsync();
+        Task<int> GetTotalCountAsync();
     }
 }
