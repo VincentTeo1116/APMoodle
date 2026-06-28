@@ -13,14 +13,6 @@
         && !string.IsNullOrWhiteSpace(q.CorrectAnswer);
 }
 
-@*
-    Front-end / styling: Moses
-    Backend contract (UNCHANGED — do not touch page model):
-      asp-for bindings: QuizId, MaterialId, DeletedQuestionIDs (hidden), Title, Subject, Theme,
-        Questions[i].QuestionID, .QuestionText, .Option1..4, .CorrectAnswer
-      Handlers: AddQuestion, RemoveQuestion?index=N, Save
-    Theme posts one of: "Default" | "Midterm" | "Mid-term" | "Edited" | "lab".
-*@
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -41,6 +33,8 @@
                 <input type="hidden" asp-for="QuizId" />
                 <input type="hidden" asp-for="MaterialId" />
                 <input type="hidden" asp-for="DeletedQuestionIDs" />
+                <input type="hidden" name="index" id="deleteQuestionIndex" value="" />
+                <input type="hidden" name="__handler" id="deleteHandler" value="" />
 
                 <div class="cq-layout">
                     <div class="cq-main">
@@ -293,14 +287,10 @@
                                                 }
                                                 <span class="cq-q-state @(qDone ? "ok" : "")">@(qDone ? "✓ ready" : "needs answer")</span>
                                             </div>
-                                            <button type="submit"
-                                                    asp-page-handler="RemoveQuestion"
-                                                    asp-route-index="@i"
-                                                    formnovalidate
+                                            <button type="button"
                                                     class="cq-q-remove"
-                                                    title="Remove this question"
-                                                    onclick="return confirm('Remove this question? If students have already answered it, their per-question records will be deleted.');">
-                                                <i class="bi bi-x-square"></i>
+                                                    onclick="showDeleteModal('question', @i, 'Question @(i + 1)')">
+                                                <i class="bi bi-x-circle"></i>
                                             </button>
                                         </div>
 
@@ -396,6 +386,80 @@
                     <button type="submit" asp-page-handler="Save" class="cq-btn cq-btn-primary">Save Changes</button>
                 </div>
             </form>
+
+            @* <form method="post" id="deleteQuestionForm" asp-page="/FrontEnd/EditQuiz" asp-page-handler="RemoveQuestion" asp-route-id="@Model.QuizId" style="display:none;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="index" id="deleteQuestionIndex" value="0" />
+            </form> *@
+
+            <!-- Delete Confirmation Modal (uses site.css classes) -->
+            <div id="deleteConfirmModal" class="modal-overlay-full" style="display: none;">
+                <div class="modal-container">
+                    <div class="modal-icon warning-icon">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <h3 class="modal-title" id="deleteModalTitle">Remove Question</h3>
+                    <p class="modal-message" id="deleteModalMessage">Are you sure you want to remove this question?</p>
+                    <p id="deleteItemName" style="font-weight: 600; color: #ef4444; background: #fef2f2; padding: 10px; border-radius: 10px; margin: 16px 0;"></p>
+                    <div class="modal-warning">
+                        <i class="bi bi-shield-exclamation"></i>
+                        <span>Student answers for this question will also be deleted.</span>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-btn modal-cancel" id="deleteCancelBtn">Cancel</button>
+                        <button class="modal-btn modal-danger" id="deleteConfirmBtn">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                (function() {
+                    const modal = document.getElementById('deleteConfirmModal');
+                    const modalTitle = document.getElementById('deleteModalTitle');
+                    const modalMessage = document.getElementById('deleteModalMessage');
+                    const itemName = document.getElementById('deleteItemName');
+                    const cancelBtn = document.getElementById('deleteCancelBtn');
+                    const confirmBtn = document.getElementById('deleteConfirmBtn');
+
+                    let pendingQuestionIndex = null;
+
+                    // Expose to global scope so onclick can call it
+                    window.showDeleteModal = function(action, index, name) {
+                        if (action === 'question') {
+                            pendingQuestionIndex = index;
+                            modalTitle.textContent = 'Remove Question';
+                            modalMessage.textContent = 'Are you sure you want to remove this question?';
+                            itemName.textContent = `"${name}"`;
+                            modal.style.display = 'flex';
+                        }
+                    };
+
+                    function closeModal() {
+                        modal.style.display = 'none';
+                        pendingQuestionIndex = null;
+                    }
+
+                    cancelBtn.addEventListener('click', closeModal);
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) closeModal();
+                    });
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') closeModal();
+                    });
+
+                    confirmBtn.addEventListener('click', function() {
+                        if (pendingQuestionIndex !== null) {
+                            // Set the hidden fields
+                            document.getElementById('deleteQuestionIndex').value = pendingQuestionIndex;
+                            document.getElementById('deleteHandler').value = 'RemoveQuestion';
+
+                            // Submit the main form
+                            document.getElementById('cqForm').submit();
+                        }
+                        closeModal();
+                    });
+                })();
+            </script>
         </div>
     </div>
 </div>

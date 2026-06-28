@@ -125,16 +125,19 @@ namespace APMoodle.Pages.BackEnd
 
         public async Task<IActionResult> OnPostRemoveQuestionAsync(int index)
         {
+            // Authorization check
             var auth = await GuardAsync(QuizId);
             if (auth != null) return auth;
 
+            // Clear model state to avoid validation errors on fields that are not posted
             ModelState.Clear();
+
             if (index >= 0 && index < Questions.Count)
             {
                 var removed = Questions[index];
-                // If it had a real ID, remember it for the eventual Save so we can delete the DB row
                 if (removed.QuestionID > 0)
                 {
+                    // Mark for deletion in the database
                     var deletedIds = ParseDeletedIds();
                     deletedIds.Add(removed.QuestionID);
                     DeletedQuestionIDs = string.Join(",", deletedIds);
@@ -142,11 +145,13 @@ namespace APMoodle.Pages.BackEnd
                 Questions.RemoveAt(index);
             }
 
-            // Don't let the form go below one slot
+            // Ensure at least one question slot exists
             if (Questions.Count == 0)
                 Questions.Add(new QuestionInput());
-
+            Console.WriteLine($"RemoveQuestion called with index={index}, Questions.Count={Questions.Count}");
+            // Return the same page with the updated model
             return Page();
+            
         }
 
         public async Task<IActionResult> OnPostSaveAsync()
