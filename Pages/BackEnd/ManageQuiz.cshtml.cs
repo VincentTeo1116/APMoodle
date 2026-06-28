@@ -18,6 +18,8 @@ namespace APMoodle.Pages.BackEnd
         public List<Question> Questions { get; set; } = new();
         public int MaterialId { get; set; }
         public string? Message { get; set; }
+        public Module? CurrentModule { get; set; }
+        public string? MaterialTitle  { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -62,11 +64,14 @@ namespace APMoodle.Pages.BackEnd
             if (CurrentQuiz == null)
                 return NotFound();
 
+            CurrentModule = CurrentQuiz.Material?.Module;
+            MaterialTitle = CurrentQuiz.Material?.Title;
             var ownerId = await _quizService.GetLecturerIdForQuizAsync(quizId);
             if (ownerId == null || ownerId.ToString() != userId)
                 return StatusCode(StatusCodes.Status403Forbidden);
 
             Questions = (CurrentQuiz.Questions ?? new List<Question>())
+                .Where(q => q.Status== "Active")
                 .OrderBy(q => q.QuestionID)
                 .ToList();
             MaterialId = CurrentQuiz.MaterialID;

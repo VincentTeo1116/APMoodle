@@ -94,6 +94,7 @@ namespace APMoodle.Services
         public async Task<Session?> GetSessionWithDetailsAsync(int sessionId)
         {
             return await _context.Sessions
+                .Include(s => s.Student)
                 .Include(s => s.Quiz)
                     .ThenInclude(q => q!.Questions)
                 .Include(s => s.Results!)

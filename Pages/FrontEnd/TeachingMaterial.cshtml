@@ -69,11 +69,11 @@
                                             <span class="material-date">Updated @(material.CreatedAt.ToString("MMM dd, yyyy")??"Unknown")</span>
                                             @if (isLecturer)
                                             {
-                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link"><i class="bi bi-pencil-square" title="Edit teaching material"></i> Edit</a>
+                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link" title="Edit teaching material"><i class="bi bi-pencil-square"></i> Edit</a>
                                             }
                                             else
                                             {
-                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-icon">View</a>
+                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link" title="View teaching material"><i class="bi bi-eye"></i>View</a>
                                             }
                                         </div>
                                     </div>
@@ -115,8 +115,7 @@
                                     <div class="invitation-section">
                                         <span class="invitation-label">Invitation Code</span>
                                         <div class="code-row">
-                                            <span class="code-value" id="invitationCode">@(Model.CurrentModule?.InvitationCode ??
-                                                                                                                                                                  "N/A")</span>
+                                            <span class="code-value" id="invitationCode">@(Model.CurrentModule?.InvitationCode ?? "N/A")</span>
                                                 @if (isLecturer)
                                                 {
                                                     <button class="regenerate-btn" onclick="regenerateCode(@Model.CurrentModule?.ModuleID)">⟳

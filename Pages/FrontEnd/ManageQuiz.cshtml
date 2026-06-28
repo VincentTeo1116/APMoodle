@@ -2,7 +2,7 @@
 @model APMoodle.Pages.BackEnd.ManageQuizModel
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
-    ViewData["Title"] = Model.CurrentQuiz?.Title ?? "Manage Quiz";
+    ViewData["Title"] = "Manage Quiz";
 
     string ThemeName(string? t) => (t ?? "").Trim() switch
     {
@@ -31,7 +31,7 @@
 <div id="horizontalNavbar">
     <div class="PageTitle">
         <h1>Manage Quiz</h1>
-        <p class="path">Lecturer Dashboard &gt; Manage Quiz</p>
+        <p class="path">Lecturer Dashboard &gt; @(Model.CurrentModule?.Name) &gt; @(Model.MaterialTitle ?? "Material") &gt; Manage Quiz</p>
     </div>
 
     <div class="PageComponent">

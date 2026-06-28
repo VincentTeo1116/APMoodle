@@ -21,6 +21,8 @@ namespace APMoodle.Pages.FrontEnd
 
         public string? QuizTitle { get; set; }
         public List<Session> Sessions { get; set; } = new();
+        public Module? CurrentModule { get; set; }
+        public string? MaterialTitle { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -36,6 +38,8 @@ namespace APMoodle.Pages.FrontEnd
             if (quiz == null)
                 return NotFound();
             QuizTitle = quiz.Title;
+            CurrentModule = quiz.Material?.Module; 
+            MaterialTitle = quiz.Material?.Title;
 
             int studentId = int.Parse(userId);
             if (userRole == "student")

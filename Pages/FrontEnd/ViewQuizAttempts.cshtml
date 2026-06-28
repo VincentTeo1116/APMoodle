@@ -15,8 +15,8 @@
 
 <div id="horizontalNavbar">
     <div class="PageTitle">
-        <h1><i class="bi bi-clock-history"></i> Quiz Attempts</h1>
-        <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard > Quiz: @Model.QuizTitle</p>
+        <h1>Quiz Attempts</h1>
+        <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard > @(Model.CurrentModule?.Name ?? "Module") > @(Model.MaterialTitle ?? "Material") > Quiz: @Model.QuizTitle > @ViewData["Title"] </p>
     </div>
 
     @if (!Model.Sessions.Any())
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div class="attempt-footer">
-                        <a asp-page="/FrontEnd/QuizResult" asp-route-id="@session.SessionID" class="btn-view-result">
+                        <a href="/FrontEnd/QuizResult/@session.SessionID" class="btn-view-result">
                             <i class="bi bi-eye"></i> View Details
                         </a>
                     </div>

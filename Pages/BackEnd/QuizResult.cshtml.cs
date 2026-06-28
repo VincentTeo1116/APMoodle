@@ -19,7 +19,7 @@ namespace APMoodle.Pages.BackEnd
         public List<QuestionReview> Reviews { get; set; } = new();
         public int CorrectCount { get; set; }
         public int TotalQuestions { get; set; }
-        public int TotalTimeUsed { get; set; } // seconds
+        public int TotalTimeUsed { get; set; }
 
         public class QuestionReview
         {
@@ -35,26 +35,23 @@ namespace APMoodle.Pages.BackEnd
             var userRole = HttpContext.Session.GetString("UserRole");
 
             if (string.IsNullOrEmpty(userId))
-            {
                 return RedirectToPage("/FrontEnd/Login");
-            }
 
-            // Student-only flow: only the owner of the session can view their result
-            if (userRole != "student")
+            // Student: must own the session
+            if (userRole == "student")
             {
-                return StatusCode(StatusCodes.Status403Forbidden);
+                if (!await _sessionService.IsSessionOwnedByStudentAsync(id, int.Parse(userId)))
+                    return StatusCode(StatusCodes.Status403Forbidden);
             }
-
-            if (!await _sessionService.IsSessionOwnedByStudentAsync(id, int.Parse(userId)))
+            // Lecturer or Admin: allowed to view any session
+            else if (userRole != "lecturer" && userRole != "admin")
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
 
             CurrentSession = await _sessionService.GetSessionWithDetailsAsync(id);
             if (CurrentSession == null || !CurrentSession.IsCompleted)
-            {
                 return NotFound();
-            }
 
             CurrentQuiz = CurrentSession.Quiz;
             var questions = (CurrentQuiz?.Questions ?? new List<Question>())

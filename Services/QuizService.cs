@@ -17,7 +17,7 @@ namespace APMoodle.Services
         public async Task<List<Quiz>> GetQuizzesByMaterialIdAsync(int materialId)
         {
             return await _context.Quizzes
-                .Where(q => q.MaterialID == materialId)
+                .Where(q => q.MaterialID == materialId && q.Status == "Active")
                 .OrderBy(q => q.CreatedAt)
                 .ToListAsync();
         }
@@ -26,6 +26,8 @@ namespace APMoodle.Services
         {
             return await _context.Quizzes
                 .Include(q => q.Questions)
+                .Include(q => q.Material)
+                    .ThenInclude(m => m.Module)
                 .FirstOrDefaultAsync(q => q.QuizID == quizId);
         }
 
@@ -82,40 +84,7 @@ namespace APMoodle.Services
                 var quiz = await _context.Quizzes.FindAsync(quizId);
                 if (quiz == null) return false;
 
-                // 1. All Results belonging to (a) sessions for this quiz OR
-                //    (b) questions for this quiz. The union catches both legs of the FK.
-                var sessionIds = await _context.Sessions
-                    .Where(s => s.QuizID == quizId)
-                    .Select(s => s.SessionID)
-                    .ToListAsync();
-
-                var questionIds = await _context.Questions
-                    .Where(q => q.QuizID == quizId)
-                    .Select(q => q.QuestionID)
-                    .ToListAsync();
-
-                var results = await _context.Results
-                    .Where(r => sessionIds.Contains(r.SessionID) || questionIds.Contains(r.QuestionID))
-                    .ToListAsync();
-                if (results.Count > 0)
-                    _context.Results.RemoveRange(results);
-
-                // 2. Sessions
-                var sessions = await _context.Sessions
-                    .Where(s => s.QuizID == quizId)
-                    .ToListAsync();
-                if (sessions.Count > 0)
-                    _context.Sessions.RemoveRange(sessions);
-
-                // 3. Questions
-                var questions = await _context.Questions
-                    .Where(q => q.QuizID == quizId)
-                    .ToListAsync();
-                if (questions.Count > 0)
-                    _context.Questions.RemoveRange(questions);
-
-                // 4. Quiz itself
-                _context.Quizzes.Remove(quiz);
+                quiz.Status = "Removed";
 
                 await _context.SaveChangesAsync();
                 await tx.CommitAsync();
@@ -132,7 +101,7 @@ namespace APMoodle.Services
         public async Task<List<Question>> GetQuestionsByQuizIdAsync(int quizId)
         {
             return await _context.Questions
-                .Where(q => q.QuizID == quizId)
+                .Where(q => q.QuizID == quizId && q.Status == "Active")
                 .OrderBy(q => q.QuestionID)
                 .ToListAsync();
         }
@@ -165,7 +134,6 @@ namespace APMoodle.Services
                 existing.Option3 = question.Option3;
                 existing.Option4 = question.Option4;
                 existing.CorrectAnswer = question.CorrectAnswer;
-                // QuizID is intentionally not overwritten — questions don't move quizzes.
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -179,29 +147,17 @@ namespace APMoodle.Services
 
         public async Task<bool> DeleteQuestionAsync(int questionId)
         {
-            // Same FK issue as DeleteQuizAsync: Results.QuestionID -> Questions is RESTRICT
-            // in the live Postgres schema, so we must clear Results first.
-            // The parent Session keeps its TotalScore; only the per-question record vanishes.
-            using var tx = await _context.Database.BeginTransactionAsync();
             try
             {
                 var question = await _context.Questions.FindAsync(questionId);
                 if (question == null) return false;
 
-                var results = await _context.Results
-                    .Where(r => r.QuestionID == questionId)
-                    .ToListAsync();
-                if (results.Count > 0)
-                    _context.Results.RemoveRange(results);
-
-                _context.Questions.Remove(question);
+                question.Status = "Removed";
                 await _context.SaveChangesAsync();
-                await tx.CommitAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                await tx.RollbackAsync();
                 Console.WriteLine($"DeleteQuestionAsync error: {ex.Message}");
                 return false;
             }
@@ -240,7 +196,7 @@ namespace APMoodle.Services
         {
             // Quiz -> Material -> Module.LecturerID. One round-trip via joins.
             return await _context.Quizzes
-                .Where(q => q.QuizID == quizId)
+                .Where(q => q.QuizID == quizId && q.Status == "Active")
                 .Select(q => (int?)q.Material!.Module!.LecturerID)
                 .FirstOrDefaultAsync();
         }

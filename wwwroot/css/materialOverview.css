@@ -204,7 +204,8 @@
 .quiz-icon { font-size: 22px; }
 .quiz-info { flex: 1; }
 .quiz-title { font-weight: 600; color: #013D42; text-decoration: none; }
-.take-quiz-link { color: #1d767e; text-decoration: none; font-size: 13px; }
+.take-quiz-link { color: #1d767e; text-decoration: none; font-size: 13px; transition: 0.2s ease-in-out;}
+.take-quiz-link:hover { background-color: #d3e1e1; color: #093236; text-decoration: none; font-size: 13px; border-radius: 20px; padding: 5px; transform: translateX(-1px);}
 
 .empty-quizzes {
     text-align: center;

@@ -104,7 +104,7 @@ function filterTable() {
     let visibleCount = 0;
     
     currentRows.forEach(row => {
-        const title = row.querySelector('.title-cell')?.textContent.toLowerCase() || '';
+        const title = row.querySelector('.announcement-title')?.textContent.toLowerCase() || '';
         const message = row.querySelector('.message-cell')?.textContent.toLowerCase() || '';
         const creator = row.getAttribute('data-created-by') || '';
         const createdDate = row.getAttribute('data-created-date') || '';
