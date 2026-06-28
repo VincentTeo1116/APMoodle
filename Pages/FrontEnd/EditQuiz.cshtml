@@ -33,8 +33,11 @@
                 <input type="hidden" asp-for="QuizId" />
                 <input type="hidden" asp-for="MaterialId" />
                 <input type="hidden" asp-for="DeletedQuestionIDs" />
+                <!-- Hidden field for the question index to delete -->
                 <input type="hidden" name="index" id="deleteQuestionIndex" value="" />
-                <input type="hidden" name="__handler" id="deleteHandler" value="" />
+
+                <!-- Hidden submit button that routes to RemoveQuestion handler -->
+                <button type="submit" id="hiddenDeleteBtn" asp-page-handler="RemoveQuestion" style="display:none;"></button>
 
                 <div class="cq-layout">
                     <div class="cq-main">
@@ -387,12 +390,7 @@
                 </div>
             </form>
 
-            @* <form method="post" id="deleteQuestionForm" asp-page="/FrontEnd/EditQuiz" asp-page-handler="RemoveQuestion" asp-route-id="@Model.QuizId" style="display:none;">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="index" id="deleteQuestionIndex" value="0" />
-            </form> *@
-
-            <!-- Delete Confirmation Modal (uses site.css classes) -->
+            <!-- Delete Confirmation Modal -->
             <div id="deleteConfirmModal" class="modal-overlay-full" style="display: none;">
                 <div class="modal-container">
                     <div class="modal-icon warning-icon">
@@ -449,12 +447,10 @@
 
                     confirmBtn.addEventListener('click', function() {
                         if (pendingQuestionIndex !== null) {
-                            // Set the hidden fields
+                            // Set the hidden field for index
                             document.getElementById('deleteQuestionIndex').value = pendingQuestionIndex;
-                            document.getElementById('deleteHandler').value = 'RemoveQuestion';
-
-                            // Submit the main form
-                            document.getElementById('cqForm').submit();
+                            // Click the hidden submit button that is routed to RemoveQuestion
+                            document.getElementById('hiddenDeleteBtn').click();
                         }
                         closeModal();
                     });
