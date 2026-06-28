@@ -1,5 +1,6 @@
 ﻿@page
 @model APMoodle.Pages.BackEnd.AnnouncementListModel
+
 @{
     ViewData["Title"] = "Announcements";
 }
@@ -15,7 +16,7 @@
 </form>
 
 <div class="announcement-page">
-    <!-- Header Section - Title only -->
+    <!-- Header Section -->
     <div class="announcement-header-section">
         <h1>Announcement List</h1>
         <p class="announcement-subtitle">Manage and publish announcements to your users</p>
@@ -37,7 +38,7 @@
         </div>
     </div>
 
-    <!-- Action Bar - No box, centered search/filter -->
+    <!-- Action Bar -->
     <div class="announcement-action-bar">
         <div class="search-filter-group">
             <div class="search-box">
@@ -87,9 +88,15 @@
                         <tr data-id="@announcement.AnnouncementID" 
                             data-created-by="@(announcement.Creator?.Name ?? "Unknown")"
                             data-created-date="@announcement.CreatedAt.ToString("yyyy-MM-dd")">
-                            <td class="title-cell">@announcement.Title</td>
+                            <td>
+                                <div class="announcement-info">
+                                    <span class="announcement-title">@announcement.Title</span>
+                                </div>
+                            </td>
                             <td class="message-cell">@announcement.Message</td>
-                            <td class="created-by-cell">@(announcement.Creator?.Name ?? "Unknown")</td>
+                            <td>
+                                <span class="creator-name">@(announcement.Creator?.Name ?? "Unknown")</span>
+                            </td>
                             <td class="created-time-cell">@announcement.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</td>
                             <td class="action-cell">
                                 <div class="action-buttons-wrapper">

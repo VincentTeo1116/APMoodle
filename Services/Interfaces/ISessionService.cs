@@ -18,6 +18,8 @@ namespace APMoodle.Services.Interfaces
 
         // Check if the session belongs to the given student (authorization guard)
         Task<bool> IsSessionOwnedByStudentAsync(int sessionId, int studentId);
+        // Get sessions for a specific quiz, optionally filtered by student
+        Task<List<Session>> GetSessionsByQuizAsync(int quizId, int? studentId = null);
     }
 
     // DTO used when the student submits their attempt

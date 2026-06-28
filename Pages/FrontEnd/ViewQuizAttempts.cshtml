@@ -1,0 +1,65 @@
+﻿@page
+@using Microsoft.AspNetCore.Http
+@model APMoodle.Pages.FrontEnd.ViewQuizAttemptsModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Quiz Attempts";
+    var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/quizAttempts.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+</head>
+
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1><i class="bi bi-clock-history"></i> Quiz Attempts</h1>
+        <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard > Quiz: @Model.QuizTitle</p>
+    </div>
+
+    @if (!Model.Sessions.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-inbox" style="font-size: 48px; color: #94a3b8;"></i>
+            <h3>No attempts found</h3>
+            <p>@(userRole == "student" ? "You haven't taken this quiz yet." : "No students have attempted this quiz.")</p>
+            <a href="/FrontEnd/ModuleOverview" class="btn btn-secondary">Back to Modules</a>
+        </div>
+    }
+    else
+    {
+        <div class="attempt-list">
+            @foreach (var session in Model.Sessions)
+            {
+                <div class="attempt-card">
+                    <div class="attempt-header">
+                        <div class="student-info">
+                            <i class="bi bi-person-circle"></i>
+                            <span class="student-name">@(session.Student?.Name ?? "Unknown Student")</span>
+                            <span class="student-id">(@(session.Student?.StudentCode ?? "N/A"))</span>
+                        </div>
+                        <div class="attempt-score">
+                            <span class="score-badge @(session.TotalScore >= 70 ? "high" : session.TotalScore >= 50 ? "medium" : "low")">
+                                @(session.TotalScore ?? 0)%
+                            </span>
+                        </div>
+                    </div>
+                    <div class="attempt-body">
+                        <div class="attempt-meta">
+                            <span><i class="bi bi-calendar3"></i> @session.Timestamp.ToString("MMM dd, yyyy HH:mm")</span>
+                            <span><i class="bi bi-question-square"></i> @(session.Results?.Count ?? 0) questions</span>
+                            <span><i class="bi bi-check-circle"></i> Completed</span>
+                        </div>
+                    </div>
+                    <div class="attempt-footer">
+                        <a asp-page="/FrontEnd/QuizResult" asp-route-id="@session.SessionID" class="btn-view-result">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

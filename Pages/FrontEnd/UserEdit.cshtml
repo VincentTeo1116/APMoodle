@@ -1,0 +1,1123 @@
+@page
+@model APMoodle.Pages.BackEnd.UserEditModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .edit-user-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-user-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .edit-user-header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 6px 0;
+        }
+
+        .edit-user-header p {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .form-group label .required {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: white;
+        }
+
+        .form-group input:disabled {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .form-group .help-text {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .form-group .error-message {
+            font-size: 13px;
+            color: #ef4444;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-group .error-message.show {
+            display: block;
+        }
+
+        .form-group.has-error input,
+        .form-group.has-error select {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .form-group.has-error input:focus,
+        .form-group.has-error select:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-group.has-error .error-message {
+            display: block;
+        }
+
+        .form-group .validation-success {
+            color: #22c55e;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-group .validation-success.show {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .btn-save {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-save:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        /* ========= AVATAR UPLOAD SECTION ========= */
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 2px dashed #e2e8f0;
+            transition: border-color 0.3s ease;
+        }
+
+        .avatar-upload.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .preview-container {
+            position: relative;
+            flex-shrink: 0;
+            width: 100px;
+            height: 100px;
+        }
+
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e2e8f0;
+            display: none;
+        }
+
+        .avatar-preview.show {
+            display: block;
+        }
+
+        .avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 700;
+            color: white;
+            border: 3px solid #e2e8f0;
+        }
+
+        .avatar-placeholder.hide {
+            display: none;
+        }
+
+        .preview-container .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .preview-container .remove-image-btn:hover {
+            transform: scale(1.1);
+            background: #dc2626;
+        }
+
+        .preview-container .remove-image-btn.show {
+            display: flex;
+        }
+
+        .avatar-upload-info {
+            flex: 1;
+        }
+
+        .avatar-upload-info label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #475569;
+            transition: all 0.2s ease;
+        }
+
+        .file-input-label:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .file-name {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .file-name i {
+            margin-right: 6px;
+        }
+
+        .file-hint {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .clear-image-btn {
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px 0;
+            margin-top: 8px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .clear-image-btn:hover {
+            text-decoration: underline;
+        }
+
+        .clear-image-btn.show {
+            display: inline-flex;
+        }
+
+        @@media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .edit-user-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-save,
+            .btn-cancel {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .avatar-upload {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .preview-container {
+                margin: 0 auto;
+            }
+        }
+
+        /* Modal styles using site.css */
+        .modal-overlay-full {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay-full.show {
+            display: flex;
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @@keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .modal-icon i {
+            font-size: 64px;
+        }
+
+        .modal-icon.success-icon {
+            color: #28a745;
+        }
+
+        .modal-icon.error-icon {
+            color: #ef4444;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+
+        .modal-message {
+            color: #64748b;
+            margin-bottom: 24px;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            padding: 12px 32px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .modal-btn.modal-success {
+            background: linear-gradient(135deg, #28a745, #059669);
+            color: white;
+        }
+
+        .modal-btn.modal-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .modal-btn.modal-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .modal-btn.modal-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .modal-btn.modal-cancel {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .modal-btn.modal-cancel:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+        }
+
+        /* Validation summary */
+        .validation-summary {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .validation-summary.show {
+            display: block;
+        }
+
+        .validation-summary h4 {
+            color: #991b1b;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .validation-summary ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #991b1b;
+            font-size: 13px;
+        }
+
+        .validation-summary ul li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+
+<form method="post" id="editForm" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    
+    <div class="edit-user-container">
+        <div class="edit-user-header">
+            <h1>Edit User</h1>
+            <p>Update user information for <strong>@Model.UserName</strong></p>
+        </div>
+
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="UserType" />
+        <input type="hidden" asp-for="UserCode" />
+        <input type="hidden" asp-for="CurrentProfilePic" />
+
+        <!-- Validation Summary -->
+        <div class="validation-summary" id="validationSummary">
+            <h4><i class="bi bi-exclamation-circle"></i> Please fix the following errors:</h4>
+            <ul id="validationList"></ul>
+        </div>
+
+        <!-- Avatar Upload Section -->
+        <div class="avatar-upload" id="avatarUpload">
+            <div class="preview-container">
+                <img src="" alt="Profile" class="avatar-preview" id="avatarPreview" />
+                <div class="avatar-placeholder" id="avatarPlaceholder" style="background-color: @Model.AvatarColor;">
+                    @Model.Initials
+                </div>
+                <button type="button" class="remove-image-btn" id="removeImageBtn" title="Remove image">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            <div class="avatar-upload-info">
+                <label>Profile Picture</label>
+                <div class="file-input-wrapper">
+                    <span class="file-input-label">
+                        <i class="bi bi-upload"></i> Choose Image
+                    </span>
+                    <input type="file" id="ProfileImage" name="ProfileImage" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" />
+                </div>
+                <div class="file-name" id="fileName">
+                    <i class="bi bi-info-circle"></i> No file selected
+                </div>
+                <div class="file-hint">
+                    Supported formats: PNG, JPG, JPEG, GIF, WEBP (Max: 5MB)
+                </div>
+                <button type="button" class="clear-image-btn" id="clearImageBtn">
+                    <i class="bi bi-trash"></i> Remove current image
+                </button>
+            </div>
+        </div>
+
+        <!-- User Info -->
+        <div class="form-row">
+            <div class="form-group" id="nameGroup">
+                <label for="Name">Full Name <span class="required">*</span></label>
+                <input type="text" id="Name" asp-for="Name" placeholder="Enter full name" />
+                <div class="error-message" id="nameError">Please enter a valid name (at least 2 characters).</div>
+                <div class="validation-success" id="nameSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+            </div>
+            <div class="form-group" id="emailGroup">
+                <label for="Email">Email <span class="required">*</span></label>
+                <input type="email" id="Email" asp-for="Email" placeholder="Enter email address" />
+                <div class="error-message" id="emailError">Please enter a valid email address.</div>
+                <div class="validation-success" id="emailSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group" id="phoneGroup">
+                <label for="PhoneNumber">Phone Number <span class="required">*</span></label>
+                <input type="tel" id="PhoneNumber" asp-for="PhoneNumber" placeholder="e.g., 0123456789" />
+                <div class="error-message" id="phoneError">Please enter a valid phone number (10 digits, starting with 0).</div>
+                <div class="validation-success" id="phoneSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+            </div>
+            <div class="form-group" id="genderGroup">
+                <label for="Gender">Gender <span class="required">*</span></label>
+                <select id="Gender" asp-for="Gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div class="error-message" id="genderError">Please select a gender.</div>
+                <div class="validation-success" id="genderSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group" id="dobGroup">
+                <label for="DOB">Date of Birth <span class="required">*</span></label>
+                <input type="date" id="DOB" asp-for="DOB" />
+                <div class="error-message" id="dobError">Please select a valid date of birth (must be 5-120 years old).</div>
+                <div class="validation-success" id="dobSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+            </div>
+            <div class="form-group">
+                <label for="Status">Status</label>
+                <select id="Status" asp-for="Status">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Pending">Pending</option>
+                </select>
+            </div>
+        </div>
+
+        @if (Model.UserType == "Lecturer")
+        {
+            <div class="form-group" id="departmentGroup">
+                <label for="Department">Department <span class="required">*</span></label>
+                <input type="text" id="Department" asp-for="Department" placeholder="Enter department" />
+                <div class="error-message" id="departmentError">Please enter a department.</div>
+                <div class="validation-success" id="departmentSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+            </div>
+        }
+
+        <div class="form-actions">
+            <button type="button" class="btn-cancel" id="cancelBtn">
+                <i class="bi bi-x-circle"></i> Cancel
+            </button>
+            <button type="submit" class="btn-save" id="saveBtn">
+                <i class="bi bi-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Success Modal -->
+@if (TempData["ShowSuccessModal"] != null && (bool)TempData["ShowSuccessModal"])
+{
+    <div id="successModal" class="modal-overlay-full show">
+        <div class="modal-container">
+            <div class="modal-icon success-icon">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <h3 class="modal-title">Success!</h3>
+            <p class="modal-message">@TempData["SuccessMessage"]</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-success" id="successModalBtn">
+                    <i class="bi bi-check-circle"></i> Continue
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Error Modal -->
+@if (TempData["ShowErrorModal"] != null && (bool)TempData["ShowErrorModal"])
+{
+    <div id="errorModal" class="modal-overlay-full show">
+        <div class="modal-container">
+            <div class="modal-icon error-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h3 class="modal-title">Error!</h3>
+            <p class="modal-message">@TempData["ErrorMessage"]</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-danger" id="errorModalBtn">
+                    <i class="bi bi-check-circle"></i> OK
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get elements
+        const fileInput = document.getElementById('ProfileImage');
+        const fileName = document.getElementById('fileName');
+        const preview = document.getElementById('avatarPreview');
+        const placeholder = document.getElementById('avatarPlaceholder');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const clearImageBtn = document.getElementById('clearImageBtn');
+        const hiddenProfilePic = document.getElementById('CurrentProfilePic');
+        const avatarUpload = document.getElementById('avatarUpload');
+        const form = document.getElementById('editForm');
+        const saveBtn = document.getElementById('saveBtn');
+
+        // Form fields for validation
+        const nameInput = document.getElementById('Name');
+        const emailInput = document.getElementById('Email');
+        const phoneInput = document.getElementById('PhoneNumber');
+        const genderSelect = document.getElementById('Gender');
+        const dobInput = document.getElementById('DOB');
+        const departmentInput = document.getElementById('Department');
+
+        // Check if there's an existing profile picture
+        const existingImage = '@Model.ProfilePic';
+        if (existingImage) {
+            preview.src = existingImage;
+            preview.classList.add('show');
+            placeholder.classList.add('hide');
+            removeImageBtn.classList.add('show');
+            clearImageBtn.classList.add('show');
+        }
+
+        // ============ VALIDATION FUNCTIONS ============
+
+        // Validate Name
+        function validateName() {
+            const group = document.getElementById('nameGroup');
+            const error = document.getElementById('nameError');
+            const success = document.getElementById('nameSuccess');
+            const value = nameInput.value.trim();
+            
+            if (value.length < 2) {
+                group.classList.add('has-error');
+                error.classList.add('show');
+                success.classList.remove('show');
+                return false;
+            } else {
+                group.classList.remove('has-error');
+                error.classList.remove('show');
+                success.classList.add('show');
+                return true;
+            }
+        }
+
+        // Validate Email
+        function validateEmail() {
+            const group = document.getElementById('emailGroup');
+            const error = document.getElementById('emailError');
+            const success = document.getElementById('emailSuccess');
+            const value = emailInput.value.trim();
+            const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            
+            if (!emailPattern.test(value)) {
+                group.classList.add('has-error');
+                error.classList.add('show');
+                success.classList.remove('show');
+                return false;
+            } else {
+                group.classList.remove('has-error');
+                error.classList.remove('show');
+                success.classList.add('show');
+                return true;
+            }
+        }
+
+        // Validate Phone Number (10 digits starting with 0)
+        function validatePhone() {
+            const group = document.getElementById('phoneGroup');
+            const error = document.getElementById('phoneError');
+            const success = document.getElementById('phoneSuccess');
+            const value = phoneInput.value.trim();
+            const phonePattern = /^0\d{9}$/;
+            
+            if (!phonePattern.test(value)) {
+                group.classList.add('has-error');
+                error.classList.add('show');
+                success.classList.remove('show');
+                return false;
+            } else {
+                group.classList.remove('has-error');
+                error.classList.remove('show');
+                success.classList.add('show');
+                return true;
+            }
+        }
+
+        // Validate Gender
+        function validateGender() {
+            const group = document.getElementById('genderGroup');
+            const error = document.getElementById('genderError');
+            const success = document.getElementById('genderSuccess');
+            const value = genderSelect.value;
+            
+            if (!value) {
+                group.classList.add('has-error');
+                error.classList.add('show');
+                success.classList.remove('show');
+                return false;
+            } else {
+                group.classList.remove('has-error');
+                error.classList.remove('show');
+                success.classList.add('show');
+                return true;
+            }
+        }
+
+        // Validate Date of Birth
+        function validateDOB() {
+            const group = document.getElementById('dobGroup');
+            const error = document.getElementById('dobError');
+            const success = document.getElementById('dobSuccess');
+            const value = dobInput.value;
+            
+            if (!value) {
+                group.classList.add('has-error');
+                error.classList.add('show');
+                success.classList.remove('show');
+                return false;
+            }
+            
+            const dob = new Date(value);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            
+            if (age < 5 || age > 120) {
+                group.classList.add('has-error');
+                error.textContent = 'Please select a valid date of birth (must be 5-120 years old).';
+                error.classList.add('show');
+                success.classList.remove('show');
+                return false;
+            } else {
+                group.classList.remove('has-error');
+                error.classList.remove('show');
+                success.classList.add('show');
+                return true;
+            }
+        }
+
+        // Validate Department (for lecturers)
+        function validateDepartment() {
+            if (!departmentInput) return true;
+            
+            const group = document.getElementById('departmentGroup');
+            const error = document.getElementById('departmentError');
+            const success = document.getElementById('departmentSuccess');
+            const value = departmentInput.value.trim();
+            
+            if (!value) {
+                group.classList.add('has-error');
+                error.classList.add('show');
+                success.classList.remove('show');
+                return false;
+            } else {
+                group.classList.remove('has-error');
+                error.classList.remove('show');
+                success.classList.add('show');
+                return true;
+            }
+        }
+
+        // ============ ATTACH VALIDATION EVENTS ============
+
+        nameInput.addEventListener('input', validateName);
+        nameInput.addEventListener('blur', validateName);
+
+        emailInput.addEventListener('input', validateEmail);
+        emailInput.addEventListener('blur', validateEmail);
+
+        phoneInput.addEventListener('input', validatePhone);
+        phoneInput.addEventListener('blur', validatePhone);
+
+        genderSelect.addEventListener('change', validateGender);
+
+        dobInput.addEventListener('change', validateDOB);
+        dobInput.addEventListener('blur', validateDOB);
+
+        if (departmentInput) {
+            departmentInput.addEventListener('input', validateDepartment);
+            departmentInput.addEventListener('blur', validateDepartment);
+        }
+
+        // ============ FORM VALIDATION ON SUBMIT ============
+
+        form.addEventListener('submit', function(e) {
+            // Run all validations
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPhoneValid = validatePhone();
+            const isGenderValid = validateGender();
+            const isDOBValid = validateDOB();
+            const isDepartmentValid = departmentInput ? validateDepartment() : true;
+
+            // Collect errors
+            const errors = [];
+            if (!isNameValid) errors.push('Please enter a valid name (at least 2 characters).');
+            if (!isEmailValid) errors.push('Please enter a valid email address.');
+            if (!isPhoneValid) errors.push('Please enter a valid phone number (10 digits, starting with 0).');
+            if (!isGenderValid) errors.push('Please select a gender.');
+            if (!isDOBValid) errors.push('Please select a valid date of birth (must be 5-120 years old).');
+            if (!isDepartmentValid) errors.push('Please enter a department.');
+
+            if (errors.length > 0) {
+                e.preventDefault();
+                
+                // Show validation summary
+                const summary = document.getElementById('validationSummary');
+                const list = document.getElementById('validationList');
+                list.innerHTML = errors.map(err => `<li>${err}</li>`).join('');
+                summary.classList.add('show');
+                
+                // Scroll to the first error
+                const firstErrorField = document.querySelector('.form-group.has-error');
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const input = firstErrorField.querySelector('input, select');
+                    if (input) input.focus();
+                }
+                
+                return false;
+            }
+            
+            // Clear validation summary on successful validation
+            document.getElementById('validationSummary').classList.remove('show');
+            return true;
+        });
+
+        // Clear validation summary when user starts typing
+        document.querySelectorAll('input, select').forEach(function(element) {
+            element.addEventListener('input', function() {
+                document.getElementById('validationSummary').classList.remove('show');
+            });
+            element.addEventListener('change', function() {
+                document.getElementById('validationSummary').classList.remove('show');
+            });
+        });
+
+        // ============ SUCCESS/ERROR MODALS ============
+
+        const successModalBtn = document.getElementById('successModalBtn');
+        if (successModalBtn) {
+            successModalBtn.addEventListener('click', function() {
+                window.location.href = '/FrontEnd/UserList';
+            });
+        }
+
+        const errorModalBtn = document.getElementById('errorModalBtn');
+        if (errorModalBtn) {
+            errorModalBtn.addEventListener('click', function() {
+                document.getElementById('errorModal').classList.remove('show');
+            });
+        }
+
+        document.querySelectorAll('.modal-overlay-full').forEach(function(modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if (this.id === 'successModal') {
+                        window.location.href = '/FrontEnd/UserList';
+                    } else {
+                        this.classList.remove('show');
+                    }
+                }
+            });
+        });
+
+        // ============ CANCEL BUTTON ============
+
+        const cancelBtn = document.getElementById('cancelBtn');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showCancelConfirmModal();
+            });
+        }
+
+        function showCancelConfirmModal() {
+            let modal = document.getElementById('cancelConfirmModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'cancelConfirmModal';
+                modal.className = 'modal-overlay-full';
+                modal.style.display = 'none';
+                modal.innerHTML = `
+                    <div class="modal-container">
+                        <div class="modal-icon" style="color: #f59e0b;">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+                        <h3 class="modal-title">Cancel Edit</h3>
+                        <p class="modal-message">Are you sure you want to cancel? Any unsaved changes will be lost.</p>
+                        <div class="modal-actions">
+                            <button class="modal-btn modal-cancel" id="cancelStayBtn">Stay</button>
+                            <button class="modal-btn modal-danger" id="cancelLeaveBtn">Leave</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            modal.style.display = 'flex';
+            modal.classList.add('show');
+
+            document.getElementById('cancelStayBtn').onclick = function() {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+            };
+
+            document.getElementById('cancelLeaveBtn').onclick = function() {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                window.location.href = '/FrontEnd/UserList';
+            };
+
+            modal.onclick = function(e) {
+                if (e.target === this) {
+                    this.classList.remove('show');
+                    this.style.display = 'none';
+                }
+            };
+        }
+
+        // ============ AVATAR UPLOAD ============
+
+        function showPreview(imageSrc) {
+            preview.src = imageSrc;
+            preview.classList.add('show');
+            placeholder.classList.add('hide');
+            removeImageBtn.classList.add('show');
+            clearImageBtn.classList.add('show');
+        }
+
+        function hidePreview() {
+            preview.src = '';
+            preview.classList.remove('show');
+            placeholder.classList.remove('hide');
+            removeImageBtn.classList.remove('show');
+            clearImageBtn.classList.remove('show');
+            hiddenProfilePic.value = '';
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+                const fileType = file.type.toLowerCase();
+                if (!validTypes.includes(fileType)) {
+                    alert('Please select a valid image file (PNG, JPG, JPEG, GIF, or WEBP).');
+                    this.value = '';
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image size must be less than 5MB.');
+                    this.value = '';
+                    return;
+                }
+
+                const fileSize = (file.size / 1024).toFixed(1);
+                fileName.innerHTML = `<i class="bi bi-check-circle" style="color: #22c55e;"></i> ${file.name} (${fileSize} KB)`;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showPreview(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (existingImage) {
+                    showPreview(existingImage);
+                } else {
+                    hidePreview();
+                }
+                fileName.innerHTML = '<i class="bi bi-info-circle"></i> No file selected';
+            }
+        });
+
+        removeImageBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            hidePreview();
+            fileInput.value = '';
+            fileName.innerHTML = '<i class="bi bi-info-circle"></i> No file selected';
+            hiddenProfilePic.value = '';
+        });
+
+        clearImageBtn.addEventListener('click', function() {
+            hidePreview();
+            fileInput.value = '';
+            fileName.innerHTML = '<i class="bi bi-info-circle"></i> No file selected';
+            hiddenProfilePic.value = '';
+        });
+
+        avatarUpload.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        avatarUpload.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        avatarUpload.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+    });
+</script>

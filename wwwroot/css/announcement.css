@@ -5,6 +5,7 @@
     min-height: 100vh;
 }
 
+/* ========= HEADER SECTION ========= */
 .announcement-header-section {
     margin-bottom: 24px;
 }
@@ -19,7 +20,6 @@
 
 .announcement-subtitle {
     font-size: 14px;
-    font-weight: 400;
     color: #64748b;
     margin: 0;
 }
@@ -621,4 +621,105 @@
 .create-btn,
 .action-btn {
     transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+/* Add these styles to your announcement.css file */
+
+/* ========= ANNOUNCEMENT CELL STYLES ========= */
+.announcement-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.announcement-title {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    display: block;
+}
+
+.creator-name {
+    font-weight: 500;
+    color: #475569;
+    font-size: 13px;
+}
+
+.message-cell {
+    max-width: 380px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #5b6e8c;
+    font-size: 13px;
+}
+
+/* ========= TABLE CELL PADDING ========= */
+.announcement-table td {
+    padding: 14px 20px;
+    vertical-align: middle;
+}
+
+.announcement-table td:first-child {
+    padding-left: 24px;
+}
+
+.announcement-table td:last-child {
+    padding-right: 24px;
+}
+
+/* ========= STATUS BADGE FOR ANNOUNCEMENTS (Optional) ========= */
+.announcement-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.announcement-status-active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.announcement-status-draft {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.announcement-status-archived {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 768px) {
+    .announcement-table td {
+        padding: 12px 12px;
+    }
+    
+    .announcement-title {
+        max-width: 120px;
+        font-size: 13px;
+    }
+    
+    .message-cell {
+        max-width: 100px;
+        font-size: 12px;
+    }
+    
+    .created-time-cell {
+        font-size: 11px;
+    }
+    
+    .creator-name {
+        font-size: 12px;
+    }
 }

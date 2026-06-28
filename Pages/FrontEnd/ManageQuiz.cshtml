@@ -25,18 +25,6 @@
     var mini = ThemeMini(theme);
 }
 
-@*
-    Front-end / styling: Moses
-    Backend contract (UNCHANGED):
-      Model.CurrentQuiz   — Quiz (Title, Subject, Theme, CreatedAt, MaterialID, QuizID)
-      Model.Questions     — ordered List<Question> with CorrectAnswer (lecturer-only)
-      Model.MaterialId    — int, for back link
-      Model.Message       — string, nullable
-    Actions:
-      Edit  → /FrontEnd/EditQuiz/{quizId}
-      Delete → POST handler "Delete" on this page
-      Back  → /FrontEnd/TeachingMaterialOverview/{MaterialId}
-*@
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -87,6 +75,9 @@
                             </a>
                             <a href="/FrontEnd/TeachingMaterialOverview/@Model.MaterialId" class="mq-btn mq-btn-ghost">
                                 <i class="bi bi-box-arrow-left"></i> Back to Material
+                            </a>
+                            <a asp-page="/FrontEnd/ViewQuizAttempts" asp-route-quizId="@Model.CurrentQuiz.QuizID" class="mq-btn mq-btn-info">
+                                <i class="bi bi-trophy"></i> View Students Attempts
                             </a>
                             <form method="post" asp-page-handler="Delete" asp-route-id="@Model.CurrentQuiz.QuizID"
                                   onsubmit="return confirm('Delete this quiz?\n\nStudent attempts and answers for it will also be removed. This cannot be undone.');"
@@ -370,6 +361,8 @@
     }
     .mq-btn-ghost { background: #f1f5f9; color: #475569; }
     .mq-btn-ghost:hover { background: #e2e8f0; color: #334155; }
+    .mq-btn-info { background: #ecfaff; color: #1a4250; }
+    .mq-btn-info:hover { background: #b7d6e4; color: #05161c; }
     .mq-btn-danger {
         background: #fef2f2; color: #b91c1c; border: 1.5px solid #fecaca;
     }

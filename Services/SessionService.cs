@@ -20,8 +20,6 @@ namespace APMoodle.Services
             {
                 StudentID = studentId,
                 QuizID = quizId,
-                // Timestamp defaults to DateTime.UtcNow (Kind=Utc) on the model — needed for
-                // Postgres "timestamp with time zone" columns which reject Unspecified kinds.
                 IsCompleted = false,
                 TotalScore = null
             };
@@ -86,8 +84,6 @@ namespace APMoodle.Services
             }
             catch (Exception ex)
             {
-                // Log the full exception chain (inner DB error included) so a failure
-                // here is never silently hidden behind the generic UI message again.
                 Console.WriteLine($"SubmitSessionAsync error: {ex}");
                 if (ex.InnerException != null)
                     Console.WriteLine($"  Inner: {ex.InnerException.Message}");
@@ -118,6 +114,22 @@ namespace APMoodle.Services
         {
             return await _context.Sessions
                 .AnyAsync(s => s.SessionID == sessionId && s.StudentID == studentId);
+        }
+
+        public async Task<List<Session>> GetSessionsByQuizAsync(int quizId, int? studentId = null)
+        {
+            var query = _context.Sessions
+                .Where(s => s.QuizID == quizId && s.IsCompleted)
+                .Include(s => s.Student)
+                .Include(s => s.Quiz)
+                .AsQueryable();
+
+            if (studentId.HasValue)
+                query = query.Where(s => s.StudentID == studentId.Value);
+
+            return await query
+                .OrderByDescending(s => s.Timestamp)
+                .ToListAsync();
         }
     }
 }
