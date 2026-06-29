@@ -57,7 +57,8 @@ namespace APMoodle.Pages.BackEnd
             if (string.IsNullOrEmpty(userId))
                 return RedirectToPage("/FrontEnd/Login");
 
-            if (userRole != "lecturer")
+            // Allow both lecturer and admin
+            if (userRole != "lecturer" && userRole != "admin")
                 return StatusCode(StatusCodes.Status403Forbidden);
 
             CurrentQuiz = await _quizService.GetQuizByIdAsync(quizId);
@@ -66,16 +67,28 @@ namespace APMoodle.Pages.BackEnd
 
             CurrentModule = CurrentQuiz.Material?.Module;
             MaterialTitle = CurrentQuiz.Material?.Title;
+
+            // Admin can view any quiz 
+            if (userRole == "admin")
+            {
+                Questions = (CurrentQuiz.Questions ?? new List<Question>())
+                    .Where(q => q.Status == "Active")
+                    .OrderBy(q => q.QuestionID)
+                    .ToList();
+                MaterialId = CurrentQuiz.MaterialID;
+                return null;
+            }
+
+            // For lecturer, it must own the quiz
             var ownerId = await _quizService.GetLecturerIdForQuizAsync(quizId);
             if (ownerId == null || ownerId.ToString() != userId)
                 return StatusCode(StatusCodes.Status403Forbidden);
 
             Questions = (CurrentQuiz.Questions ?? new List<Question>())
-                .Where(q => q.Status== "Active")
+                .Where(q => q.Status == "Active")
                 .OrderBy(q => q.QuestionID)
                 .ToList();
             MaterialId = CurrentQuiz.MaterialID;
-
             return null;
         }
     }

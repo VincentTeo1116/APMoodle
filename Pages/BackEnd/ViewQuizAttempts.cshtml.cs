@@ -18,7 +18,7 @@ namespace APMoodle.Pages.FrontEnd
 
         [BindProperty(SupportsGet = true)]
         public int QuizId { get; set; }
-
+        public int QuestionCount { get; set; }
         public string? QuizTitle { get; set; }
         public List<Session> Sessions { get; set; } = new();
         public Module? CurrentModule { get; set; }
@@ -38,6 +38,7 @@ namespace APMoodle.Pages.FrontEnd
             if (quiz == null)
                 return NotFound();
             QuizTitle = quiz.Title;
+            QuestionCount = quiz.Questions?.Count ?? 0; 
             CurrentModule = quiz.Material?.Module; 
             MaterialTitle = quiz.Material?.Title;
 

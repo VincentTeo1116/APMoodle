@@ -8,6 +8,8 @@
 @{
     var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
     var isLecturer = userRole == "lecturer";
+    var isAdmin = userRole == "admin";
+    var canEdit = isLecturer;
 }
 
 <head>
@@ -25,19 +27,17 @@
     <div class="two-column-layout">
         <div class="info-column">
             <div class="material-header-row">
-                @if (isLecturer)
+                @if (canEdit)
                 {
                     <a href="/FrontEnd/EditMaterial/@Model.CurrentMaterial?.MaterialID" class="edit-btn">
                         <i class="bi bi-pencil-square" title="Edit teaching material"></i> Edit Material
                     </a>
-                    
-                    <!-- Delete button that opens modal -->
                     <button type="button" class="delete-btn" 
                             data-id="@Model.CurrentMaterial?.MaterialID" 
                             data-title="@Model.CurrentMaterial?.Title"
                             data-module-id="@Model.CurrentModule?.ModuleID"
                             onclick="openDeleteModal(this)"
-                            style="border: none;  cursor: pointer;">
+                            style="border: none; cursor: pointer;">
                         <i class="bi bi-trash" title="Delete teaching material"></i> Delete Material
                     </button>
                 }
@@ -156,13 +156,29 @@
             <div class="quizzes-list">
                 @foreach (var quiz in Model.Quizzes)
                 {
-                    var quizUrl = isLecturer ? $"/FrontEnd/ManageQuiz/{quiz.QuizID}" : $"/FrontEnd/ViewQuiz/{quiz.QuizID}";
+                    var quizUrl = isLecturer || isAdmin ? $"/FrontEnd/ManageQuiz/{quiz.QuizID}" : $"/FrontEnd/ViewQuiz/{quiz.QuizID}";
                     <div class="quiz-item">
                         <span class="quiz-icon">📋</span>
                         <div class="quiz-info">
                             <a href="@quizUrl" class="quiz-title">@quiz.Title</a>
                         </div>
-                        <a href="@quizUrl" class="take-quiz-link">@(isLecturer ? "Manage →" : "Take →")</a>
+                        @if (userRole == "lecturer")
+                        {
+                            <a href="@quizUrl" class="take-quiz-link">Manage</a>
+                        }
+                        else if (userRole == "admin")
+                        {
+                            <a href="@quizUrl" class="take-quiz-link">View</a>
+                        }
+                        else if (userRole == "student" || userRole == "guest")
+                        {
+                            <a href="@quizUrl" class="take-quiz-link">Take</a>
+                        }
+                        else 
+                        {
+                            <a class="take-quiz-link">No Authorized access</a>
+                        }
+                            
                     </div>
                 }
             </div>

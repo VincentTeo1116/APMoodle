@@ -4,6 +4,10 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = "Manage Quiz";
 
+    var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
+    var isLecturer = userRole == "lecturer";
+    var isAdmin = userRole == "admin";
+
     string ThemeName(string? t) => (t ?? "").Trim() switch
     {
         "Midterm"    => "Kahoot game show",
@@ -70,22 +74,34 @@
                         </div>
 
                         <div class="mq-actions">
-                            <a href="/FrontEnd/EditQuiz/@Model.CurrentQuiz.QuizID" class="mq-btn mq-btn-primary">
-                                <span class="mq-btn-icon"><i class="bi bi-pencil-square"></i></span> Edit Quiz
-                            </a>
-                            <a href="/FrontEnd/TeachingMaterialOverview/@Model.MaterialId" class="mq-btn mq-btn-ghost">
-                                <i class="bi bi-box-arrow-left"></i> Back to Material
-                            </a>
-                            <a asp-page="/FrontEnd/ViewQuizAttempts" asp-route-quizId="@Model.CurrentQuiz.QuizID" class="mq-btn mq-btn-info">
-                                <i class="bi bi-trophy"></i> View Students Attempts
-                            </a>
-                            <form method="post" asp-page-handler="Delete" asp-route-id="@Model.CurrentQuiz.QuizID"
-                                  onsubmit="return confirm('Delete this quiz?\n\nStudent attempts and answers for it will also be removed. This cannot be undone.');"
-                                  class="mq-delete-form">
-                                <button type="button" class="mq-btn mq-btn-danger" onclick="showDeleteModal('quiz', @Model.CurrentQuiz.QuizID, '@Model.CurrentQuiz.Title')">
-                                    <span class="mq-btn-icon"><i class="bi bi-trash3"></i></span> Delete Quiz
-                                </button>
-                            </form>
+                            @if (isLecturer)
+                            {
+                                <a href="/FrontEnd/EditQuiz/@Model.CurrentQuiz.QuizID" class="mq-btn mq-btn-primary">
+                                    <span class="mq-btn-icon"><i class="bi bi-pencil-square"></i></span> Edit Quiz
+                                </a>
+                                <a href="/FrontEnd/TeachingMaterialOverview/@Model.MaterialId" class="mq-btn mq-btn-ghost">
+                                    <i class="bi bi-box-arrow-left"></i> Back to Material
+                                </a>
+                                <a asp-page="/FrontEnd/ViewQuizAttempts" asp-route-quizId="@Model.CurrentQuiz.QuizID" class="mq-btn mq-btn-info">
+                                    <i class="bi bi-trophy"></i> View Students Attempts
+                                </a>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.CurrentQuiz.QuizID"
+                                    onsubmit="return confirm('Delete this quiz?\n\nStudent attempts and answers for it will also be removed. This cannot be undone.');"
+                                    class="mq-delete-form">
+                                    <button type="button" class="mq-btn mq-btn-danger" onclick="showDeleteModal('quiz', @Model.CurrentQuiz.QuizID, '@Model.CurrentQuiz.Title')">
+                                        <span class="mq-btn-icon"><i class="bi bi-trash3"></i></span> Delete Quiz
+                                    </button>
+                                </form>
+                            }
+                            else if (isAdmin)
+                            {
+                                <a href="/FrontEnd/TeachingMaterialOverview/@Model.MaterialId" class="mq-btn mq-btn-ghost">
+                                    <i class="bi bi-box-arrow-left"></i> Back to Material
+                                </a>
+                                <a asp-page="/FrontEnd/ViewQuizAttempts" asp-route-quizId="@Model.CurrentQuiz.QuizID" class="mq-btn mq-btn-info">
+                                    <i class="bi bi-trophy"></i> View Students Attempts
+                                </a>
+                            }
                         </div>
                     </div>
 

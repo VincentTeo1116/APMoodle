@@ -49,7 +49,7 @@
                     <div class="attempt-body">
                         <div class="attempt-meta">
                             <span><i class="bi bi-calendar3"></i> @session.Timestamp.ToString("MMM dd, yyyy HH:mm")</span>
-                            <span><i class="bi bi-question-square"></i> @(session.Results?.Count ?? 0) questions</span>
+                            <span><i class="bi bi-question-square"></i>  @Model.QuestionCount questions</span>
                             <span><i class="bi bi-check-circle"></i> Completed</span>
                         </div>
                     </div>

@@ -1,10 +1,11 @@
 // DOM Elements
 let searchInput, filterStatus, filterLecturer, tableBody;
-let modal, modalTitle, modalContent, modalClose, modalCloseBtn;
+let modal, modalTitle, modalContent, modalClose, modalCloseBtn, modalViewBtn;
 let filteredCountSpan;
 let pendingDeleteId = null;
 let pendingDeleteRow = null;
 let pendingDeleteTitle = null;
+let currentModuleId = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeElements();
@@ -27,6 +28,7 @@ function initializeElements() {
     modalContent = document.getElementById('modalContent');
     modalClose = document.querySelector('.modal-close');
     modalCloseBtn = document.getElementById('modalCloseBtn');
+    modalViewBtn = document.getElementById('modalViewBtn');
 }
 
 function attachEventListeners() {
@@ -37,6 +39,11 @@ function attachEventListeners() {
     modalCloseBtn?.addEventListener('click', closeModal);
     window.addEventListener('click', function(e) {
         if (e.target === modal) closeModal();
+    });
+    modalViewBtn?.addEventListener('click', function() {
+        if (currentModuleId) {
+            window.location.href = `/FrontEnd/TeachingMaterial/${currentModuleId}`;
+        }
     });
 }
 
@@ -99,6 +106,7 @@ function initializeActionButtons() {
 async function handleViewClick(e) {
     const btn = e.currentTarget;
     const id = btn.getAttribute('data-id');
+    currentModuleId = id; // Store for the modal view button
     try {
         modalContent.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loading-spinner"></div><p>Loading...</p></div>';
         modal.style.display = 'flex';
@@ -286,6 +294,7 @@ function closeModal() {
     modal.style.display = 'none';
     modalTitle.textContent = 'Module Details';
     modalContent.innerHTML = '';
+    currentModuleId = null; // Reset when modal closes
 }
 
 function escapeHtml(text) {
