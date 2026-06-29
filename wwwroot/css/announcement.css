@@ -1,11 +1,11 @@
-/* Main Container */
+/* ========= MAIN CONTAINER ========= */
 .announcement-page {
     padding: 24px 28px;
     background: #f8fafc;
     min-height: 100vh;
 }
 
-/* ========= HEADER SECTION ========= */
+/* ========= HEADER ========= */
 .announcement-header-section {
     margin-bottom: 24px;
 }
@@ -18,13 +18,58 @@
     letter-spacing: -0.3px;
 }
 
+.announcement-header-section h1 i {
+    color: #3b82f6;
+    margin-right: 8px;
+}
+
 .announcement-subtitle {
     font-size: 14px;
     color: #64748b;
     margin: 0;
 }
 
-/* ========= ACTION BAR ========= */
+/* ========= STATS CARDS ========= */
+.announcement-stats-grid {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.announcement-stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px 24px;
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e9edf2;
+    transition: all 0.2s ease;
+}
+
+.announcement-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+    border-color: #dee4ec;
+}
+
+.announcement-stat-card .stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.announcement-stat-card .stat-label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* ========= ACTION BAR (centered) ========= */
 .announcement-action-bar {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -54,17 +99,15 @@
 }
 
 .search-box:focus-within {
-    border-color: #94a3b8;
+    border-color: #3b82f6;
     background: white;
-    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.08);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
 }
 
-.search-icon {
+.search-box .search-icon {
     color: #94a3b8;
     font-size: 16px;
     margin-right: 10px;
-    display: flex;
-    align-items: center;
 }
 
 .search-box input {
@@ -99,8 +142,8 @@
 }
 
 .filter-select:focus {
-    border-color: #64748b;
-    box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
 .create-btn {
@@ -132,47 +175,12 @@
     transform: translateY(0);
 }
 
-/* ========= STATS CARDS ========= */
-.announcement-stats-grid {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
+.create-btn span {
+    font-size: 20px;
+    line-height: 1;
 }
 
-.announcement-stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 16px 24px;
-    flex: 1;
-    min-width: 150px;
-    text-align: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    border: 1px solid #e9edf2;
-    transition: all 0.2s ease;
-}
-
-.announcement-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
-    border-color: #dee4ec;
-}
-
-.stat-number {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 6px;
-}
-
-.stat-label {
-    font-size: 13px;
-    color: #64748b;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-}
-
-/* ========= TABLE STYLES ========= */
+/* ========= TABLE ========= */
 .announcement-table-container {
     background: white;
     border-radius: 16px;
@@ -230,13 +238,27 @@
     background-color: #fafcff;
 }
 
-.title-cell {
+/* Announcement-specific cells */
+.announcement-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.announcement-title {
     font-weight: 600;
     color: #1e293b;
-    max-width: 220px;
+    font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.creator-name {
+    font-weight: 500;
+    color: #475569;
+    font-size: 13px;
 }
 
 .message-cell {
@@ -245,6 +267,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     color: #5b6e8c;
+    font-size: 13px;
 }
 
 .created-time-cell {
@@ -257,7 +280,7 @@
 /* ========= ACTION BUTTONS ========= */
 .action-cell {
     text-align: center;
-    padding: 12px 8px;
+    padding: 12px 8px !important;
 }
 
 .action-buttons-wrapper {
@@ -278,6 +301,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .action-btn i {
@@ -330,28 +354,45 @@
     box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2);
 }
 
-/* Tooltip styles */
-.action-btn[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1e293b;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 11px;
+/* ========= STATUS BADGES ========= */
+.announcement-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
     white-space: nowrap;
-    z-index: 10;
-    pointer-events: none;
 }
 
-.action-btn {
-    position: relative;
+.announcement-status-active {
+    background: #dcfce7;
+    color: #15803d;
 }
 
-/* ========= VIEW MODAL STYLES ========= */
+.announcement-status-draft {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.announcement-status-archived {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ========= EMPTY STATE ========= */
+.empty-row td {
+    padding: 60px 20px !important;
+}
+
+.empty-message {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 15px;
+}
+
+/* ========= MODAL (View Details) ========= */
 .modal {
     display: none;
     position: fixed;
@@ -454,14 +495,7 @@
     transform: translateY(-1px);
 }
 
-.empty-message {
-    text-align: center;
-    padding: 60px 20px;
-    color: #94a3b8;
-    font-size: 15px;
-}
-
-/* ========= DETAIL VIEW MODAL STYLES ========= */
+/* ========= DETAIL VIEW (inside modal) ========= */
 .detail-header {
     margin-bottom: 20px;
     text-align: left;
@@ -473,7 +507,6 @@
     color: #1e293b;
     margin: 0 0 16px 0;
     line-height: 1.3;
-    text-align: left;
 }
 
 .detail-meta {
@@ -489,13 +522,6 @@
 
 .detail-meta i {
     margin-right: 6px;
-    font-size: 0.85rem;
-}
-
-.meta-creator, .meta-date {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
 }
 
 .detail-divider {
@@ -509,12 +535,11 @@
     font-size: 0.95rem;
     color: #334155;
     line-height: 1.7;
-    /* white-space: pre-wrap; */
     word-wrap: break-word;
     text-align: left;
 }
 
-/* Loading spinner */
+/* ========= LOADING SPINNER ========= */
 .loading-spinner {
     width: 40px;
     height: 40px;
@@ -526,200 +551,51 @@
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 /* ========= ANIMATIONS ========= */
 @keyframes modalSlideIn {
-    from {
-        transform: scale(0.95) translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-    }
+    from { transform: scale(0.95) translateY(-20px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 /* ========= RESPONSIVE ========= */
 @media (max-width: 1024px) {
-    .announcement-page {
-        padding: 20px;
-    }
-    
+    .announcement-page { padding: 20px; }
     .announcement-action-bar {
         display: flex;
         flex-direction: column;
         align-items: stretch;
         gap: 16px;
     }
-    
     .search-filter-group {
         flex-direction: column;
         align-items: stretch;
         width: 100%;
     }
-    
-    .search-box {
-        width: 100%;
-    }
-    
-    .filter-select {
-        width: 100%;
-    }
-    
+    .search-box { width: 100%; min-width: unset; }
+    .filter-select { width: 100%; }
     .create-btn {
         justify-content: center;
         width: 100%;
     }
-    
     .announcement-table th,
-    .announcement-table td {
-        padding: 14px 12px;
-    }
-    
-    .message-cell {
-        max-width: 150px;
-    }
+    .announcement-table td { padding: 14px 12px; }
 }
 
 @media (max-width: 768px) {
-    .announcement-stats-grid {
-        gap: 12px;
-    }
-    
+    .announcement-stats-grid { gap: 12px; }
     .announcement-stat-card {
         padding: 12px 16px;
         min-width: 120px;
     }
-    
-    .stat-number {
-        font-size: 24px;
-    }
-    
-    /* Hide message column on mobile */
-    .announcement-table th:nth-child(2),
-    .announcement-table td:nth-child(2) {
-        display: none;
-    }
-    
+    .stat-number { font-size: 24px; }
     .action-btn {
         width: 28px;
         height: 28px;
     }
-    
-    .action-btn i {
-        font-size: 14px;
-    }
-}
-
-/* Smooth transitions */
-.announcement-table tr,
-.announcement-stat-card,
-.create-btn,
-.action-btn {
-    transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-}
-
-/* Add these styles to your announcement.css file */
-
-/* ========= ANNOUNCEMENT CELL STYLES ========= */
-.announcement-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.announcement-title {
-    font-weight: 600;
-    color: #1e293b;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
-    display: block;
-}
-
-.creator-name {
-    font-weight: 500;
-    color: #475569;
-    font-size: 13px;
-}
-
-.message-cell {
-    max-width: 380px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #5b6e8c;
-    font-size: 13px;
-}
-
-/* ========= TABLE CELL PADDING ========= */
-.announcement-table td {
-    padding: 14px 20px;
-    vertical-align: middle;
-}
-
-.announcement-table td:first-child {
-    padding-left: 24px;
-}
-
-.announcement-table td:last-child {
-    padding-right: 24px;
-}
-
-/* ========= STATUS BADGE FOR ANNOUNCEMENTS (Optional) ========= */
-.announcement-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.announcement-status-active {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.announcement-status-draft {
-    background: #fef3c7;
-    color: #b45309;
-}
-
-.announcement-status-archived {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-/* ========= RESPONSIVE ========= */
-@media (max-width: 768px) {
-    .announcement-table td {
-        padding: 12px 12px;
-    }
-    
-    .announcement-title {
-        max-width: 120px;
-        font-size: 13px;
-    }
-    
-    .message-cell {
-        max-width: 100px;
-        font-size: 12px;
-    }
-    
-    .created-time-cell {
-        font-size: 11px;
-    }
-    
-    .creator-name {
-        font-size: 12px;
-    }
+    .action-btn i { font-size: 14px; }
+    .announcement-table th:nth-child(2),
+    .announcement-table td:nth-child(2) { display: none; } /* hide message column on mobile */
 }

@@ -46,11 +46,29 @@
     cursor: pointer;
     display: inline-block;
     transition: all 0.3s ease;
+    margin: 2px;
+}
+
+.remove-btn {
+    background: linear-gradient(135deg, #9c0b0b, #da1616);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: none;
+    margin: 2px;
 }
 
 .upload-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(1, 61, 66, 0.3);
+}
+
+.remove-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 1, 1, 0.3);
 }
 
 .upload-hint {

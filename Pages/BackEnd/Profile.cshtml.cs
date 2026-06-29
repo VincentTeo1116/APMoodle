@@ -58,98 +58,97 @@ namespace APMoodle.Pages.BackEnd
             var userId = HttpContext.Session.GetString("UserID");
             var userRole = HttpContext.Session.GetString("UserRole");
             var removePhoto = Request.Form["RemovePhoto"].ToString() == "true";
+            var phoneNumber = Request.Form["PhoneNumber"].ToString();
 
             if (string.IsNullOrEmpty(userId))
-            {
                 return RedirectToPage("/FrontEnd/Login");
-            }
 
             var id = int.Parse(userId);
-
-            var phoneNumber = Request.Form["PhoneNumber"].ToString();
-            
-            // Handle profile picture upload
-            var profilePicUrl = await HandleProfilePictureUpload();
-
             bool success = false;
 
             if (userRole == "student")
             {
                 var student = await _studentService.GetStudentByIdAsync(id);
-                if (student != null)
-                {
-                    // Only update PhoneNumber and ProfilePic
-                    student.PhoneNumber = phoneNumber;
-                    if (!string.IsNullOrEmpty(profilePicUrl)) student.ProfilePic = profilePicUrl;
-                    success = await _studentService.UpdateStudentAsync(student);
-                }
+                if (student == null) return NotFound();
 
+                // Update phone
+                student.PhoneNumber = phoneNumber;
+
+                // Handle profile picture: either remove, upload new, or keep existing
                 if (removePhoto)
                 {
-
                     student.ProfilePic = null;
                 }
-                else if (!string.IsNullOrEmpty(profilePicUrl))
+                else
                 {
-                    student.ProfilePic = profilePicUrl;
+                    var newPic = await HandleProfilePictureUpload();
+                    if (!string.IsNullOrEmpty(newPic))
+                        student.ProfilePic = newPic;
                 }
+
+                // Save everything at once
+                success = await _studentService.UpdateStudentAsync(student);
             }
             else if (userRole == "lecturer")
             {
                 var lecturer = await _lecturerService.GetLecturerByIdAsync(id);
-                if (lecturer != null)
-                {
-                    lecturer.PhoneNumber = phoneNumber;
-                    if (!string.IsNullOrEmpty(profilePicUrl)) lecturer.ProfilePic = profilePicUrl;
-                    success = await _lecturerService.UpdateLecturerAsync(lecturer);
-                }
+                if (lecturer == null) return NotFound();
+
+                lecturer.PhoneNumber = phoneNumber;
+
                 if (removePhoto)
                 {
-
                     lecturer.ProfilePic = null;
                 }
-                else if (!string.IsNullOrEmpty(profilePicUrl))
+                else
                 {
-                    lecturer.ProfilePic = profilePicUrl;
+                    var newPic = await HandleProfilePictureUpload();
+                    if (!string.IsNullOrEmpty(newPic))
+                        lecturer.ProfilePic = newPic;
                 }
+
+                success = await _lecturerService.UpdateLecturerAsync(lecturer);
             }
             else if (userRole == "admin")
             {
                 var admin = await _adminService.GetAdminByIdAsync(id);
-                if (admin != null)
-                {
-                    admin.PhoneNumber = phoneNumber;
-                    if (!string.IsNullOrEmpty(profilePicUrl)) admin.ProfilePic = profilePicUrl;
-                    success = await _adminService.UpdateAdminAsync(admin);
-                }
+                if (admin == null) return NotFound();
+
+                admin.PhoneNumber = phoneNumber;
+
                 if (removePhoto)
                 {
-
                     admin.ProfilePic = null;
                 }
-                else if (!string.IsNullOrEmpty(profilePicUrl))
+                else
                 {
-                    admin.ProfilePic = profilePicUrl;
+                    var newPic = await HandleProfilePictureUpload();
+                    if (!string.IsNullOrEmpty(newPic))
+                        admin.ProfilePic = newPic;
                 }
+
+                success = await _adminService.UpdateAdminAsync(admin);
+            }
+            else
+            {
+                return Forbid();
             }
 
             if (success)
             {
                 Message = "Profile updated successfully!";
                 IsSuccess = true;
-                // Reload data to reflect changes
-                await LoadUserData(id, userRole ?? "");
+                await LoadUserData(id, userRole);
             }
             else
             {
                 Message = "Failed to update profile. Please try again.";
                 IsSuccess = false;
-                await LoadUserData(id, userRole ?? "");
+                await LoadUserData(id, userRole);
             }
 
             return Page();
         }
-
         private async Task<string?> HandleProfilePictureUpload()
         {
             var file = Request.Form.Files.GetFile("profilePic");

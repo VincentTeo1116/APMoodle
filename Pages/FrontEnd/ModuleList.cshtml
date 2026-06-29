@@ -5,7 +5,7 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/announcement.css">
+    <link rel="stylesheet" href="~/css/moduleList.css">
     <link rel="stylesheet" href="~/css/site.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -14,31 +14,31 @@
     @Html.AntiForgeryToken()
 </form>
 
-<div class="announcement-page">
+<div class="module-page">
     <!-- Header -->
-    <div class="announcement-header-section">
+    <div class="module-header-section">
         <h1><i class="bi bi-journals"></i> Module Management</h1>
-        <p class="announcement-subtitle">Manage all modules in the system</p>
+        <p class="module-subtitle">Manage all modules in the system</p>
     </div>
 
     <!-- Stats -->
-    <div class="announcement-stats-grid">
-        <div class="announcement-stat-card">
+    <div class="module-stats-grid">
+        <div class="module-stat-card">
             <div class="stat-number" id="totalCount">@Model.TotalCount</div>
             <div class="stat-label">Total Modules</div>
         </div>
-        <div class="announcement-stat-card">
+        <div class="module-stat-card">
             <div class="stat-number" id="filteredCount">@Model.TotalCount</div>
             <div class="stat-label">Filtered Results</div>
         </div>
-        <div class="announcement-stat-card">
+        <div class="module-stat-card">
             <div class="stat-number" id="activeCount">@Model.ActiveCount</div>
             <div class="stat-label">Active Modules</div>
         </div>
     </div>
 
     <!-- Action Bar -->
-    <div class="announcement-action-bar">
+    <div class="module-action-bar">
         <div class="search-filter-group">
             <div class="search-box">
                 <i class="bi bi-search search-icon"></i>
@@ -66,8 +66,8 @@
     </div>
 
     <!-- Table -->
-    <div class="announcement-table-container">
-        <table class="announcement-table" id="moduleTable">
+    <div class="module-table-container">
+        <table class="module-table" id="moduleTable">
             <thead>
                 <tr>
                     <th>Code</th>

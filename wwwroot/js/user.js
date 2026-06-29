@@ -1,3 +1,31 @@
+function handleImageError(img) {
+    // Prevent infinite loop
+    img.onerror = null;
+
+    // Get data attributes with fallbacks
+    const color = img.dataset.color || '#64748b';   // default gray
+    const initials = img.dataset.initials || '?';   // default question mark
+    const parent = img.parentElement;
+
+    // Safety: if parent is missing, abort
+    if (!parent || !parent.nodeType) return;
+
+    // Create the placeholder div
+    const placeholder = document.createElement('div');
+    placeholder.className = 'avatar-placeholder';
+    placeholder.style.backgroundColor = color;
+    placeholder.textContent = initials;
+
+    // Replace the broken image
+    parent.replaceChild(placeholder, img);
+
+    // Optional: log for debugging
+    console.log('Image fallback used for:', img.alt, '→', initials);
+}
+
+// Make it globally available (already done, but good practice)
+window.handleImageError = handleImageError;
+
 document.addEventListener('DOMContentLoaded', function () {
     // DOM Elements
     const searchInput = document.getElementById('searchInput');
@@ -354,122 +382,122 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Confirm Reject (for Pending users)
-function confirmReject(id, type, name) {
-    const confirmModal = document.createElement('div');
-    confirmModal.className = 'modal';
-    confirmModal.style.display = 'flex';
-    confirmModal.innerHTML = `
-        <div class="modal-content" style="max-width: 400px;">
-            <div class="modal-header">
-                <div class="modal-header-title">
-                    <i class="bi bi-x-circle" style="color: #ef4444;"></i>
-                    <h3>Confirm Reject</h3>
+    function confirmReject(id, type, name) {
+        const confirmModal = document.createElement('div');
+        confirmModal.className = 'modal';
+        confirmModal.style.display = 'flex';
+        confirmModal.innerHTML = `
+            <div class="modal-content" style="max-width: 400px;">
+                <div class="modal-header">
+                    <div class="modal-header-title">
+                        <i class="bi bi-x-circle" style="color: #ef4444;"></i>
+                        <h3>Confirm Reject</h3>
+                    </div>
+                    <span class="modal-close">&times;</span>
                 </div>
-                <span class="modal-close">&times;</span>
+                <div class="modal-body">
+                    <p style="text-align: center; font-size: 16px; color: #1e293b;">
+                        Are you sure you want to reject user <strong>"${name}"</strong>?
+                    </p>
+                    <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: 8px;">
+                        The user will be set to Inactive status and will not be able to access the system.
+                    </p>
+                    <p style="text-align: center; color: #ef4444; font-size: 13px; margin-top: 8px;">
+                        <i class="bi bi-info-circle"></i> They can be reactivated later if needed.
+                    </p>
+                </div>
+                <div class="modal-footer" style="justify-content: center; gap: 12px;">
+                    <button class="btn-secondary" id="cancelRejectBtn">Cancel</button>
+                    <button class="btn-secondary" id="confirmRejectBtn" style="background: #ef4444; color: white; border-color: #ef4444;">Reject</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <p style="text-align: center; font-size: 16px; color: #1e293b;">
-                    Are you sure you want to reject user <strong>"${name}"</strong>?
-                </p>
-                <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: 8px;">
-                    The user will be set to Inactive status and will not be able to access the system.
-                </p>
-                <p style="text-align: center; color: #ef4444; font-size: 13px; margin-top: 8px;">
-                    <i class="bi bi-info-circle"></i> They can be reactivated later if needed.
-                </p>
-            </div>
-            <div class="modal-footer" style="justify-content: center; gap: 12px;">
-                <button class="btn-secondary" id="cancelRejectBtn">Cancel</button>
-                <button class="btn-secondary" id="confirmRejectBtn" style="background: #ef4444; color: white; border-color: #ef4444;">Reject</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(confirmModal);
+        `;
+        document.body.appendChild(confirmModal);
 
-    const closeConfirmModal = () => {
-        confirmModal.remove();
-    };
+        const closeConfirmModal = () => {
+            confirmModal.remove();
+        };
 
-    confirmModal.querySelector('.modal-close').addEventListener('click', closeConfirmModal);
-    document.getElementById('cancelRejectBtn').addEventListener('click', closeConfirmModal);
-    confirmModal.addEventListener('click', function(e) {
-        if (e.target === confirmModal) {
-            closeConfirmModal();
-        }
-    });
-
-    document.getElementById('confirmRejectBtn').addEventListener('click', function() {
-        closeConfirmModal();
-        
-        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-        
-        const formData = new FormData();
-        formData.append('id', id);
-        formData.append('type', type);
-        
-        fetch(`/FrontEnd/UserReject?handler=Reject`, {
-            method: 'POST',
-            headers: {
-                'RequestVerificationToken': token
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showSuccessPopup('User Rejected', `User "${data.userName || name}" has been rejected and set to Inactive status.`);
-                const row = document.querySelector(`tr[data-id="${id}"]`);
-                if (row) {
-                    // Update status in the row to Inactive
-                    const statusCell = row.querySelector('.status-cell');
-                    const statusBadge = statusCell.querySelector('.status-badge');
-                    statusBadge.className = 'status-badge status-inactive';
-                    statusBadge.innerHTML = '<span class="status-dot"></span> Inactive';
-                    row.dataset.status = 'Inactive';
-                    
-                    // Replace buttons - remove activate and reject, add reactivate
-                    const actionCell = row.querySelector('.action-cell');
-                    const buttonsWrapper = actionCell.querySelector('.action-buttons-wrapper');
-                    
-                    // Keep view and edit buttons
-                    const viewBtn = buttonsWrapper.querySelector('.view-btn');
-                    const editBtn = buttonsWrapper.querySelector('.edit-btn');
-                    buttonsWrapper.innerHTML = '';
-                    buttonsWrapper.appendChild(viewBtn);
-                    buttonsWrapper.appendChild(editBtn);
-                    
-                    // Add reactivate button (toggle-status-btn for Inactive users)
-                    const reactivateBtn = document.createElement('button');
-                    reactivateBtn.className = 'action-btn toggle-status-btn';
-                    reactivateBtn.setAttribute('data-id', id);
-                    reactivateBtn.setAttribute('data-type', type);
-                    reactivateBtn.setAttribute('data-status', 'Inactive');
-                    reactivateBtn.title = 'Reactivate';
-                    reactivateBtn.innerHTML = '<i class="bi bi-person-check"></i>';
-                    reactivateBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const id = this.dataset.id;
-                        const type = this.dataset.type;
-                        const status = this.dataset.status;
-                        const name = this.closest('tr').querySelector('.user-name').textContent;
-                        confirmToggleStatus(id, type, name, status);
-                    });
-                    buttonsWrapper.appendChild(reactivateBtn);
-                    
-                    // Update counts
-                    updateStats();
-                    updateFilteredCount();
-                }
-            } else {
-                alert(data.message || 'Failed to reject user.');
+        confirmModal.querySelector('.modal-close').addEventListener('click', closeConfirmModal);
+        document.getElementById('cancelRejectBtn').addEventListener('click', closeConfirmModal);
+        confirmModal.addEventListener('click', function(e) {
+            if (e.target === confirmModal) {
+                closeConfirmModal();
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while rejecting the user: ' + error.message);
         });
-    });
-}
+
+        document.getElementById('confirmRejectBtn').addEventListener('click', function() {
+            closeConfirmModal();
+            
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('type', type);
+            
+            fetch(`/FrontEnd/UserReject?handler=Reject`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessPopup('User Rejected', `User "${data.userName || name}" has been rejected and set to Inactive status.`);
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) {
+                        // Update status in the row to Inactive
+                        const statusCell = row.querySelector('.status-cell');
+                        const statusBadge = statusCell.querySelector('.status-badge');
+                        statusBadge.className = 'status-badge status-inactive';
+                        statusBadge.innerHTML = '<span class="status-dot"></span> Inactive';
+                        row.dataset.status = 'Inactive';
+                        
+                        // Replace buttons - remove activate and reject, add reactivate
+                        const actionCell = row.querySelector('.action-cell');
+                        const buttonsWrapper = actionCell.querySelector('.action-buttons-wrapper');
+                        
+                        // Keep view and edit buttons
+                        const viewBtn = buttonsWrapper.querySelector('.view-btn');
+                        const editBtn = buttonsWrapper.querySelector('.edit-btn');
+                        buttonsWrapper.innerHTML = '';
+                        buttonsWrapper.appendChild(viewBtn);
+                        buttonsWrapper.appendChild(editBtn);
+                        
+                        // Add reactivate button (toggle-status-btn for Inactive users)
+                        const reactivateBtn = document.createElement('button');
+                        reactivateBtn.className = 'action-btn toggle-status-btn';
+                        reactivateBtn.setAttribute('data-id', id);
+                        reactivateBtn.setAttribute('data-type', type);
+                        reactivateBtn.setAttribute('data-status', 'Inactive');
+                        reactivateBtn.title = 'Reactivate';
+                        reactivateBtn.innerHTML = '<i class="bi bi-person-check"></i>';
+                        reactivateBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const id = this.dataset.id;
+                            const type = this.dataset.type;
+                            const status = this.dataset.status;
+                            const name = this.closest('tr').querySelector('.user-name').textContent;
+                            confirmToggleStatus(id, type, name, status);
+                        });
+                        buttonsWrapper.appendChild(reactivateBtn);
+                        
+                        // Update counts
+                        updateStats();
+                        updateFilteredCount();
+                    }
+                } else {
+                    alert(data.message || 'Failed to reject user.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while rejecting the user: ' + error.message);
+            });
+        });
+    }
 
     // Open View Modal
     function openViewModal(id, type) {

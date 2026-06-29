@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/user.css">
     <link rel="stylesheet" href="~/css/site.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="~/js/user.js"></script>
 </head>
 
 <form method="post" id="antiForgeryForm">
@@ -97,7 +98,11 @@
                                     <div class="user-avatar">
                                         @if (!string.IsNullOrEmpty(user.ProfilePic))
                                         {
-                                            <img src="@user.ProfilePic" alt="@user.Name" />
+                                            <img src="@user.ProfilePic" 
+                                                alt="@user.Name" 
+                                                data-color="@user.AvatarColor" 
+                                                data-initials="@user.Initials" 
+                                                onerror="handleImageError(this)" />
                                         }
                                         else
                                         {
@@ -211,4 +216,3 @@
     </div>
 </div>
 
-<script src="~/js/user.js"></script>
