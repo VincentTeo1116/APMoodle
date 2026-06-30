@@ -48,7 +48,6 @@ namespace APMoodle.Pages.BackEnd
             string userId = Input.UserId.Trim();
             string password = Input.Password;
 
-            // Try to extract role from userId (supports both code and email formats)
             string? role = GetRoleFromInput(userId);
             string? extractedCode = ExtractCodeFromInput(userId);
 
@@ -87,7 +86,6 @@ namespace APMoodle.Pages.BackEnd
             }
             else
             {
-                // Login by regular email (no prefix) - check all tables
                 // Check Student
                 var student = await _studentService.GetStudentByEmailAsync(userId);
                 if (student != null && student.Status == "Active" && VerifyPassword(password, student.Password))

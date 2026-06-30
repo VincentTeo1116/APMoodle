@@ -71,6 +71,19 @@
                                 <span class="mq-meta-label">Quiz ID</span>
                                 <span class="mq-meta-val">#@Model.CurrentQuiz.QuizID</span>
                             </div>
+                            <div class="mq-meta-item">
+                                <span class="mq-meta-label">Access</span>
+                                <span class="mq-meta-val">
+                                    @if (Model.CurrentQuiz.IsPublic)
+                                    {
+                                        <i class="bi bi-globe"> Public</i> 
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-lock-fill"> Private</i> 
+                                    }
+                                </span>
+                            </div>
                         </div>
 
                         <div class="mq-actions">

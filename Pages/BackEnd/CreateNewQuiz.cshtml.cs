@@ -43,6 +43,8 @@ namespace APMoodle.Pages.BackEnd
 
         [BindProperty]
         public List<QuestionInput> Questions { get; set; } = new();
+        [BindProperty]
+        public bool IsPublic { get; set; }
 
         public Material? CurrentMaterial { get; set; }
         public string? Message { get; set; }
@@ -134,7 +136,8 @@ namespace APMoodle.Pages.BackEnd
                 Title = Title.Trim(),
                 Subject = Subject.Trim(),
                 Theme = Theme.Trim(),
-                MaterialID = MaterialId
+                MaterialID = MaterialId,
+                IsPublic = IsPublic
             };
 
             var domainQuestions = Questions.Select(q => new Question

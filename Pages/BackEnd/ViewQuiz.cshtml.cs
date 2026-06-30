@@ -20,28 +20,20 @@ namespace APMoodle.Pages.BackEnd
         public List<Question> Questions { get; set; } = new();
         public int SessionId { get; set; }
         public string? Message { get; set; }
+        public bool IsGuest { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var userId = HttpContext.Session.GetString("UserID");
-            var userRole = HttpContext.Session.GetString("UserRole");
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                return RedirectToPage("/FrontEnd/Login");
-            }
-
-            // Only students attempt quizzes; lecturers/admins viewing the quiz read-only is a separate concern
-            if (userRole != "student")
-            {
-                Message = "Only students can attempt quizzes.";
-                return Page();
-            }
+            var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
 
             CurrentQuiz = await _quizService.GetQuizByIdAsync(id);
-            if (CurrentQuiz == null)
+            if (CurrentQuiz == null) return NotFound();
+
+            // If quiz is not public, only students can access
+            if (!CurrentQuiz.IsPublic && userRole != "student")
             {
-                return NotFound();
+                return RedirectToPage("/FrontEnd/Login");
             }
 
             Questions = (CurrentQuiz.Questions ?? new List<Question>())
@@ -54,7 +46,14 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
-            // Create a new attempt session as soon as the student opens the quiz
+            // If user is not a student (i.e., guest), show the quiz without creating a session
+            if (userRole != "student")
+            {
+                IsGuest = true;
+                return Page();
+            }
+
+            // Student flow: create session
             SessionId = await _sessionService.StartSessionAsync(int.Parse(userId), id);
             return Page();
         }
@@ -62,50 +61,63 @@ namespace APMoodle.Pages.BackEnd
         public async Task<IActionResult> OnPostAsync(int id)
         {
             var userId = HttpContext.Session.GetString("UserID");
-            var userRole = HttpContext.Session.GetString("UserRole");
+            var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
 
-            if (string.IsNullOrEmpty(userId) || userRole != "student")
-            {
-                return RedirectToPage("/FrontEnd/Login");
-            }
-
-            // The hidden field "SessionId" from the form ties answers to the session created in OnGet
-            if (!int.TryParse(Request.Form["SessionId"], out var sessionId) || sessionId <= 0)
-            {
-                Message = "Quiz session is invalid. Please reload the quiz and try again.";
-                await ReloadQuestionsForRender(id);
-                return Page();
-            }
-
-            // Authorization: make sure this session belongs to the logged-in student
-            if (!await _sessionService.IsSessionOwnedByStudentAsync(sessionId, int.Parse(userId)))
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
-
+            // Reload quiz
             CurrentQuiz = await _quizService.GetQuizByIdAsync(id);
-            if (CurrentQuiz == null)
-            {
-                return NotFound();
-            }
+            if (CurrentQuiz == null) return NotFound();
 
             var questions = (CurrentQuiz.Questions ?? new List<Question>())
                 .OrderBy(q => q.QuestionID)
                 .ToList();
 
-            // Collect submissions: one Answer + TimeUsed field per question, named by QuestionID
+            // Collect submitted answers
             var submissions = new List<AnswerSubmission>();
             foreach (var question in questions)
             {
                 var answer = Request.Form[$"Answer_{question.QuestionID}"].ToString();
                 _ = int.TryParse(Request.Form[$"TimeUsed_{question.QuestionID}"], out var timeUsed);
-
                 submissions.Add(new AnswerSubmission
                 {
                     QuestionID = question.QuestionID,
                     Answer = answer,
                     TimeUsed = timeUsed
                 });
+            }
+
+            // Handle guest submission – no session, just compute score and return
+            if (userRole != "student")
+            {
+                // Compute score and correct answers
+                var correctCount = submissions.Count(s =>
+                    !string.IsNullOrEmpty(s.Answer) &&
+                    questions.First(q => q.QuestionID == s.QuestionID).CorrectAnswer == s.Answer
+                );
+                var total = questions.Count;
+                var score = (int)Math.Round((double)correctCount / total * 100);
+
+                // Store in TempData to display on the same page
+                TempData["GuestResult"] = $"{correctCount} out of {total} correct ({score}%)";
+                TempData["GuestDetails"] = submissions; // optional
+
+                // Reload questions for display
+                Questions = questions;
+                IsGuest = true;
+                Message = $"You scored {correctCount}/{total} ({score}%).";
+                return Page();
+            }
+
+            // Student flow: existing logic
+            if (!int.TryParse(Request.Form["SessionId"], out var sessionId) || sessionId <= 0)
+            {
+                Message = "Quiz session is invalid. Please reload the quiz and try again.";
+                Questions = questions;
+                return Page();
+            }
+
+            if (!await _sessionService.IsSessionOwnedByStudentAsync(sessionId, int.Parse(userId)))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
             }
 
             var success = await _sessionService.SubmitSessionAsync(sessionId, submissions);
@@ -117,11 +129,8 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
-            // celebrate=1 triggers the one-time congrats animation on the result page
-            // (it won't fire when the same result is opened later from Quiz History).
             return RedirectToPage("/FrontEnd/QuizResult", new { id = sessionId, celebrate = 1 });
         }
-
         private async Task ReloadQuestionsForRender(int quizId)
         {
             CurrentQuiz = await _quizService.GetQuizByIdAsync(quizId);

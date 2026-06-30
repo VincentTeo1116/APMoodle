@@ -39,6 +39,9 @@ namespace APMoodle.Pages.BackEnd
         [BindProperty]
         public List<QuestionInput> Questions { get; set; } = new();
 
+        [BindProperty]
+        public bool IsPublic { get; set; }
+
         // CSV of QuestionIDs that the lecturer removed during editing.
         // Tracked across postbacks via a hidden field so the final Save knows what to delete.
         // Must be nullable: with nullable reference types enabled, a non-nullable string
@@ -92,6 +95,7 @@ namespace APMoodle.Pages.BackEnd
             Title = quiz.Title;
             Subject = quiz.Subject;
             Theme = quiz.Theme;
+            IsPublic = quiz.IsPublic;
             Questions = (quiz.Questions ?? new List<Question>())
                 .OrderBy(q => q.QuestionID)
                 .Select(q => new QuestionInput
@@ -177,7 +181,8 @@ namespace APMoodle.Pages.BackEnd
                 QuizID = QuizId,
                 Title = Title.Trim(),
                 Subject = Subject.Trim(),
-                Theme = Theme.Trim()
+                Theme = Theme.Trim(),
+                IsPublic = IsPublic
             };
             var headerOk = await _quizService.UpdateQuizAsync(quizUpdate);
             if (!headerOk)

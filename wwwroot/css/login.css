@@ -811,7 +811,7 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
 
 /* Guest Button */
 .btn-guest {
-    width: 100%;
+    width: 80%;
     margin-top: 12px;
     padding: 12px;
     border: 1px solid rgba(139, 115, 85, 0.5);
@@ -823,6 +823,8 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    text-decoration: none;
+    text-align: center;
 }
 
 .btn-guest:hover {

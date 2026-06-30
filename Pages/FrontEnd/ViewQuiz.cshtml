@@ -39,25 +39,6 @@
     }
 </style>
 
-@*
-    Front-end / styling: Moses
-    Backend contract (do not change):
-        Model.CurrentQuiz   — Quiz (Title, Subject, Theme)
-        Model.Questions     — ordered List<Question>
-        Model.SessionId     — int; posted back as hidden "SessionId"
-        Model.Message       — string, nullable
-    Form contract:
-        SessionId                  — hidden
-        Answer_{QuestionID}        — radio "A" | "B" | "C" | "D"
-        TimeUsed_{QuestionID}      — hidden, seconds (filled by JS)
-    Theme routing:
-        "Midterm"  → Theme 1 (Kahoot game show)
-        "Mid-term" → Theme 2 (Academic exam paper)
-        "Edited"   → Theme 3 (Messaging app)
-        "lab"      → Theme 4 (Retro arcade)
-        anything else → fallback (Theme 0)
-*@
-
 <div id="horizontalNavbar">
     <div class="PageTitle">
         <h1>@ViewData["Title"]</h1>

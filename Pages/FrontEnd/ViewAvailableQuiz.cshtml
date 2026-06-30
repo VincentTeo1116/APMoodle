@@ -1,0 +1,19 @@
+﻿@page
+@model APMoodle.Pages.BackEnd.ViewAvailableQuizModel
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData ["Title"] = "Public Quiz";
+    var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
+}
+
+<html>
+    <title>@ViewData["Title"] - APMoodle</title>
+    <link rel="stylesheet" href="~/css/materialOverview.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</html>
+<div id="horizontalNavbar">
+    <div class="PageTitle">
+        <h1>@ViewData["Title"]</h1>
+        <p class="path"></p>
+    </div>
+</div>

@@ -154,6 +154,8 @@ namespace APMoodle.Data
                 entity.Property(q => q.Subject).HasMaxLength(50).IsRequired();
                 entity.Property(q => q.Theme).HasMaxLength(50).IsRequired();
                 entity.Property(q => q.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
+                entity.Property(q => q.IsPublic)
+                    .HasDefaultValue(false);
 
                 // Relationships
                 entity.HasOne(q => q.Material)

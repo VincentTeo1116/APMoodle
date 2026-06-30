@@ -57,7 +57,7 @@ namespace APMoodle.Services
                 existing.Title = quiz.Title;
                 existing.Subject = quiz.Subject;
                 existing.Theme = quiz.Theme;
-                // MaterialID and CreatedAt are intentionally NOT overwritten on edit.
+                existing.IsPublic = quiz.IsPublic;
 
                 await _context.SaveChangesAsync();
                 return true;

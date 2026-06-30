@@ -64,6 +64,21 @@
                                     <input asp-for="Subject" maxlength="50" placeholder="e.g. Thermodynamics" />
                                     <span asp-validation-for="Subject" class="cq-err"></span>
                                 </div>
+                                <div class="cq-field" style="grid-column: 1 / -1;">
+                                    <div class="toggle-wrapper">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" asp-for="IsPublic" />
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                        <span class="toggle-label">
+                                            <i class="bi bi-globe"></i> Make this quiz public
+                                        </span>
+                                        <small style="display: block; color: #cc8282; margin-top: 4px; font-size: 10px">
+                                            *If checked, guests can take this quiz without logging in.
+                                        </small>
+                                    </div>
+                                    <span asp-validation-for="IsPublic" class="cq-err"></span>
+                                </div>
                             </div>
                         </section>
 
@@ -844,5 +859,58 @@
     .cq-btn-primary:hover {
         transform: translateY(-1px); box-shadow: 0 6px 16px rgba(3, 121, 132, .4);
         background: linear-gradient(135deg, #012b2f, #025259); color: #fff;
+    }
+    .toggle-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 8px 0;
+    }
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 48px;
+        height: 26px;
+        flex-shrink: 0;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: #cbd5e1;
+        border-radius: 26px;
+        transition: 0.3s;
+    }
+    .toggle-slider::before {
+        content: "";
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.3s;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+        background: #037984;
+    }
+    .toggle-switch input:checked + .toggle-slider::before {
+        transform: translateX(22px);
+    }
+    .toggle-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e293b;
+    }
+    .toggle-label i {
+        color: #037984;
+        margin-right: 6px;
     }
 </style>
