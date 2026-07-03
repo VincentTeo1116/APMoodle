@@ -73,29 +73,34 @@
                     <th>Code</th>
                     <th>Name</th>
                     <th>Lecturer</th>
-                    <th>Status</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th>Progress Status</th>
                     <th class="actions-header">Actions</th>
                 </tr>
             </thead>
             <tbody id="moduleTableBody">
                 @if (Model.Modules != null && Model.Modules.Any())
                 {
-                    @foreach (var module in Model.Modules)
+                    @foreach (var item in Model.Modules)
                     {
+                        var module = item.Module;
                         <tr data-id="@module.ModuleID" 
                             data-lecturer="@(module.Lecturer?.Name ?? "Unknown")"
                             data-status="@module.Status">
                             <td class="code-cell">@module.ModuleCode</td>
                             <td class="title-cell">@module.Name</td>
                             <td class="lecturer-cell">@(module.Lecturer?.Name ?? "Unknown")</td>
-                            <td class="lecturer-cell">@((module.StartDate).ToString("MMM dd, yyyy"))</td>
-                            <td class="lecturer-cell">@((module.EndDate).ToString("MMM dd, yyyy"))</td>
+                            <td class="lecturer-cell">@module.StartDate.ToString("MMM dd, yyyy")</td>
+                            <td class="lecturer-cell">@module.EndDate.ToString("MMM dd, yyyy")</td>
                             <td class="status-cell">
-                                <span class="badge @(module.Status == "Active" ? "badge-status-published" : "badge-status-archived")">
-                                    @module.Status
-                                </span>
+                                @{
+                                    var status = item.DisplayStatus;
+                                    var badgeClass = status == "In Progress" || status == "Active" 
+                                        ? "badge-status-active" 
+                                        : (status == "Removed" ? "badge-status-removed" : "badge-status-expired");
+                                }
+                                <span class="badge @badgeClass">@status</span>
                             </td>
                             <td class="action-cell">
                                 <div class="action-buttons-wrapper">
@@ -116,7 +121,7 @@
                 else
                 {
                     <tr class="empty-row">
-                        <td colspan="6" class="empty-message">
+                        <td colspan="7" class="empty-message">
                             No modules found. Click "Create Module" to add one.
                         </td>
                     </tr>

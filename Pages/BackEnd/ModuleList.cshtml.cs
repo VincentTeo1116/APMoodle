@@ -14,18 +14,24 @@ namespace APMoodle.Pages.BackEnd
             _moduleService = moduleService;
         }
 
-        public List<Module> Modules { get; set; } = new();
+        public List<ModuleViewModel> Modules { get; set; } = new();
         public int TotalCount { get; set; }
         public int ActiveCount { get; set; }
         public List<string> UniqueLecturers { get; set; } = new();
 
         public async Task OnGetAsync()
         {
-            Modules = await _moduleService.GetAllModulesAsync();
-            TotalCount = Modules.Count;
-            ActiveCount = Modules.Count(m => m.Status == "Active");
+            var modules = await _moduleService.GetAllModulesAsync();
+            TotalCount = modules.Count;
+            ActiveCount = modules.Count(m => m.Status == "Active");
 
-            UniqueLecturers = Modules
+            Modules = modules.Select(m => new ModuleViewModel
+            {
+                Module = m,
+                DisplayStatus = GetDisplayStatus(m)
+            }).ToList();
+
+            UniqueLecturers = modules
                 .Where(m => m.Lecturer != null)
                 .Select(m => m.Lecturer?.Name ?? "Unknown")
                 .Distinct()
@@ -38,6 +44,7 @@ namespace APMoodle.Pages.BackEnd
         {
             var module = await _moduleService.GetModuleByIdAsync(id);
             if (module == null) return NotFound();
+            var displayStatus = GetDisplayStatus(module);
 
             return new JsonResult(new
             {
@@ -47,10 +54,28 @@ namespace APMoodle.Pages.BackEnd
                 description = module.Description ?? "No description",
                 lecturer = module.Lecturer?.Name ?? "Unknown",
                 status = module.Status,
+                displayStatus = displayStatus, 
                 invitationCode = module.InvitationCode ?? "N/A",
                 startDate = module.StartDate.ToString("MMM dd, yyyy"),
                 endDate = module.EndDate.ToString("MMM dd, yyyy")
             });
+        }
+
+        private string GetDisplayStatus(Module module)
+        {
+            if (module.Status != "Active")
+                return module.Status;
+
+            var today = DateTime.UtcNow.Date;
+            var endDate = module.EndDate.ToUniversalTime().Date; // ensure UTC
+
+            return endDate >= today ? "In Progress" : "Expired";
+        }
+
+        public class ModuleViewModel
+        {
+            public Module Module { get; set; } = null!;
+            public string DisplayStatus { get; set; } = string.Empty;
         }
 
         // Delete 

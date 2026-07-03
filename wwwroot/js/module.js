@@ -1,5 +1,3 @@
-// module.js - Search and Filter functionality
-
 function regenerateCode(moduleId) {
     if (!confirm('Generate a new invitation code? The previous code will be invalidated.')) {
         return;
@@ -52,102 +50,77 @@ function regenerateCode(moduleId) {
 
 // Search and Filter functionality
 function filterModules() {
-    console.log('filterModules called'); // Debug log
-    
     const searchInput = document.getElementById('searchModule');
     const filterSelect = document.getElementById('filterModule');
     
-    // If elements don't exist (student view), exit
-    if (!searchInput || !filterSelect) {
-        console.log('Search/filter elements not found (student view)');
-        return;
-    }
+    // If elements don't exist (e.g., guest view), exit
+    if (!searchInput || !filterSelect) return;
     
     const searchTerm = searchInput.value.toLowerCase().trim();
     const filterValue = filterSelect.value;
-    
-    console.log('Search term:', searchTerm, 'Filter:', filterValue); // Debug log
     
     const modules = document.querySelectorAll('.module-card');
     let visibleCount = 0;
     
     modules.forEach(module => {
-        const title = module.querySelector('.module-title')?.textContent.toLowerCase() || '';
-        const code = module.querySelector('.module-code')?.textContent.toLowerCase() || '';
-        const description = module.querySelector('.module-description')?.textContent.toLowerCase() || '';
+        const title = module.dataset.title?.toLowerCase() || '';
+        const code = module.dataset.code?.toLowerCase() || '';
+        const description = module.dataset.description?.toLowerCase() || '';
+        const status = module.dataset.status || '';
         
-        // Check if module matches search term
-        const matchesSearch = searchTerm === '' || 
-                              title.includes(searchTerm) || 
-                              code.includes(searchTerm) || 
+        // Check search match
+        const matchesSearch = searchTerm === '' ||
+                              title.includes(searchTerm) ||
+                              code.includes(searchTerm) ||
                               description.includes(searchTerm);
         
-        // TODO: Add filter logic for active/completed modules when you have status data
-        // For now, filter value only affects "all" vs others
+        // Check filter match
         let matchesFilter = true;
         if (filterValue === 'active') {
-            // Add logic to check if module is active
-            matchesFilter = true; // Placeholder
+            matchesFilter = status === 'Active';
         } else if (filterValue === 'completed') {
-            // Add logic to check if module is completed
-            matchesFilter = true; // Placeholder
+            matchesFilter = status === 'Completed';
         }
+        // 'all' means matchesFilter stays true
         
         if (matchesSearch && matchesFilter) {
-            module.classList.remove('hidden');
+            module.style.display = '';
             visibleCount++;
         } else {
-            module.classList.add('hidden');
+            module.style.display = 'none';
         }
     });
     
-    console.log('Visible modules:', visibleCount); // Debug log
-    
-    // Handle empty results
-    const modulesContainer = document.querySelector('.PageComponent');
-    const originalEmptyState = modulesContainer?.querySelector('.empty-state:not(.no-results-empty)');
-    let noResultsMsg = modulesContainer?.querySelector('.no-results-empty');
-    
-    if (visibleCount === 0 && modulesContainer) {
-        // Check if there's already a "no results" message
-        if (!noResultsMsg) {
-            const emptyDiv = document.createElement('div');
-            emptyDiv.className = 'empty-state no-results-empty';
-            emptyDiv.innerHTML = `
+    // Handle empty results (show no-results message)
+    const container = document.querySelector('.PageComponent');
+    let noResults = container?.querySelector('.no-results-empty');
+    if (visibleCount === 0 && container) {
+        if (!noResults) {
+            const div = document.createElement('div');
+            div.className = 'empty-state no-results-empty';
+            div.innerHTML = `
                 <span><i class="bi bi-search"></i></span>
                 <h3>No matching modules found</h3>
                 <p>Try adjusting your search or filter criteria</p>
             `;
-            modulesContainer.appendChild(emptyDiv);
+            container.appendChild(div);
         }
-        // Hide original empty state if it exists and is visible
-        if (originalEmptyState) {
-            originalEmptyState.style.display = 'none';
-        }
+        // Hide original empty state if it exists (it's the global one when no modules at all)
+        const originalEmpty = container.querySelector('.empty-state:not(.no-results-empty)');
+        if (originalEmpty) originalEmpty.style.display = 'none';
     } else {
-        // Remove no-results message if it exists
-        if (noResultsMsg) {
-            noResultsMsg.remove();
-        }
-        // Show original empty state if it exists and no modules
-        if (originalEmptyState && visibleCount === 0) {
-            originalEmptyState.style.display = '';
-        } else if (originalEmptyState) {
-            originalEmptyState.style.display = 'none';
-        }
+        if (noResults) noResults.remove();
+
     }
 }
 
 // Initialize event listeners - Run when DOM is ready
 (function init() {
-    // Wait for DOM to be fully loaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded - initializing module page');
             setupEventListeners();
         });
     } else {
-        console.log('DOM already loaded - initializing module page');
         setupEventListeners();
     }
 })();
@@ -157,21 +130,10 @@ function setupEventListeners() {
     const filterSelect = document.getElementById('filterModule');
     
     if (searchInput) {
-        console.log('Search input found, attaching event listener');
-        searchInput.addEventListener('input', function() {
-            console.log('Search input changed:', this.value);
-            filterModules();
-        });
-    } else {
-        console.log('Search input not found (student view)');
+        searchInput.addEventListener('input', filterModules);
     }
-    
     if (filterSelect) {
-        console.log('Filter select found, attaching event listener');
-        filterSelect.addEventListener('change', function() {
-            console.log('Filter changed:', this.value);
-            filterModules();
-        });
+        filterSelect.addEventListener('change', filterModules);
     }
     
     // Initial filter run

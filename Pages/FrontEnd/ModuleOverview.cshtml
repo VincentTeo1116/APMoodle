@@ -101,7 +101,7 @@
         </style>
     }
 
-    @if (userRole == "student")
+        @if (userRole == "student")
     {
         <div class="student-actions">
             <a href="/FrontEnd/JoinModule" class="btn-create">+ Join Module</a>
@@ -111,15 +111,22 @@
     <div class="PageComponent">
         @if (Model.Modules != null && Model.Modules.Any())
         {
-            foreach (var module in Model.Modules)
+            foreach (var item in Model.Modules)
             {
-                <div class="module-card">
+                var module = item.Module;
+                var status = item.DisplayStatus;
+                var statusClass = status == "Active" ? "module-status-active" :
+                                  (status == "Completed" ? "module-status-completed" : "module-status-removed");
+                <div class="module-card" data-status="@status" data-title="@module.Name" data-code="@module.ModuleCode" data-description="@(module.Description ?? "")">
                     <div class="module-cover">
                         <span><i class="bi bi-book-half" style="color: white;"></i></span>
                     </div>
                     <div class="module-content">
                         <div class="module-code">@module.ModuleCode</div>
-                        <h3 class="module-title">@module.Name</h3>
+                        <h3 class="module-title">
+                            @module.Name
+                            <span class="module-status-badge @statusClass">@status</span>
+                        </h3>
                         <p class="module-description">@(module.Description ?? "No description available")</p>
                     </div>
                     <div class="module-footer">
@@ -136,7 +143,7 @@
                 <h3>No Modules Found</h3>
                 @if (userRole == "lecturer")
                 {
-                    <p>You haven't invited to any modules yet. Please contact the admin to get help.</p>
+                    <p>You haven't been assigned to any modules yet. Please contact the admin.</p>
                 }
                 else if (userRole == "student")
                 {

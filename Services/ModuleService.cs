@@ -49,6 +49,7 @@ namespace APMoodle.Services
         public async Task<List<Module>> GetAllModulesAsync()
         {
             return await _context.Modules
+                // .Where(m => m.Status == "Active")
                 .Include(m => m.Lecturer)
                 .OrderBy(m => m.ModuleCode)
                 .ToListAsync();

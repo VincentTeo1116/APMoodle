@@ -75,7 +75,7 @@ function filterTable() {
     if (visibleCount === 0 && !empty && rows.length > 0) {
         const emptyRow = document.createElement('tr');
         emptyRow.className = 'empty-row';
-        emptyRow.innerHTML = '<td colspan="6" class="empty-message">No matching modules found.</td>';
+        emptyRow.innerHTML = '<td colspan="7" class="empty-message">No matching modules found.</td>';
         tableBody.appendChild(emptyRow);
     } else if (visibleCount > 0 && empty && empty.classList.contains('empty-row')) {
         empty.remove();
@@ -114,9 +114,20 @@ async function handleViewClick(e) {
         if (!response.ok) throw new Error('Failed');
         const data = await response.json();
         modalTitle.textContent = 'Module Details';
-        const statusBadge = data.status === 'Active' 
-            ? '<span class="badge badge-status-published">Active</span>' 
-            : '<span class="badge badge-status-archived">Removed</span>';
+
+        // Compute badge class based on displayStatus (or fallback to status)
+        const status = data.displayStatus || data.status;
+        let badgeClass = 'badge-status-active';
+        if (status === 'In Progress' || status === 'Active') {
+            badgeClass = 'badge-status-active';
+        } else if (status === 'Removed') {
+            badgeClass = 'badge-status-removed';
+        } else if (status === 'Expired') {
+            badgeClass = 'badge-status-expired';
+        }
+
+        const statusBadge = `<span class="badge ${badgeClass}">${escapeHtml(status)}</span>`;
+
         modalContent.innerHTML = `
             <div class="detail-header">
                 <h2 class="detail-title">${escapeHtml(data.name)}</h2>
@@ -124,7 +135,7 @@ async function handleViewClick(e) {
                     <span><i class="bi bi-code"></i> Code: ${escapeHtml(data.code)}</span>
                     <span><i class="bi bi-person-circle"></i> Lecturer: ${escapeHtml(data.lecturer)}</span>
                 </div>
-                <div style="margin-top:8px;">Status: ${statusBadge}</div>
+                <div style="margin-top:8px;">Progress Status: ${statusBadge}</div>
                 <div style="margin-top:8px;">
                     <span><i class="bi bi-calendar-check"></i> Start: ${escapeHtml(data.startDate)}</span>
                     <span style="margin-left:16px;"><i class="bi bi-calendar-x"></i> End: ${escapeHtml(data.endDate)}</span>
@@ -220,7 +231,7 @@ async function confirmDelete() {
             if (remaining.length === 0) {
                 const emptyRow = document.createElement('tr');
                 emptyRow.className = 'empty-row';
-                emptyRow.innerHTML = `<td colspan="6" class="empty-message">No modules found. Click "Create Module" to add one.</td>`;
+                emptyRow.innerHTML = `<td colspan="7" class="empty-message">No modules found. Click "Create Module" to add one.</td>`;
                 tableBody.appendChild(emptyRow);
             }
         } else {

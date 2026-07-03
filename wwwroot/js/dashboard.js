@@ -226,7 +226,7 @@ function generateLegend(labels, values, colors, total) {
         legendHtml += `
             <div class="legend-item">
                 <span class="legend-color" style="background-color: ${colors[index % colors.length]}"></span>
-                <span class="legend-label">${escapeHtml(label)}</span>
+                <span class="legend-label">${escapeHtml(label)}: </span>
                 <span class="legend-value">${values[index]} (${percentage}%)</span>
             </div>
         `;

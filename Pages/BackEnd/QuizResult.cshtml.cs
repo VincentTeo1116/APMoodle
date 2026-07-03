@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using APMoodle.Models;
 using APMoodle.Services.Interfaces;
+using System.Text.Json;
 
 namespace APMoodle.Pages.BackEnd
 {
@@ -20,6 +21,7 @@ namespace APMoodle.Pages.BackEnd
         public int CorrectCount { get; set; }
         public int TotalQuestions { get; set; }
         public int TotalTimeUsed { get; set; }
+        public bool IsGuest { get; set; }
 
         public class QuestionReview
         {
@@ -29,8 +31,15 @@ namespace APMoodle.Pages.BackEnd
             public int TimeUsed { get; set; }
         }
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int id, [FromQuery] int guest = 0)
         {
+            // ---- Guest mode ----
+            if (id == 0 && guest == 1)
+            {
+                return await LoadGuestResultAsync();
+            }
+
+            // ---- Authenticated user ----
             var userId = HttpContext.Session.GetString("UserID");
             var userRole = HttpContext.Session.GetString("UserRole");
 
@@ -74,6 +83,56 @@ namespace APMoodle.Pages.BackEnd
 
             CorrectCount = Reviews.Count(r => r.IsCorrect);
             TotalQuestions = Reviews.Count;
+            TotalTimeUsed = Reviews.Sum(r => r.TimeUsed);
+
+            return Page();
+        }
+
+        private async Task<IActionResult> LoadGuestResultAsync()
+        {
+            var json = TempData["GuestResultData"] as string;
+            if (string.IsNullOrEmpty(json))
+                return RedirectToPage("/FrontEnd/ViewAvailableQuiz");
+
+            var guestData = JsonSerializer.Deserialize<GuestQuizResult>(json);
+            if (guestData == null)
+                return RedirectToPage("/FrontEnd/ViewAvailableQuiz");
+
+            IsGuest = true;
+
+            // Build a fake session-like structure to reuse the existing view
+            CurrentSession = new Session
+            {
+                SessionID = 0,
+                Timestamp = DateTime.UtcNow,
+                TotalScore = guestData.Score,
+                Student = new Student { Name = "Guest", StudentCode = "N/A" }
+            };
+
+            CurrentQuiz = new Quiz
+            {
+                Title = guestData.QuizTitle,
+                Subject = guestData.QuizSubject
+            };
+
+            Reviews = guestData.Reviews.Select(r => new QuestionReview
+            {
+                Question = new Question
+                {
+                    QuestionText = r.QuestionText,
+                    Option1 = r.Option1,
+                    Option2 = r.Option2,
+                    Option3 = r.Option3,
+                    Option4 = r.Option4,
+                    CorrectAnswer = r.CorrectAnswer
+                },
+                GivenAnswer = r.GivenAnswer,
+                IsCorrect = r.IsCorrect,
+                TimeUsed = r.TimeUsed
+            }).ToList();
+
+            CorrectCount = guestData.CorrectCount;
+            TotalQuestions = guestData.TotalQuestions;
             TotalTimeUsed = Reviews.Sum(r => r.TimeUsed);
 
             return Page();

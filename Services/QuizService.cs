@@ -200,5 +200,14 @@ namespace APMoodle.Services
                 .Select(q => (int?)q.Material!.Module!.LecturerID)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<List<Quiz>> GetPublicQuizzesAsync()
+        {
+            return await _context.Quizzes
+                .Where(q => q.IsPublic == true && q.Status == "Active")
+                .Include(q => q.Questions)
+                .OrderBy(q => q.CreatedAt)
+                .ToListAsync();
+        }
     }
 }

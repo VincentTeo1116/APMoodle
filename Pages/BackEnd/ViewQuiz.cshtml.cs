@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using APMoodle.Models;
 using APMoodle.Services.Interfaces;
+using System.Text.Json;
 
 namespace APMoodle.Pages.BackEnd
 {
@@ -46,7 +47,7 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
-            // If user is not a student (i.e., guest), show the quiz without creating a session
+            // If user isnt a student, show the quiz without creating a session
             if (userRole != "student")
             {
                 IsGuest = true;
@@ -71,7 +72,7 @@ namespace APMoodle.Pages.BackEnd
                 .OrderBy(q => q.QuestionID)
                 .ToList();
 
-            // Collect submitted answers
+            // Collect submitted answers (using the service's AnswerSubmission type)
             var submissions = new List<AnswerSubmission>();
             foreach (var question in questions)
             {
@@ -85,10 +86,9 @@ namespace APMoodle.Pages.BackEnd
                 });
             }
 
-            // Handle guest submission – no session, just compute score and return
+            // ========== GUEST SUBMISSION ==========
             if (userRole != "student")
             {
-                // Compute score and correct answers
                 var correctCount = submissions.Count(s =>
                     !string.IsNullOrEmpty(s.Answer) &&
                     questions.First(q => q.QuestionID == s.QuestionID).CorrectAnswer == s.Answer
@@ -96,18 +96,41 @@ namespace APMoodle.Pages.BackEnd
                 var total = questions.Count;
                 var score = (int)Math.Round((double)correctCount / total * 100);
 
-                // Store in TempData to display on the same page
-                TempData["GuestResult"] = $"{correctCount} out of {total} correct ({score}%)";
-                TempData["GuestDetails"] = submissions; // optional
+                // Build guest result object
+                var guestResult = new GuestQuizResult
+                {
+                    QuizTitle = CurrentQuiz.Title,
+                    QuizSubject = CurrentQuiz.Subject,
+                    CorrectCount = correctCount,
+                    TotalQuestions = total,
+                    Score = score,
+                    Reviews = questions.Select(q =>
+                    {
+                        var sub = submissions.FirstOrDefault(s => s.QuestionID == q.QuestionID);
+                        var given = sub?.Answer ?? "-";
+                        var isCorrect = !string.IsNullOrEmpty(given) && given == q.CorrectAnswer;
+                        return new GuestQuestionReview
+                        {
+                            QuestionText = q.QuestionText,
+                            Option1 = q.Option1,
+                            Option2 = q.Option2,
+                            Option3 = q.Option3,
+                            Option4 = q.Option4,
+                            CorrectAnswer = q.CorrectAnswer,
+                            GivenAnswer = given,
+                            IsCorrect = isCorrect,
+                            TimeUsed = sub?.TimeUsed ?? 0
+                        };
+                    }).ToList()
+                };
 
-                // Reload questions for display
-                Questions = questions;
-                IsGuest = true;
-                Message = $"You scored {correctCount}/{total} ({score}%).";
-                return Page();
+                // Serialize and store in TempData
+                TempData["GuestResultData"] = JsonSerializer.Serialize(guestResult);
+
+                return RedirectToPage("/FrontEnd/QuizResult", new { id = 0, guest = 1 });
             }
 
-            // Student flow: existing logic
+            // ========== STUDENT SUBMISSION ==========
             if (!int.TryParse(Request.Form["SessionId"], out var sessionId) || sessionId <= 0)
             {
                 Message = "Quiz session is invalid. Please reload the quiz and try again.";
@@ -131,6 +154,7 @@ namespace APMoodle.Pages.BackEnd
 
             return RedirectToPage("/FrontEnd/QuizResult", new { id = sessionId, celebrate = 1 });
         }
+
         private async Task ReloadQuestionsForRender(int quizId)
         {
             CurrentQuiz = await _quizService.GetQuizByIdAsync(quizId);

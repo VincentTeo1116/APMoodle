@@ -44,9 +44,6 @@ namespace APMoodle.Pages.BackEnd
             var module = await _moduleService.GetModuleByIdAsync(id);
             if (module == null) return NotFound();
 
-            StartDate = DateTime.SpecifyKind(StartDate, DateTimeKind.Utc);
-            EndDate = DateTime.SpecifyKind(EndDate, DateTimeKind.Utc);
-
             ModuleCode = module.ModuleCode;
             Name = module.Name;
             Description = module.Description;
@@ -86,8 +83,8 @@ namespace APMoodle.Pages.BackEnd
             module.Name = Name.Trim();
             module.Description = Description?.Trim();
             module.LecturerID = LecturerID;
-            module.StartDate = StartDate;
-            module.EndDate = EndDate;
+            module.StartDate = DateTime.SpecifyKind(StartDate, DateTimeKind.Utc);
+            module.EndDate = DateTime.SpecifyKind(EndDate, DateTimeKind.Utc);
 
             var success = await _moduleService.UpdateModuleAsync(module);
             if (success)

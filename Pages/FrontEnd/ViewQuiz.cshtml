@@ -1,7 +1,6 @@
 @page "{id:int}"
 @model APMoodle.Pages.BackEnd.ViewQuizModel
 @{
-    Layout = "~/Pages/Shared/_Layout.cshtml";
     ViewData["Title"] = Model.CurrentQuiz?.Title ?? "Attempt Quiz";
 
     var theme = Model.CurrentQuiz?.Theme?.Trim() ?? string.Empty;

@@ -186,31 +186,6 @@
             transform: translateY(-1px);
         }
 
-        .password-input-wrapper {
-            position: relative;
-        }
-
-        .password-input-wrapper input {
-            padding-right: 45px;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #94a3b8;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 4px;
-        }
-
-        .toggle-password:hover {
-            color: #475569;
-        }
-
         .user-type-selector {
             display: flex;
             gap: 12px;
@@ -717,7 +692,7 @@
             <div class="form-group" id="phoneGroup">
                 <label for="PhoneNumber">Phone Number <span class="required">*</span></label>
                 <input type="tel" id="PhoneNumber" asp-for="PhoneNumber" placeholder="e.g., 0123456789" />
-                <div class="error-message" id="phoneError">Please enter a valid phone number (10 digits, starting with 0).</div>
+                <div class="error-message" id="phoneError">Please enter a valid phone number (10 - 11 digits, starting with 0).</div>
                 <div class="validation-success" id="phoneSuccess"><i class="bi bi-check-circle"></i> Valid</div>
             </div>
             <div class="form-group" id="genderGroup">
@@ -748,33 +723,6 @@
             </div>
         </div>
 
-        <!-- Password Section -->
-        <div class="form-row">
-            <div class="form-group" id="passwordGroup">
-                <label for="Password">Password <span class="required">*</span></label>
-                <div class="password-input-wrapper">
-                    <input type="password" id="Password" asp-for="Password" placeholder="Enter password" />
-                    <button type="button" class="toggle-password" onclick="togglePassword()">
-                        <i class="bi bi-eye" id="passwordToggleIcon"></i>
-                    </button>
-                </div>
-                <div class="error-message" id="passwordError">Password must be at least 6 characters long.</div>
-                <div class="validation-success" id="passwordSuccess"><i class="bi bi-check-circle"></i> Valid</div>
-                <small class="help-text">Password must be at least 6 characters long.</small>
-            </div>
-            <div class="form-group" id="confirmPasswordGroup">
-                <label for="ConfirmPassword">Confirm Password <span class="required">*</span></label>
-                <div class="password-input-wrapper">
-                    <input type="password" id="ConfirmPassword" asp-for="ConfirmPassword" placeholder="Confirm password" />
-                    <button type="button" class="toggle-password" onclick="toggleConfirmPassword()">
-                        <i class="bi bi-eye" id="confirmPasswordToggleIcon"></i>
-                    </button>
-                </div>
-                <div class="error-message" id="confirmPasswordError">Passwords do not match.</div>
-                <div class="validation-success" id="confirmPasswordSuccess"><i class="bi bi-check-circle"></i> Valid</div>
-            </div>
-        </div>
-
         <div class="form-actions">
             <button type="button" class="btn-cancel" id="cancelBtn">
                 <i class="bi bi-x-circle"></i> Cancel
@@ -787,17 +735,33 @@
 </form>
 
 <!-- Success Modal -->
-@if (TempData["ShowSuccessModal"] != null && (bool)TempData["ShowSuccessModal"])
+@if (Model.ShowSuccessModal)
 {
-    <div id="successModal" class="modal-overlay-full show">
+    <div id="successModal" class="modal-overlay-full show" onclick="if(event.target===this)this.classList.remove('show')">
         <div class="modal-container">
             <div class="modal-icon success-icon">
                 <i class="bi bi-check-circle-fill"></i>
             </div>
             <h3 class="modal-title">Success!</h3>
             <p class="modal-message">@TempData["SuccessMessage"]</p>
+            
+            @if (!string.IsNullOrEmpty(TempData["GeneratedPassword"]?.ToString()))
+            {
+                <div style="margin: 16px 0; padding: 14px; background: #fef9e7; border-radius: 10px; border-left: 4px solid #f59e0b; text-align: left;">
+                    <p style="margin: 0 0 6px; font-weight: 600; font-size: 14px; color: #1e293b;">
+                        <i class="bi bi-key-fill" style="color: #f59e0b;"></i> Generated Password
+                    </p>
+                    <p style="margin: 0; font-family: monospace; font-size: 18px; letter-spacing: 0.5px; background: white; padding: 10px 14px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        @TempData["GeneratedPassword"]
+                    </p>
+                    <p style="font-size: 12px; color: #64748b; margin: 6px 0 0;">
+                        <i class="bi bi-info-circle"></i> This password has been sent to the user's email.
+                    </p>
+                </div>
+            }
+
             <div class="modal-actions">
-                <button class="modal-btn modal-success" id="successModalBtn">
+                <button class="modal-btn modal-success" id="successModalBtn" onclick="window.location.href='/FrontEnd/UserList'">
                     <i class="bi bi-check-circle"></i> Continue
                 </button>
             </div>
@@ -808,7 +772,7 @@
 <!-- Error Modal -->
 @if (TempData["ShowErrorModal"] != null && (bool)TempData["ShowErrorModal"])
 {
-    <div id="errorModal" class="modal-overlay-full show">
+    <div id="errorModal" class="modal-overlay-full show" onclick="if(event.target===this)this.classList.remove('show')">
         <div class="modal-container">
             <div class="modal-icon error-icon">
                 <i class="bi bi-exclamation-triangle-fill"></i>
@@ -816,7 +780,7 @@
             <h3 class="modal-title">Error!</h3>
             <p class="modal-message">@TempData["ErrorMessage"]</p>
             <div class="modal-actions">
-                <button class="modal-btn modal-danger" id="errorModalBtn">
+                <button class="modal-btn modal-danger" id="errorModalBtn" onclick="document.getElementById('errorModal').classList.remove('show')">
                     <i class="bi bi-check-circle"></i> OK
                 </button>
             </div>
@@ -846,8 +810,6 @@
         const genderSelect = document.getElementById('Gender');
         const dobInput = document.getElementById('DOB');
         const departmentInput = document.getElementById('Department');
-        const passwordInput = document.getElementById('Password');
-        const confirmPasswordInput = document.getElementById('ConfirmPassword');
 
         // ============ USER TYPE SELECTION ============
 
@@ -952,7 +914,7 @@
             const error = document.getElementById('phoneError');
             const success = document.getElementById('phoneSuccess');
             const value = phoneInput.value.trim();
-            const phonePattern = /^0\d{9}$/;
+            const phonePattern = /^0\d{9,10}$/;
             
             if (!phonePattern.test(value)) {
                 group.classList.add('has-error');
@@ -1042,45 +1004,6 @@
             }
         }
 
-        function validatePassword() {
-            const group = document.getElementById('passwordGroup');
-            const error = document.getElementById('passwordError');
-            const success = document.getElementById('passwordSuccess');
-            const value = passwordInput.value;
-            
-            if (value.length < 6) {
-                group.classList.add('has-error');
-                error.classList.add('show');
-                success.classList.remove('show');
-                return false;
-            } else {
-                group.classList.remove('has-error');
-                error.classList.remove('show');
-                success.classList.add('show');
-                return true;
-            }
-        }
-
-        function validateConfirmPassword() {
-            const group = document.getElementById('confirmPasswordGroup');
-            const error = document.getElementById('confirmPasswordError');
-            const success = document.getElementById('confirmPasswordSuccess');
-            const password = passwordInput.value;
-            const confirm = confirmPasswordInput.value;
-            
-            if (password !== confirm || confirm === '') {
-                group.classList.add('has-error');
-                error.classList.add('show');
-                success.classList.remove('show');
-                return false;
-            } else {
-                group.classList.remove('has-error');
-                error.classList.remove('show');
-                success.classList.add('show');
-                return true;
-            }
-        }
-
         // ============ ATTACH VALIDATION EVENTS ============
 
         nameInput.addEventListener('input', validateName);
@@ -1102,38 +1025,38 @@
             departmentInput.addEventListener('blur', validateDepartment);
         }
 
-        passwordInput.addEventListener('input', function() {
-            validatePassword();
-            if (confirmPasswordInput.value) validateConfirmPassword();
-        });
-
-        confirmPasswordInput.addEventListener('input', validateConfirmPassword);
-
         // ============ FORM VALIDATION ON SUBMIT ============
 
         form.addEventListener('submit', function(e) {
-            // Run all validations
+            // Get current user type from hidden field
+            const userType = userTypeHidden.value;
+
+            // Run validations
             const isUserTypeValid = validateUserType();
             const isNameValid = validateName();
             const isEmailValid = validateEmail();
             const isPhoneValid = validatePhone();
             const isGenderValid = validateGender();
             const isDOBValid = validateDOB();
-            const isDepartmentValid = validateDepartment();
-            const isPasswordValid = validatePassword();
-            const isConfirmPasswordValid = validateConfirmPassword();
+            let isDepartmentValid = true;
 
-            // Collect errors
+            if (userType === 'student') {
+                document.getElementById('departmentGroup').classList.remove('has-error');
+                document.getElementById('departmentError').classList.remove('show');
+                isDepartmentValid = true;
+            } else {
+                isDepartmentValid = validateDepartment();
+            }
+
+            // Collect errors (no password validation)
             const errors = [];
             if (!isUserTypeValid) errors.push('Please select a user type (Student or Lecturer).');
             if (!isNameValid) errors.push('Please enter a valid name (at least 2 characters).');
             if (!isEmailValid) errors.push('Please enter a valid email address.');
-            if (!isPhoneValid) errors.push('Please enter a valid phone number (10 digits, starting with 0).');
+            if (!isPhoneValid) errors.push('Please enter a valid phone number (10 - 11 digits, starting with 0).');
             if (!isGenderValid) errors.push('Please select a gender.');
             if (!isDOBValid) errors.push('Please select a valid date of birth (must be 5-120 years old).');
             if (!isDepartmentValid) errors.push('Please enter a department.');
-            if (!isPasswordValid) errors.push('Password must be at least 6 characters long.');
-            if (!isConfirmPasswordValid) errors.push('Passwords do not match.');
 
             if (errors.length > 0) {
                 e.preventDefault();
@@ -1169,32 +1092,6 @@
                 document.getElementById('validationSummary').classList.remove('show');
             });
         });
-
-        // ============ PASSWORD TOGGLE ============
-
-        window.togglePassword = function() {
-            const input = document.getElementById('Password');
-            const icon = document.getElementById('passwordToggleIcon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.className = 'bi bi-eye-slash';
-            } else {
-                input.type = 'password';
-                icon.className = 'bi bi-eye';
-            }
-        };
-
-        window.toggleConfirmPassword = function() {
-            const input = document.getElementById('ConfirmPassword');
-            const icon = document.getElementById('confirmPasswordToggleIcon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.className = 'bi bi-eye-slash';
-            } else {
-                input.type = 'password';
-                icon.className = 'bi bi-eye';
-            }
-        };
 
         // ============ SUCCESS/ERROR MODALS ============
 

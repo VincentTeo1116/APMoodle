@@ -23,5 +23,7 @@ namespace APMoodle.Services.Interfaces
         // Ownership lookup for authorization in lecturer pages. Returns the LecturerID
         // who owns the module-of-material-of-quiz, or null if the quiz / chain doesn't exist.
         Task<int?> GetLecturerIdForQuizAsync(int quizId);
+
+        Task<List<Quiz>> GetPublicQuizzesAsync();
     }
 }

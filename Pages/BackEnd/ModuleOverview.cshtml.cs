@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using APMoodle.Services.Interfaces;
 using APMoodle.Models;
-using APMoodle.Pages.BackEnd;
 
 namespace APMoodle.Pages.BackEnd
 {
@@ -15,24 +14,48 @@ namespace APMoodle.Pages.BackEnd
             _moduleService = moduleService;
         }
 
-        public List<Module> Modules { get; set; } = new();
+        public List<ModuleOverviewItem> Modules { get; set; } = new();
+        public int TotalCount { get; set; }
+        public int ActiveCount { get; set; }
+        public int CompletedCount { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            // Get current logged-in user from session
             var userId = HttpContext.Session.GetString("UserID");
             var userRole = HttpContext.Session.GetString("UserRole");
 
-            // If not logged in, redirect to login page
             if (string.IsNullOrEmpty(userId))
-            {
                 return RedirectToPage("/FrontEnd/Login");
-            }
 
-            // Load modules using the service
-            Modules = await _moduleService.GetModulesByUserRoleAsync(userRole ?? "Guest", int.Parse(userId));
+            var modules = await _moduleService.GetModulesByUserRoleAsync(userRole ?? "Guest", int.Parse(userId));
+
+            Modules = modules.Select(m => new ModuleOverviewItem
+            {
+                Module = m,
+                DisplayStatus = GetDisplayStatus(m)
+            }).ToList();
+
+            TotalCount = Modules.Count;
+            ActiveCount = Modules.Count(m => m.DisplayStatus == "Active");
+            CompletedCount = Modules.Count(m => m.DisplayStatus == "Completed");
 
             return Page();
         }
+
+        private string GetDisplayStatus(Module module)
+        {
+            if (module.Status != "Active")
+                return module.Status;
+
+            var today = DateTime.UtcNow.Date;
+            var endDate = module.EndDate.ToUniversalTime().Date;
+            return endDate >= today ? "Active" : "Completed";
+        }
+    }
+
+    public class ModuleOverviewItem
+    {
+        public Module Module { get; set; } = null!;
+        public string DisplayStatus { get; set; } = string.Empty;
     }
 }

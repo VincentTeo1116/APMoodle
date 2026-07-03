@@ -17,9 +17,6 @@ namespace APMoodle.Pages.BackEnd
         }
 
         [BindProperty]
-        public string ModuleCode { get; set; } = string.Empty;
-
-        [BindProperty]
         public string Name { get; set; } = string.Empty;
 
         [BindProperty]
@@ -34,8 +31,23 @@ namespace APMoodle.Pages.BackEnd
         [BindProperty]
         public DateTime EndDate { get; set; }
 
+        [BindProperty]
+        public string SelectedCategory { get; set; } = string.Empty;
+
         public List<Lecturer> Lecturers { get; set; } = new();
         public bool ShowSuccessPopup { get; set; }
+
+        public List<CategoryOption> Categories { get; set; } = new()
+        {
+            new CategoryOption { Code = "CS", Name = "Computer Science" },
+            new CategoryOption { Code = "PY", Name = "Psychology" },
+            new CategoryOption { Code = "FN", Name = "Finance" },
+            new CategoryOption { Code = "EN", Name = "Engineering" },
+            new CategoryOption { Code = "MA", Name = "Mathematics" },
+            new CategoryOption { Code = "BI", Name = "Biology" },
+            new CategoryOption { Code = "PH", Name = "Physics" },
+            new CategoryOption { Code = "EC", Name = "Economics" },
+        };
 
         public async Task OnGetAsync()
         {
@@ -46,9 +58,9 @@ namespace APMoodle.Pages.BackEnd
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (string.IsNullOrWhiteSpace(ModuleCode) || string.IsNullOrWhiteSpace(Name) || LecturerID == 0)
+            if (string.IsNullOrWhiteSpace(Name) || LecturerID == 0 || string.IsNullOrWhiteSpace(SelectedCategory))
             {
-                TempData["ErrorMessage"] = "Please fill in all required fields.";
+                TempData["ErrorMessage"] = "Please fill in all required fields! ";
                 Lecturers = await _lecturerService.GetAllLecturersAsync();
                 return Page();
             }
@@ -59,12 +71,15 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
+            // Generate Module Code
+            var code = GenerateModuleCode(SelectedCategory);
+
             StartDate = DateTime.SpecifyKind(StartDate, DateTimeKind.Utc);
             EndDate = DateTime.SpecifyKind(EndDate, DateTimeKind.Utc);
 
             var module = new Module
             {
-                ModuleCode = ModuleCode.Trim(),
+                ModuleCode = code,
                 Name = Name.Trim(),
                 Description = Description?.Trim(),
                 LecturerID = LecturerID,
@@ -85,11 +100,26 @@ namespace APMoodle.Pages.BackEnd
             return Page();
         }
 
+        private string GenerateModuleCode(string category)
+        {
+            var random = new Random();
+            var digits = random.Next(000, 999).ToString(); 
+            var month = DateTime.UtcNow.ToString("MM");
+            var year = DateTime.UtcNow.ToString("yy"); 
+            return $"{category}{digits}_{month}_{year}";
+        }
+
         private string GenerateInvitationCode()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var rand = new Random();
             return new string(Enumerable.Repeat(chars, 8).Select(s => s[rand.Next(s.Length)]).ToArray());
         }
+    }
+
+    public class CategoryOption
+    {
+        public string Code { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

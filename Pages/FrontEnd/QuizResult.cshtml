@@ -55,7 +55,7 @@
                             <canvas class="qr-confetti" id="qrConfetti"></canvas>
                             <div class="qr-congrats-card">
                                 <div class="qr-congrats-emoji">🎉</div>
-                                <div class="qr-congrats-icon"><i class="fas @bandIcon"></i></div>
+                                @* <div class="qr-congrats-icon"><i class="fas @bandIcon"></i></div> *@
                                 <h2>Congratulations!</h2>
                                 <p>You completed <strong>@Model.CurrentQuiz.Title</strong></p>
                                 <div class="qr-congrats-score">@score<small>%</small></div>
@@ -81,7 +81,13 @@
                     </div>
 
                     <div class="qr-hero-info">
-                        @if (userRole == "student")
+                        @if (Model.IsGuest)
+                        {
+                            <div class="qr-hero-pill" style="background: #e0e7ff; color: #4f46e5;">
+                                <i class="fas fa-user"></i> Guest Mode
+                            </div>
+                        }
+                        else if (userRole == "student")
                         {
                             <div class="qr-hero-pill"><i class="fas @bandIcon"></i> @bandLabel</div>
                         }
@@ -124,8 +130,26 @@
                             <div class="qr-stat">
                                 <div class="qr-stat-ico qr-ico-date"><i class="far fa-calendar-check"></i></div>
                                 <div>
-                                    <div class="qr-stat-val qr-stat-val-sm">@Model.CurrentSession.Timestamp.ToLocalTime().ToString("dd MMM yyyy")</div>
-                                    <div class="qr-stat-lbl">@Model.CurrentSession.Timestamp.ToLocalTime().ToString("hh:mm tt")</div>
+                                    <div class="qr-stat-val qr-stat-val-sm">
+                                        @if (Model.IsGuest)
+                                        {
+                                            @:Just now
+                                        }
+                                        else
+                                        {
+                                            @Model.CurrentSession.Timestamp.ToLocalTime().ToString("dd MMM yyyy")
+                                        }
+                                    </div>
+                                    <div class="qr-stat-lbl">
+                                        @if (Model.IsGuest)
+                                        {
+                                            @:Guest attempt
+                                        }
+                                        else
+                                        {
+                                            @Model.CurrentSession.Timestamp.ToLocalTime().ToString("hh:mm tt")
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -191,11 +215,9 @@
                     }
                 </div>
 
-                <!-- ===== Actions ===== -->
                 <div class="qr-actions">
-                    
                     @if (userRole == "student")
-                    {   
+                    {
                         <a class="qr-btn qr-btn-primary" href="/FrontEnd/ViewQuiz/@Model.CurrentQuiz.QuizID">
                             <i class="fas fa-rotate-right"></i> Retake Quiz
                         </a>
@@ -203,9 +225,14 @@
                             <i class="fas fa-clock-rotate-left"></i> Quiz History
                         </a>
                     }
-                    
-                    <a class="qr-btn qr-btn-ghost" href="/FrontEnd/ModuleOverview">
-                        <i class="fas fa-layer-group"></i> Back to Modules
+                    @if (Model.IsGuest)
+                    {
+                        <a class="qr-btn qr-btn-primary" href="/FrontEnd/ViewAvailableQuiz">
+                            <i class="fas fa-arrow-left"></i> Back to Public Quizzes
+                        </a>
+                    }
+                    <a class="qr-btn qr-btn-ghost" href="/FrontEnd/Login">
+                        <i class="bi bi-person-check"></i> Back to Login Page
                     </a>
                 </div>
             </div>

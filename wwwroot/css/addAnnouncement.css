@@ -1,57 +1,103 @@
-/* ========= PROGRESS BAR STYLES ========= */
+.announcement-page {
+    padding: 24px 28px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.announcement-header-section {
+    margin-bottom: 24px;
+}
+
+.announcement-header-section h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+}
+
+.announcement-header-section h1 i {
+    color: #4f46e5;
+    margin-right: 8px;
+}
+
+.announcement-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.alert-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.alert-error i {
+    font-size: 18px;
+}
+
 .progress-container {
-    margin-bottom: 32px;
+    margin-bottom: 28px;
 }
 
 .progress-steps {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .step {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .step-circle {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     background: #f1f5f9;
     border: 2px solid #e2e8f0;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 14px;
     color: #94a3b8;
     transition: all 0.3s ease;
 }
 
 .step.active .step-circle {
-    background: #3b82f6;
-    border-color: #3b82f6;
+    background: #4f46e5;
+    border-color: #4f46e5;
     color: white;
 }
 
 .step-label {
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     color: #94a3b8;
 }
 
 .step.active .step-label {
-    color: #3b82f6;
+    color: #4f46e5;
 }
 
 .step-line {
-    width: 80px;
+    width: 60px;
     height: 2px;
     background: #e2e8f0;
-    margin: 0 8px;
+    margin: 0 6px;
 }
 
 .progress-bar {
@@ -64,19 +110,19 @@
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    background: linear-gradient(90deg, #4f46e5, #6366f1);
     border-radius: 3px;
-    transition: width 0.3s ease;
+    transition: width 0.4s ease;
 }
 
-/* ========= FORM CARD STYLES ========= */
 .form-card {
     background: white;
-    border-radius: 20px;
+    border-radius: 16px;
     border: 1px solid #e9edf2;
-    padding: 32px;
-    margin: 0 auto;
+    padding: 28px 32px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 .step-title {
@@ -86,23 +132,23 @@
     font-size: 20px;
     font-weight: 600;
     color: #1e293b;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .step-title i {
-    color: #3b82f6;
+    color: #4f46e5;
 }
 
 .step-description {
     color: #64748b;
     font-size: 14px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     padding-bottom: 16px;
     border-bottom: 1px solid #e9edf2;
 }
 
 .form-group {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .form-label {
@@ -112,38 +158,39 @@
     font-size: 14px;
     font-weight: 600;
     color: #1e293b;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .form-label i {
-    color: #3b82f6;
+    color: #4f46e5;
 }
 
 .required {
     color: #ef4444;
-    margin-left: 4px;
+    margin-left: 2px;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 14px;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 14px;
     color: #1e293b;
-    transition: all 0.2s ease;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
     font-family: inherit;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
 }
 
 textarea.form-control {
     resize: vertical;
-    min-height: 180px;
+    min-height: 120px;
 }
 
 .char-counter {
@@ -153,11 +200,10 @@ textarea.form-control {
     margin-top: 6px;
 }
 
-/* ========= REVIEW CARD STYLES ========= */
 .review-card {
     background: #f8fafc;
-    border-radius: 16px;
-    padding: 8px;
+    border-radius: 12px;
+    padding: 4px;
 }
 
 .review-section {
@@ -178,11 +224,12 @@ textarea.form-control {
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .review-label i {
     font-size: 14px;
+    color: #4f46e5;
 }
 
 .review-value {
@@ -195,30 +242,29 @@ textarea.form-control {
 .review-message {
     background: white;
     padding: 12px 16px;
-    border-radius: 10px;
+    border-radius: 8px;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
 
-/* ========= PUBLISH CARD STYLES ========= */
 .publish-card {
     text-align: center;
-    padding: 32px 24px;
+    padding: 24px 16px;
 }
 
 .publish-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, #eef2ff, #c7d2fe);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
 }
 
 .publish-icon i {
-    font-size: 40px;
+    font-size: 36px;
     color: #4f46e5;
 }
 
@@ -226,13 +272,13 @@ textarea.form-control {
     font-size: 20px;
     font-weight: 600;
     color: #1e293b;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .publish-card p {
     color: #64748b;
     font-size: 14px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .publish-details {
@@ -247,6 +293,7 @@ textarea.form-control {
     justify-content: space-between;
     padding: 8px 0;
     border-bottom: 1px solid #e2e8f0;
+    font-size: 13px;
 }
 
 .publish-detail:last-child {
@@ -254,64 +301,81 @@ textarea.form-control {
 }
 
 .publish-detail .detail-label {
-    font-size: 13px;
     color: #64748b;
 }
 
 .publish-detail .detail-value {
-    font-size: 13px;
     font-weight: 500;
     color: #1e293b;
 }
 
-/* ========= FORM ACTIONS ========= */
 .form-actions {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid #e9edf2;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
 }
 
 .step-actions {
     justify-content: space-between;
 }
 
-.btn-next, .btn-publish {
-    background: #3b82f6;
-    color: white;
-    border: none;
+.btn-cancel {
     padding: 10px 24px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
-    font-size: 14px;
     font-weight: 500;
+    color: #475569;
     cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s ease;
 }
 
-.btn-next:hover, .btn-publish:hover {
-    background: #2563eb;
+.btn-cancel:hover {
+    background: #e2e8f0;
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+}
+
+.btn-next {
+    padding: 10px 28px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-next:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
 .btn-back {
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #e2e8f0;
     padding: 10px 24px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
-    font-size: 14px;
     font-weight: 500;
+    color: #475569;
     cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s ease;
 }
 
 .btn-back:hover {
@@ -319,61 +383,39 @@ textarea.form-control {
     transform: translateY(-1px);
 }
 
-.btn-cancel {
-    background: #f1f5f9;
-    color: #ef4444;
-    border: 1px solid #e2e8f0;
-    padding: 10px 24px;
+.btn-publish {
+    padding: 10px 28px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
     border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
+    color: white;
     cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s ease;
-}
-
-.btn-cancel:hover {
-    background: #fee2e2;
-    transform: translateY(-1px);
-}
-
-.btn-publish {
-    background: #10b981;
 }
 
 .btn-publish:hover {
-    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-/* ========= ALERT MESSAGES ========= */
-.alert-error {
-    background: #fee2e2;
-    color: #991b1b;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    border-left: 4px solid #ef4444;
-}
-
-/* ========= SUCCESS POPUP =========
 #successPopup {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 999999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
 }
 
 #successPopup > div {
@@ -383,19 +425,21 @@ textarea.form-control {
     text-align: center;
     max-width: 380px;
     width: 90%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    animation: popupSlideIn 0.3s ease-out;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
 }
 
 #successPopup i.bi-check-circle-fill {
-    font-size: 80px;
+    font-size: 64px;
     color: #28a745;
+    display: block;
+    margin-bottom: 16px;
 }
 
 #successPopup h2 {
-    color: #1e293b;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
+    color: #1e293b;
     margin: 0 0 12px 0;
 }
 
@@ -403,7 +447,7 @@ textarea.form-control {
     color: #64748b;
     font-size: 15px;
     line-height: 1.5;
-    margin: 0 0 32px 0;
+    margin: 0 0 24px 0;
 }
 
 #popupContinueBtn {
@@ -421,59 +465,30 @@ textarea.form-control {
 
 #popupContinueBtn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
 }
 
-@keyframes popupSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-} */
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-/* ========= RESPONSIVE ========= */
+/* ---- Responsive ---- */
 @media (max-width: 640px) {
-    .form-card {
-        padding: 20px;
-    }
-    
-    .step-line {
-        width: 40px;
-    }
-    
-    .step-circle {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-    }
-    
-    .step-label {
-        font-size: 10px;
-    }
-    
+    .announcement-page { padding: 16px; }
+    .form-card { padding: 20px; }
+    .step-line { width: 30px; }
+    .step-circle { width: 30px; height: 30px; font-size: 12px; }
+    .step-label { font-size: 10px; }
     .form-actions {
         flex-direction: column;
+        align-items: stretch;
     }
-    
-    .btn-next, .btn-back, .btn-cancel, .btn-publish {
+    .form-actions button {
         justify-content: center;
         width: 100%;
     }
-    
-    .review-value {
-        padding-left: 0;
-    }
-    
-    .publish-icon {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .publish-icon i {
-        font-size: 28px;
-    }
+    .review-value { padding-left: 0; }
+    .publish-icon { width: 56px; height: 56px; }
+    .publish-icon i { font-size: 28px; }
 }

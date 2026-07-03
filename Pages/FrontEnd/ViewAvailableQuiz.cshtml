@@ -6,14 +6,67 @@
     var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
 }
 
-<html>
+<head>
     <title>@ViewData["Title"] - APMoodle</title>
-    <link rel="stylesheet" href="~/css/materialOverview.css" />
+    <link rel="stylesheet" href="~/css/publicQuiz.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-</html>
-<div id="horizontalNavbar">
-    <div class="PageTitle">
-        <h1>@ViewData["Title"]</h1>
-        <p class="path"></p>
+</head>
+
+<div class="public-quiz-page">
+    <div class="public-quiz-header">
+        <h1><i class="bi bi-journal-code"></i> @ViewData["Title"]</h1>
+        <p>Browse and take publicly available quizzes.</p>
+    </div>
+
+    <div class="public-quiz-stats">
+        <span class="stat-item">
+            <i class="bi bi-journal-richtext"></i>
+            <strong>@Model.Quizzes.Count</strong> quizzes available
+        </span>
+        <span class="stat-item">
+            <i class="bi bi-people"></i>
+            Open to everyone
+        </span>
+        <span class="stat-item">
+            <i class="bi bi-ban"></i>
+            No login is required
+        </span>
+    </div>
+
+    <div class="quiz-grid">
+        @if (Model.Quizzes != null && Model.Quizzes.Any())
+        {
+            @foreach (var quiz in Model.Quizzes)
+            {
+                var quizUrl = $"/FrontEnd/ViewQuiz/{quiz.QuizID}";
+                <div class="quiz-card">
+                    <div class="card-top">
+                        <div>
+                            <div class="card-icon"><i class="bi bi-journal-text"></i></div>
+                            <div class="card-title">
+                                <a href="@quizUrl">@quiz.Title</a>
+                            </div>
+                            <span class="card-subject">@(string.IsNullOrEmpty(quiz.Subject) ? "General" : quiz.Subject)</span>
+                        </div>
+                    </div>
+                    <div class="card-meta">
+                        <span><i class="bi bi-calendar3"></i> @quiz.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</span>
+                        <span><i class="bi bi-question-circle"></i> @(quiz.Questions?.Count ?? 0) questions</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="@quizUrl" class="btn-take">
+                            Take <i class="bi bi-arrow-right-short"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="quiz-empty">
+                <h3><i class="bi bi-slash-circle"></i> No public quizzes available</h3>
+                <p>New quizzes may be added by lecturers soon.</p>
+            </div>
+        }
     </div>
 </div>
