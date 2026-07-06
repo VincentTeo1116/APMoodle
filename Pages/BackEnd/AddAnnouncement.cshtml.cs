@@ -100,10 +100,13 @@ namespace APMoodle.Pages.BackEnd
                 return userId;
             }
 
-            var sessionUserId = HttpContext.Session.GetInt32("UserID");
-            if (sessionUserId.HasValue)
+            // Session stores "UserID" as a STRING (SetString in Login), so
+            // GetInt32 always returned null here and every announcement was
+            // wrongly attributed to admin #1. Parse the string value instead.
+            var sessionUserId = HttpContext.Session.GetString("UserID");
+            if (!string.IsNullOrEmpty(sessionUserId) && int.TryParse(sessionUserId, out int sid))
             {
-                return sessionUserId.Value;
+                return sid;
             }
 
             return 1; // Default fallback

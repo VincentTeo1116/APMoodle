@@ -34,7 +34,7 @@ namespace APMoodle.Pages.BackEnd
                 if (id <= 0)
                 {
                     TempData["ErrorMessage"] = "Invalid announcement ID.";
-                    return RedirectToPage("/FrontEnd/Announcements");
+                    return RedirectToPage("/FrontEnd/AnnouncementList");
                 }
 
                 var announcement = await _announcementService.GetAnnouncementByIdAsync(id);
@@ -42,13 +42,13 @@ namespace APMoodle.Pages.BackEnd
                 if (announcement == null)
                 {
                     TempData["ErrorMessage"] = "Announcement not found.";
-                    return RedirectToPage("/FrontEnd/Announcements");
+                    return RedirectToPage("/FrontEnd/AnnouncementList");
                 }
 
                 if (announcement.Status == "Removed")
                 {
                     TempData["ErrorMessage"] = "This announcement has been deleted.";
-                    return RedirectToPage("/FrontEnd/Announcements");
+                    return RedirectToPage("/FrontEnd/AnnouncementList");
                 }
 
                 Announcement = announcement;
@@ -91,7 +91,7 @@ namespace APMoodle.Pages.BackEnd
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Error loading announcement: {ex.Message}";
-                return RedirectToPage("/FrontEnd/Announcements");
+                return RedirectToPage("/FrontEnd/AnnouncementList");
             }
         }
 
@@ -125,7 +125,7 @@ namespace APMoodle.Pages.BackEnd
             catch (KeyNotFoundException)
             {
                 TempData["ErrorMessage"] = "Announcement not found.";
-                return RedirectToPage("/FrontEnd/Announcements");
+                return RedirectToPage("/FrontEnd/AnnouncementList");
             }
             catch (Exception ex)
             {

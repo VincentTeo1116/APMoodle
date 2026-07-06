@@ -9,8 +9,8 @@
 
 .chat-sidebar {
     width: 320px;
-    background: #f8f9fa;
-    border-right: 1px solid #e0e0e0;
+    background: #faf7f0;
+    border-right: 1px solid #ece7df;
     display: flex;
     flex-direction: column;
 }
@@ -18,7 +18,7 @@
 .chat-sidebar h3 {
     padding: 20px;
     margin: 0;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #ece7df;
 }
 
 .chat-list {
@@ -32,22 +32,22 @@
     padding: 15px;
     cursor: pointer;
     transition: background 0.3s;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #ece7df;
     position: relative;
 }
 
 .chat-item:hover {
-    background: #e9ecef;
+    background: #f4ecdd;
 }
 
 .chat-item.active {
-    background: linear-gradient(135deg, #BEE3DB, #e8f4f0);
+    background: linear-gradient(135deg, #f4ecdd, #faf7f0);
 }
 
 .chat-avatar {
     width: 45px;
     height: 45px;
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #b8935a, #8b7355);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -63,12 +63,12 @@
 
 .chat-name {
     font-weight: 600;
-    color: #013D42;
+    color: #1c1917;
 }
 
 .chat-last-message {
     font-size: 12px;
-    color: #888;
+    color: #78716c;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -92,20 +92,20 @@
 
 .chat-header {
     padding: 15px 20px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #ece7df;
     background: white;
 }
 
 .chat-with {
     font-weight: 600;
-    color: #013D42;
+    color: #1c1917;
 }
 
 .chat-messages {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background: #fafafa;
+    background: #fbfaf8;
 }
 
 .message {
@@ -128,14 +128,14 @@
 }
 
 .message-sent .message-bubble {
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #b8935a, #8b7355);
     color: white;
 }
 
 .message-received .message-bubble {
     background: white;
-    border: 1px solid #e0e0e0;
-    color: #333;
+    border: 1px solid #ece7df;
+    color: #44403c;
 }
 
 .message-time {
@@ -148,21 +148,21 @@
     display: flex;
     padding: 15px;
     gap: 10px;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid #ece7df;
     background: white;
 }
 
 .chat-input-area textarea {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ece7df;
     border-radius: 20px;
     resize: none;
     font-family: inherit;
 }
 
 .chat-input-area button {
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #b8935a, #8b7355);
     color: white;
     border: none;
     padding: 0 20px;
@@ -181,7 +181,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: #999;
+    color: #a8a29e;
 }
 
 .no-chat-selected span {
@@ -195,11 +195,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #ece7df;
 }
 
 .new-chat-btn {
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #b8935a, #8b7355);
     color: white;
     border: none;
     padding: 6px 12px;
@@ -212,13 +212,13 @@
 /* Search Bar */
 .chat-search {
     padding: 10px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #ece7df;
 }
 
 .chat-search input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid #ece7df;
     border-radius: 20px;
     font-size: 13px;
 }
@@ -226,7 +226,7 @@
 .no-chats {
     text-align: center;
     padding: 40px 20px;
-    color: #999;
+    color: #a8a29e;
 }
 
 .no-chats span {
@@ -236,7 +236,7 @@
 }
 
 .btn-start-chat {
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #b8935a, #8b7355);
     color: white;
     border: none;
     padding: 8px 16px;
@@ -271,7 +271,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #b8935a, #8b7355);
     color: white;
 }
 
@@ -287,7 +287,7 @@
 .search-users input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ece7df;
     border-radius: 25px;
     margin-bottom: 15px;
 }
@@ -302,18 +302,18 @@
     align-items: center;
     padding: 12px;
     cursor: pointer;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #ece7df;
     transition: background 0.3s;
 }
 
 .search-result-item:hover {
-    background: #f5f5f5;
+    background: #f4ecdd;
 }
 
 .search-avatar {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #b8935a, #8b7355);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -328,16 +328,16 @@
 
 .search-name {
     font-weight: 600;
-    color: #013D42;
+    color: #1c1917;
 }
 
 .search-code {
     font-size: 11px;
-    color: #888;
+    color: #78716c;
 }
 
 .search-hint, .no-results {
     text-align: center;
-    color: #999;
+    color: #a8a29e;
     padding: 20px;
 }

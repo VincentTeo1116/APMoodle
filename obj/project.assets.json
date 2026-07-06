@@ -2488,11 +2488,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle.csproj",
+      "projectUniqueName": "C:\\Users\\Vincent\\Desktop\\APMoodle-1\\APMoodle.csproj",
       "projectName": "APMoodle",
-      "projectPath": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\APMoodle.csproj",
+      "projectPath": "C:\\Users\\Vincent\\Desktop\\APMoodle-1\\APMoodle.csproj",
       "packagesPath": "C:\\Users\\Vincent\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Vincent\\Documents\\APU\\Degree\\Y2S2\\Web Application\\APMoodle\\obj\\",
+      "outputPath": "C:\\Users\\Vincent\\Desktop\\APMoodle-1\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

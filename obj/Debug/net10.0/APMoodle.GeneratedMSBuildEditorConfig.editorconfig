@@ -19,205 +19,209 @@ build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
 build_property.RootNamespace = APMoodle
 build_property.RootNamespace = APMoodle
-build_property.ProjectDir = C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle\
+build_property.ProjectDir = C:\Users\Vincent\Desktop\APMoodle-1\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Vincent\Documents\APU\Degree\Y2S2\Web Application\APMoodle
+build_property.MSBuildProjectDirectory = C:\Users\Vincent\Desktop\APMoodle-1
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/AddAnnouncement.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/AddAnnouncement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQWRkQW5ub3VuY2VtZW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/AddModule.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/AddModule.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQWRkTW9kdWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/AdminDashboard.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/AdminDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQWRtaW5EYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/AnnouncementList.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/AnnouncementList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQW5ub3VuY2VtZW50TGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Chat.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/Chat.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQ2hhdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/CreateMaterial.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/CreateMaterial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQ3JlYXRlTWF0ZXJpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/CreateNewQuiz.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/CreateNewQuiz.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcQ3JlYXRlTmV3UXVpei5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/EditAnnouncement.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/EditAnnouncement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRWRpdEFubm91bmNlbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/EditMaterial.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/EditMaterial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRWRpdE1hdGVyaWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/EditModule.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/EditModule.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRWRpdE1vZHVsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/EditQuiz.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/EditQuiz.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRWRpdFF1aXouY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Error.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ForgotPassword.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/ForgotPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcRm9yZ290UGFzc3dvcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/JoinModule.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/JoinModule.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcSm9pbk1vZHVsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/LecturerDashboard.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/Landing.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTGFuZGluZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/LecturerDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTGVjdHVyZXJEYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/LoaderPreview.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/LoaderPreview.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTG9hZGVyUHJldmlldy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Login.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Logout.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/Logout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTG9nb3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ManageQuiz.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/ManageQuiz.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTWFuYWdlUXVpei5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ModuleList.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/ModuleList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTW9kdWxlTGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ModuleOverview.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/ModuleOverview.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcTW9kdWxlT3ZlcnZpZXcuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Privacy.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Profile.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/Profile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcUHJvZmlsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/QuizHistory.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/QuizHistory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcUXVpekhpc3RvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/QuizResult.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/QuizResult.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcUXVpelJlc3VsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/Register.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcUmVnaXN0ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/StudentDashboard.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/StudentDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcU3R1ZGVudERhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/TeachingMaterial.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/TeachingMaterial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVGVhY2hpbmdNYXRlcmlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/TeachingMaterialOverview.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/TeachingMaterialOverview.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVGVhY2hpbmdNYXRlcmlhbE92ZXJ2aWV3LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/TestDB.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/TestDB.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVGVzdERCLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/TestPage.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/TestPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVGVzdFBhZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/UserActivate.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/UserActivate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVXNlckFjdGl2YXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/UserCreate.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/UserCreate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVXNlckNyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/UserDelete.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/UserDelete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVXNlckRlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/UserDetails.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/UserDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVXNlckRldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/UserEdit.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/UserEdit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVXNlckVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/UserList.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/UserList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVXNlckxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/UserReactivate.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/UserReactivate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVXNlclJlYWN0aXZhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/UserReject.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/UserReject.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVXNlclJlamVjdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ViewAvailableQuiz.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/ViewAnnouncements.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVmlld0Fubm91bmNlbWVudHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/ViewAvailableQuiz.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVmlld0F2YWlsYWJsZVF1aXouY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ViewQuiz.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/ViewQuiz.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVmlld1F1aXouY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/ViewQuizAttempts.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/ViewQuizAttempts.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcVmlld1F1aXpBdHRlbXB0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/_ViewImports.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/FrontEnd/_ViewStart.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/FrontEnd/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnJvbnRFbmRcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/IndexRedirect.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/IndexRedirect.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXhSZWRpcmVjdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Vincent/Documents/APU/Degree/Y2S2/Web Application/APMoodle/Pages/Shared/_Layout.cshtml]
+[C:/Users/Vincent/Desktop/APMoodle-1/Pages/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-1dxqbqp1re

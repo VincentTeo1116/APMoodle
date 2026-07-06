@@ -9,7 +9,7 @@
 .attempt-card {
     background: white;
     border-radius: 16px;
-    border: 1px solid #e9edf2;
+    border: 1px solid #ece7df;
     padding: 1rem 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     transition: all 0.2s ease;
@@ -18,7 +18,7 @@
 .attempt-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
-    border-color: #dee4ec;
+    border-color: #e3c987;
 }
 
 .attempt-header {
@@ -42,12 +42,12 @@
 
 .student-name {
     font-weight: 600;
-    color: #1e293b;
+    color: #1c1917;
 }
 
 .student-id {
     font-size: 0.85rem;
-    color: #64748b;
+    color: #78716c;
 }
 
 .score-badge {
@@ -76,7 +76,7 @@
 .attempt-body {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #ece7df;
 }
 
 .attempt-meta {
@@ -84,7 +84,7 @@
     gap: 1.5rem;
     flex-wrap: wrap;
     font-size: 0.85rem;
-    color: #64748b;
+    color: #78716c;
 }
 
 .attempt-meta i {
@@ -94,14 +94,14 @@
 .attempt-footer {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #ece7df;
     display: flex;
     justify-content: flex-end;
 }
 
 .btn-view-result {
-    background: #f1f5f9;
-    color: #475569;
+    background: #f4ecdd;
+    color: #44403c;
     padding: 0.3rem 0.8rem;
     border-radius: 8px;
     text-decoration: none;
@@ -111,8 +111,8 @@
 }
 
 .btn-view-result:hover {
-    background: #e2e8f0;
-    color: #1e293b;
+    background: #ece7df;
+    color: #1c1917;
 }
 
 /* ── Empty State ── */
@@ -121,22 +121,22 @@
     padding: 3rem 1rem;
     background: white;
     border-radius: 16px;
-    border: 1px solid #e9edf2;
+    border: 1px solid #ece7df;
 }
 
 .empty-state h3 {
-    color: #1e293b;
+    color: #1c1917;
     margin: 1rem 0 0.5rem;
 }
 
 .empty-state p {
-    color: #64748b;
+    color: #78716c;
     margin-bottom: 1.5rem;
 }
 
 .btn-secondary {
-    background: #e9edf2;
-    color: #1e293b;
+    background: #f4ecdd;
+    color: #1c1917;
     padding: 0.5rem 1.5rem;
     border-radius: 40px;
     text-decoration: none;
@@ -145,5 +145,5 @@
 }
 
 .btn-secondary:hover {
-    background: #d5dce6;
+    background: #ece7df;
 }

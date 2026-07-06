@@ -71,7 +71,7 @@ namespace APMoodle.Pages.BackEnd
                 {
                     TempData["ShowErrorModal"] = true;
                     TempData["ErrorMessage"] = "Invalid user ID or type.";
-                    return RedirectToPage("/UserList");
+                    return RedirectToPage("/FrontEnd/UserList");
                 }
 
                 UserId = id;
@@ -87,7 +87,7 @@ namespace APMoodle.Pages.BackEnd
                         {
                             TempData["ShowErrorModal"] = true;
                             TempData["ErrorMessage"] = "Student not found.";
-                            return RedirectToPage("/UserList");
+                            return RedirectToPage("/FrontEnd/UserList");
                         }
 
                         UserCode = student.StudentCode;
@@ -111,7 +111,7 @@ namespace APMoodle.Pages.BackEnd
                         {
                             TempData["ShowErrorModal"] = true;
                             TempData["ErrorMessage"] = "Lecturer not found.";
-                            return RedirectToPage("/UserList");
+                            return RedirectToPage("/FrontEnd/UserList");
                         }
 
                         UserCode = lecturer.LecturerCode;
@@ -135,7 +135,7 @@ namespace APMoodle.Pages.BackEnd
                         {
                             TempData["ShowErrorModal"] = true;
                             TempData["ErrorMessage"] = "Admin not found.";
-                            return RedirectToPage("/UserList");
+                            return RedirectToPage("/FrontEnd/UserList");
                         }
 
                         UserCode = admin.AdminCode;
@@ -154,7 +154,7 @@ namespace APMoodle.Pages.BackEnd
                     default:
                         TempData["ShowErrorModal"] = true;
                         TempData["ErrorMessage"] = "Invalid user type.";
-                        return RedirectToPage("/UserList");
+                        return RedirectToPage("/FrontEnd/UserList");
                 }
 
                 AvatarColor = GetAvatarColor(type);
@@ -166,7 +166,7 @@ namespace APMoodle.Pages.BackEnd
             {
                 TempData["ShowErrorModal"] = true;
                 TempData["ErrorMessage"] = $"Error loading user: {ex.Message}";
-                return RedirectToPage("/UserList");
+                return RedirectToPage("/FrontEnd/UserList");
             }
         }
 

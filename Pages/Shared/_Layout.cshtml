@@ -21,7 +21,9 @@
     <title>@ViewData["Title"] - APMoodle</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>
@@ -83,8 +85,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-login">
-                                    <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout"
-                                       style="background: linear-gradient(135deg, #8b7355, #6b5d4f);">Logout</a>
+                                    <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout">Logout</a>
                                 </li>
                             }
                             else
@@ -121,8 +122,8 @@
                                 <span class="menu-icon" title="Open Chat"><i class="bi bi-chat-left-dots-fill"></i></span>
                                 <span>View Chat</span>
                             </a>
-                            <a href="/FrontEnd/AnnouncementList" class="menu-item">
-                                <span class="menu-icon" title="View Announcement"><i class="bi bi-megaphone-fill"></i></span>
+                            <a href="/FrontEnd/ViewAnnouncements" class="menu-item">
+                                <span class="menu-icon" title="View Announcements"><i class="bi bi-megaphone-fill"></i></span>
                                 <span>Announcements</span>
                             </a>
                         }
@@ -140,8 +141,8 @@
                                 <span class="menu-icon" title="Open Chat"><i class="bi bi-chat-left-dots-fill"></i></span>
                                 <span>Chat</span>
                             </a>
-                            <a href="/FrontEnd/AnnouncementList" class="menu-item">
-                                <span class="menu-icon" title="View Announcement"><i class="bi bi-megaphone-fill"></i></span>
+                            <a href="/FrontEnd/ViewAnnouncements" class="menu-item">
+                                <span class="menu-icon" title="View Announcements"><i class="bi bi-megaphone-fill"></i></span>
                                 <span>Announcements</span>
                             </a>
                         }

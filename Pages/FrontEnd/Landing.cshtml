@@ -1,0 +1,536 @@
+@page "/"
+@model APMoodle.Pages.BackEnd.LandingModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Welcome";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APMoodle — Teach, learn & track, beautifully.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Sora:wght@@500;600;700;800&family=Inter:wght@@300;400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --paper: #fbfaf8;
+            --surface: #ffffff;
+            --ink: #1c1917;
+            --ink-2: #44403c;
+            --muted: #78716c;
+            --line: #ece7df;
+            --gold: #b8935a;
+            --gold-2: #c9a24b;
+            --gold-soft: #f4ecdd;
+            --char: #1b1916;
+            --char-2: #262320;
+            --gold-grad: linear-gradient(135deg, #c9a24b, #b8935a);
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+        h1, h2, h3, .display { font-family: 'Sora', sans-serif; letter-spacing: -0.025em; }
+        .wrap { max-width: 1160px; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* Film-grain texture overlay (premium tactile feel) */
+        .grain {
+            position: fixed; inset: 0; z-index: 3; pointer-events: none; opacity: 0.035;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* Scroll progress bar */
+        .progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 60; background: linear-gradient(90deg, #e3c987, #c9a24b, #b8935a); box-shadow: 0 0 10px rgba(201,162,75,.6); transition: width .1s linear; }
+
+        /* ---------- Buttons ---------- */
+        .btn {
+            position: relative; overflow: hidden;
+            display: inline-flex; align-items: center; gap: 0.55rem;
+            padding: 0.8rem 1.5rem; border-radius: 0.7rem;
+            font-weight: 600; font-size: 0.95rem; font-family: 'Inter', sans-serif;
+            border: none; cursor: pointer; transition: transform .2s ease, box-shadow .22s ease, background .22s ease;
+        }
+        .btn-primary { background: var(--gold-grad); color: #fff; box-shadow: 0 6px 18px rgba(184,147,90,.32); }
+        .btn-primary:hover { box-shadow: 0 14px 30px rgba(184,147,90,.45); }
+        .btn-primary::after { content:''; position:absolute; top:0; left:-120%; width:55%; height:100%; background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent); transform:skewX(-20deg); transition:left .6s ease; }
+        .btn-primary:hover::after { left:130%; }
+        .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+        .btn-ghost:hover { border-color: var(--gold); color: var(--gold); background: #fff; transform: translateY(-2px); }
+        .btn-lg { padding: 0.95rem 1.9rem; font-size: 1.02rem; }
+        .btn-light { background: #fff; color: var(--ink); }
+        .btn-light:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.2); }
+
+        /* ---------- Nav ---------- */
+        .nav-shell { position: sticky; top: 0; z-index: 50; background: rgba(251,250,248,.72); backdrop-filter: saturate(180%) blur(16px); border-bottom: 1px solid rgba(28,25,23,.06); transition: box-shadow .3s ease, background .3s ease; }
+        .nav-shell.scrolled { box-shadow: 0 6px 24px rgba(28,25,23,.08); background: rgba(251,250,248,.9); }
+        .nav { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.5rem; max-width: 1160px; margin: 0 auto; }
+        .brand { display: flex; align-items: center; gap: 0.6rem; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.3rem; }
+        .brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--gold-grad); display: grid; place-items: center; color: #fff; font-size: 1rem; box-shadow: 0 5px 14px rgba(184,147,90,.4); transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+        .brand:hover .brand-mark { transform: rotate(-8deg) scale(1.08); }
+        .nav-links { display: flex; align-items: center; gap: 1.6rem; }
+        .nav-links a.lnk { color: var(--ink-2); font-weight: 500; font-size: 0.95rem; position: relative; transition: color .2s; }
+        .nav-links a.lnk::after { content:''; position:absolute; left:0; bottom:-4px; height:2px; width:0; background: var(--gold-grad); border-radius:2px; transition: width .25s ease; }
+        .nav-links a.lnk:hover { color: var(--gold); }
+        .nav-links a.lnk:hover::after { width: 100%; }
+        @@media (max-width: 760px) { .nav-links a.lnk { display: none; } }
+
+        /* ---------- Hero ---------- */
+        .hero { position: relative; overflow: hidden; padding: 4.5rem 0 3rem; text-align: center; }
+        .aurora { position: absolute; inset: -20% -10% auto -10%; height: 130%; z-index: 0; pointer-events: none; filter: blur(70px); opacity: .8; }
+        .aurora .blob { position: absolute; border-radius: 50%; mix-blend-mode: multiply; }
+        .aurora .b1 { width: 46vw; height: 46vw; left: 44%; top: -10%; background: radial-gradient(circle, rgba(201,162,75,.5), transparent 65%); animation: drift1 18s ease-in-out infinite; }
+        .aurora .b2 { width: 40vw; height: 40vw; left: -6%; top: 6%; background: radial-gradient(circle, rgba(184,147,90,.42), transparent 65%); animation: drift2 22s ease-in-out infinite; }
+        .aurora .b3 { width: 34vw; height: 34vw; left: 62%; top: 22%; background: radial-gradient(circle, rgba(120,113,108,.22), transparent 65%); animation: drift3 26s ease-in-out infinite; }
+        @@keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-6%,5%) scale(1.12)} }
+        @@keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(8%,-4%) scale(1.1)} }
+        @@keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-7%,-6%) scale(1.15)} }
+        .hero > .wrap { position: relative; z-index: 1; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.9rem; border-radius: 999px; background: rgba(255,255,255,.7); backdrop-filter: blur(6px); color: #8a6d38; font-weight: 600; font-size: 0.8rem; margin-bottom: 1.5rem; border: 1px solid rgba(184,147,90,.25); box-shadow: 0 4px 14px rgba(184,147,90,.1); }
+        .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold-2); box-shadow: 0 0 0 0 rgba(201,162,75,.6); animation: pulse 2s infinite; }
+        @@keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(201,162,75,.55)} 70%{box-shadow:0 0 0 8px rgba(201,162,75,0)} 100%{box-shadow:0 0 0 0 rgba(201,162,75,0)} }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4.15rem); line-height: 1.04; font-weight: 800; margin: 0 auto 1.25rem; max-width: 15ch; }
+        .hero h1 .u { position: relative; white-space: nowrap; background: linear-gradient(100deg, #b8935a, #e3c987, #b8935a); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 4s linear infinite; }
+        @@keyframes sheen { to { background-position: 200% center; } }
+        .hero h1 .u::after { content:''; position:absolute; left:0; right:0; bottom:0.02em; height:0.14em; background: linear-gradient(90deg, rgba(201,162,75,.5), rgba(184,147,90,.5)); z-index:-1; border-radius: 4px; }
+        .hero p.lead { font-size: clamp(1.05rem, 2.2vw, 1.25rem); color: var(--muted); max-width: 42rem; margin: 0 auto 2rem; }
+        .hero-cta { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .hero-trust { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; color: var(--muted); font-size: 0.88rem; }
+        .hero-trust span { display: inline-flex; align-items: center; gap: 0.45rem; }
+        .hero-trust i { color: var(--gold); }
+
+        /* ---------- Product mock (tilts to the cursor) ---------- */
+        .mock-stage { margin-top: 3rem; perspective: 1600px; }
+        .mock {
+            position: relative; max-width: 940px; margin: 0 auto;
+            background: #fff; border: 1px solid var(--line); border-radius: 1.25rem;
+            box-shadow: 0 40px 80px -32px rgba(28,25,23,.4), 0 12px 24px -12px rgba(28,25,23,.15);
+            padding: 1.1rem; transform: rotateX(6deg); transform-origin: center top;
+            transition: transform .25s ease; will-change: transform;
+        }
+        .mock-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0 0.4rem 0.9rem; }
+        .mock-bar .d { width: 11px; height: 11px; border-radius: 50%; }
+        .mock-bar .t { margin-left: auto; font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+        .mock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+        .mk-stat { grid-column: span 1; background: linear-gradient(135deg,#faf7f0,#f4ecdd); border-radius: 0.8rem; padding: 0.85rem; text-align: left; }
+        .mk-stat .k { font-family: 'Sora',sans-serif; font-size: 1.4rem; font-weight: 800; color: #6b5d4f; }
+        .mk-stat .l { font-size: 0.68rem; color: var(--muted); font-weight: 600; }
+        .mk-chart { grid-column: span 3; background: #fff; border: 1px solid var(--line); border-radius: 0.8rem; padding: 0.9rem 1rem; }
+        .mk-chart .ch-h { display:flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); font-weight: 600; margin-bottom: 0.5rem; }
+        .mk-gauge { grid-column: span 1; background:#fff; border:1px solid var(--line); border-radius:0.8rem; display:grid; place-items:center; }
+        .ring { position: relative; width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--gold-2) 0 306deg, #efe7d6 306deg 360deg); }
+        .ring::before { content:''; position:absolute; width:66px; height:66px; border-radius:50%; background:#fff; }
+        .ring b { position: relative; font-family:'Sora',sans-serif; font-weight: 800; color:#6b5d4f; font-size: 1.15rem; }
+        .spark { display:block; width:100%; height:70px; }
+        .spark path.ln { stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 1.8s ease forwards .5s; }
+        @@keyframes draw { to { stroke-dashoffset: 0; } }
+        @@media (max-width: 720px) { .mock { transform: none !important; } .mock-grid { grid-template-columns: repeat(2,1fr); } .mk-chart, .mk-gauge, .mk-stat { grid-column: span 2; } }
+
+        /* ---------- Feature marquee ---------- */
+        .marquee { margin-top: 3.5rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #fff; overflow: hidden; }
+        .marquee-track { display: flex; gap: 3rem; padding: 1rem 0; width: max-content; animation: scroll 26s linear infinite; }
+        .marquee:hover .marquee-track { animation-play-state: paused; }
+        .marquee-track span { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--muted); font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+        .marquee-track i { color: var(--gold); }
+        @@keyframes scroll { to { transform: translateX(-50%); } }
+
+        /* ---------- Stat strip ---------- */
+        .strip { background: #fff; border-bottom: 1px solid var(--line); }
+        .strip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 2.5rem 0; text-align: center; }
+        .strip-grid .cell + .cell { position: relative; }
+        .strip-grid .k { font-family: 'Sora',sans-serif; font-size: 2rem; font-weight: 800; color: var(--ink); }
+        .strip-grid .l { color: var(--muted); font-size: 0.85rem; margin-top: 0.15rem; }
+        .strip-grid .k .g { color: var(--gold); }
+        @@media (max-width: 720px) { .strip-grid { grid-template-columns: repeat(2,1fr); gap: 1.75rem; } }
+
+        /* ---------- Section head ---------- */
+        .section { padding: 5rem 0; }
+        .s-head { text-align: center; max-width: 42rem; margin: 0 auto 3rem; }
+        .s-tag { color: var(--gold); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; }
+        .s-head h2 { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 800; margin: 0.6rem 0 0.75rem; }
+        .s-head p { color: var(--muted); font-size: 1.05rem; }
+
+        /* ---------- Bento ---------- */
+        .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 200px; gap: 1.1rem; }
+        .cell { background: var(--surface); border: 1px solid var(--line); border-radius: 1.15rem; padding: 1.5rem; overflow: hidden; position: relative; transition: transform .28s cubic-bezier(.4,0,.2,1), box-shadow .28s ease, border-color .28s ease; }
+        .cell::before { content:''; position:absolute; inset:0; border-radius:inherit; background: radial-gradient(320px circle at var(--mx,50%) var(--my,0%), rgba(201,162,75,.12), transparent 60%); opacity:0; transition: opacity .3s ease; pointer-events:none; }
+        .cell:hover { transform: translateY(-6px); box-shadow: 0 22px 44px -22px rgba(28,25,23,.24); border-color: rgba(184,147,90,.4); }
+        .cell:hover::before { opacity: 1; }
+        .cell .fic { width: 46px; height: 46px; border-radius: 0.75rem; display: grid; place-items: center; font-size: 1.2rem; margin-bottom: 0.9rem; background: var(--gold-soft); color: var(--gold); transition: transform .28s cubic-bezier(.34,1.56,.64,1); }
+        .cell:hover .fic { transform: scale(1.12) rotate(-6deg); }
+        .cell h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.4rem; position: relative; }
+        .cell p { color: var(--muted); font-size: 0.92rem; position: relative; }
+        .cell-lg { grid-column: span 2; grid-row: span 2; }
+        .cell-wide { grid-column: span 2; }
+        .cell-dark { background: var(--char); color: #fff; border-color: transparent; }
+        .cell-dark p { color: #b9b2a6; }
+        .cell-dark .fic { background: rgba(201,162,75,.2); color: var(--gold-2); }
+        .cell-dark .pill { display:inline-flex; gap:.4rem; align-items:center; margin-top: .7rem; padding:.3rem .7rem; border-radius:999px; background:rgba(255,255,255,.08); font-size:.78rem; color:#e7e0d2; }
+        .cell-lg .lg-visual { position:absolute; left:1.5rem; right:1.5rem; bottom:1.4rem; }
+        .lg-bars { display:flex; align-items:flex-end; gap:.5rem; height:110px; }
+        .lg-bars span { flex:1; border-radius:6px 6px 0 0; background: var(--gold-grad); opacity:.9; transform-origin: bottom; animation: rise 1s cubic-bezier(.4,0,.2,1) both; }
+        @@keyframes rise { from { transform: scaleY(0); } }
+        @@media (max-width: 900px) { .bento { grid-template-columns: repeat(2, 1fr); } .cell-lg { grid-column: span 2; grid-row: span 2; } .cell-wide { grid-column: span 2; } }
+        @@media (max-width: 560px) { .bento { grid-template-columns: 1fr; grid-auto-rows: auto; } .cell, .cell-lg, .cell-wide { grid-column: span 1; grid-row: auto; min-height: 190px; } .cell-lg .lg-visual { position: static; margin-top: 1rem; } }
+
+        /* ---------- How it works ---------- */
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; position: relative; }
+        .step { background:#fff; border:1px solid var(--line); border-radius: 1.1rem; padding: 2rem 1.75rem; position: relative; transition: transform .25s ease, box-shadow .25s ease; }
+        .step:hover { transform: translateY(-5px); box-shadow: 0 18px 34px -18px rgba(28,25,23,.2); }
+        .step-n { width: 44px; height: 44px; border-radius: 13px; background: var(--gold-grad); color: #fff; font-family:'Sora',sans-serif; font-weight: 800; display: grid; place-items: center; margin-bottom: 1rem; box-shadow: 0 8px 18px rgba(184,147,90,.32); }
+        .step h3 { font-size: 1.15rem; margin-bottom: 0.4rem; }
+        .step p { color: var(--muted); font-size: 0.93rem; }
+        @@media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+
+        /* ---------- Testimonials ---------- */
+        .tgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+        .quote { background:#fff; border:1px solid var(--line); border-radius: 1.1rem; padding: 1.75rem; transition: transform .25s ease, box-shadow .25s ease; }
+        .quote:hover { transform: translateY(-5px); box-shadow: 0 18px 34px -18px rgba(28,25,23,.2); }
+        .quote .stars { color: var(--gold); font-size: 0.85rem; margin-bottom: 0.75rem; letter-spacing: 2px; }
+        .quote p { color: var(--ink-2); font-size: 0.98rem; margin-bottom: 1.25rem; }
+        .quote .who { display: flex; align-items: center; gap: 0.7rem; }
+        .quote .av { width: 40px; height: 40px; border-radius: 50%; background: var(--gold-grad); color:#fff; display:grid; place-items:center; font-weight:700; }
+        .quote .nm { font-weight: 700; font-size: 0.9rem; }
+        .quote .rl { color: var(--muted); font-size: 0.78rem; }
+        @@media (max-width: 860px) { .tgrid { grid-template-columns: 1fr; } }
+
+        /* ---------- Dark CTA ---------- */
+        .cta { position: relative; overflow: hidden; background: var(--char); color: #fff; text-align: center; }
+        .cta .glow { position:absolute; inset:0; background: radial-gradient(700px 260px at 50% 0%, rgba(201,162,75,.18), transparent 60%); }
+        .cta .wrap { position: relative; padding: 5rem 1.5rem; }
+        .cta h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 0.75rem; }
+        .cta p { color: #c3bcae; font-size: 1.1rem; max-width: 34rem; margin: 0 auto 2rem; }
+        .cta-row { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
+
+        /* ---------- Footer ---------- */
+        .foot { background: var(--char-2); color: #b9b2a6; }
+        .foot .wrap { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 2.25rem 1.5rem; }
+        .foot a { color: #cfc8ba; transition: color .2s; }
+        .foot a:hover { color: #fff; }
+        .foot .sep { opacity: .4; margin: 0 .5rem; }
+
+        .reveal { opacity: 0; transform: translateY(26px); transition: opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1); }
+        .reveal.in { opacity: 1; transform: none; }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="progress" id="progress"></div>
+
+    <!-- Nav -->
+    <div class="nav-shell" id="navShell">
+        <nav class="nav">
+            <a href="/" class="brand"><span class="brand-mark"><i class="fas fa-graduation-cap"></i></span> APMoodle</a>
+            <div class="nav-links">
+                <a href="#features" class="lnk">Features</a>
+                <a href="#how" class="lnk">How it works</a>
+                <a href="#reviews" class="lnk">Reviews</a>
+                <a href="/FrontEnd/Login" class="btn btn-ghost">Sign in</a>
+                <a href="/FrontEnd/Register" class="btn btn-primary" data-magnetic>Get started</a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="aurora"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+        <div class="wrap">
+            <span class="eyebrow"><span class="dot"></span> Learning management, reimagined</span>
+            <h1>Teach, learn &amp; track — <span class="u">beautifully.</span></h1>
+            <p class="lead">
+                APMoodle brings modules, materials, quizzes and real-time progress into one calm,
+                fast platform — so students learn quicker and lecturers teach smarter.
+            </p>
+            <div class="hero-cta">
+                <a href="/FrontEnd/Register" class="btn btn-primary btn-lg" data-magnetic><i class="fas fa-arrow-right"></i> Get started free</a>
+                <a href="/FrontEnd/Login" class="btn btn-ghost btn-lg">Sign in</a>
+            </div>
+            <div class="hero-trust">
+                <span><i class="fas fa-circle-check"></i> No setup fuss</span>
+                <span><i class="fas fa-circle-check"></i> Instant quiz grading</span>
+                <span><i class="fas fa-circle-check"></i> Students, lecturers &amp; admins</span>
+            </div>
+
+            <!-- Product mock -->
+            <div class="mock-stage reveal" id="mockStage">
+                <div class="mock" id="mock">
+                    <div class="mock-bar">
+                        <span class="d" style="background:#e0685f"></span>
+                        <span class="d" style="background:#e8b750"></span>
+                        <span class="d" style="background:#5aa06a"></span>
+                        <span class="t">APMoodle · Student Dashboard</span>
+                    </div>
+                    <div class="mock-grid">
+                        <div class="mk-stat"><div class="k">6</div><div class="l">Modules</div></div>
+                        <div class="mk-chart">
+                            <div class="ch-h"><span>Score trend</span><span>Last 7 quizzes</span></div>
+                            <svg class="spark" viewBox="0 0 320 70" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#c9a24b" stop-opacity="0.35"/>
+                                        <stop offset="100%" stop-color="#c9a24b" stop-opacity="0"/>
+                                    </linearGradient>
+                                </defs>
+                                <path d="M0,52 L45,44 L90,50 L135,30 L180,36 L225,16 L270,24 L320,10 L320,70 L0,70 Z" fill="url(#g1)"/>
+                                <path class="ln" d="M0,52 L45,44 L90,50 L135,30 L180,36 L225,16 L270,24 L320,10" fill="none" stroke="#b8935a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="mk-stat"><div class="k">24</div><div class="l">Quizzes done</div></div>
+                        <div class="mk-gauge"><div class="ring"><b>88%</b></div></div>
+                        <div class="mk-stat"><div class="k">A−</div><div class="l">Best grade</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Feature marquee -->
+    <div class="marquee">
+        <div class="marquee-track">
+            <span><i class="fas fa-layer-group"></i> Modules</span>
+            <span><i class="fas fa-clipboard-question"></i> Quizzes</span>
+            <span><i class="fas fa-bolt"></i> Instant grading</span>
+            <span><i class="fas fa-chart-line"></i> Progress dashboards</span>
+            <span><i class="fas fa-bullhorn"></i> Announcements</span>
+            <span><i class="fas fa-comments"></i> Chat</span>
+            <span><i class="fas fa-key"></i> Join by code</span>
+            <span><i class="fas fa-folder-open"></i> Materials</span>
+            <!-- duplicate for seamless loop -->
+            <span><i class="fas fa-layer-group"></i> Modules</span>
+            <span><i class="fas fa-clipboard-question"></i> Quizzes</span>
+            <span><i class="fas fa-bolt"></i> Instant grading</span>
+            <span><i class="fas fa-chart-line"></i> Progress dashboards</span>
+            <span><i class="fas fa-bullhorn"></i> Announcements</span>
+            <span><i class="fas fa-comments"></i> Chat</span>
+            <span><i class="fas fa-key"></i> Join by code</span>
+            <span><i class="fas fa-folder-open"></i> Materials</span>
+        </div>
+    </div>
+
+    <!-- Stat strip -->
+    <section class="strip">
+        <div class="wrap">
+            <div class="strip-grid">
+                <div class="cell"><div class="k" data-count="3">3</div><div class="l">Roles, one platform</div></div>
+                <div class="cell"><div class="k">∞</div><div class="l">Modules &amp; materials</div></div>
+                <div class="cell"><div class="k"><span class="g">Instant</span></div><div class="l">Auto-graded quizzes</div></div>
+                <div class="cell"><div class="k">Real-time</div><div class="l">Progress dashboards</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bento features -->
+    <section class="section" id="features">
+        <div class="wrap">
+            <div class="s-head reveal">
+                <div class="s-tag">Features</div>
+                <h2>Everything a course needs — nothing it doesn't</h2>
+                <p>A focused toolkit for teaching and learning, designed to stay out of your way.</p>
+            </div>
+            <div class="bento">
+                <div class="cell cell-lg reveal">
+                    <div class="fic"><i class="fas fa-chart-line"></i></div>
+                    <h3>Your progress, visualized</h3>
+                    <p>Average &amp; best scores, quiz history and score trends — on a dashboard that updates in real time.</p>
+                    <div class="lg-visual">
+                        <div class="lg-bars">
+                            <span style="height:45%"></span><span style="height:62%"></span><span style="height:52%"></span>
+                            <span style="height:78%"></span><span style="height:66%"></span><span style="height:90%"></span>
+                            <span style="height:72%"></span><span style="height:84%"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cell cell-wide reveal">
+                    <div class="fic"><i class="fas fa-clipboard-question"></i></div>
+                    <h3>Quizzes with instant results</h3>
+                    <p>Build multiple-choice quizzes; students take them online and get graded the moment they submit.</p>
+                </div>
+                <div class="cell reveal">
+                    <div class="fic"><i class="fas fa-key"></i></div>
+                    <h3>Join by code</h3>
+                    <p>Enrol into a module in seconds.</p>
+                </div>
+                <div class="cell reveal">
+                    <div class="fic"><i class="fas fa-folder-open"></i></div>
+                    <h3>All materials</h3>
+                    <p>Files, links &amp; notes in one place.</p>
+                </div>
+                <div class="cell cell-wide reveal">
+                    <div class="fic"><i class="fas fa-comments"></i></div>
+                    <h3>Announcements &amp; chat</h3>
+                    <p>Keep everyone in the loop and let students reach lecturers directly, in real time.</p>
+                </div>
+                <div class="cell cell-dark cell-wide reveal">
+                    <div class="fic"><i class="fas fa-user-shield"></i></div>
+                    <h3>Built for every role</h3>
+                    <p>Students, lecturers and admins each get a tailored experience — the tools they need, nothing they don't.</p>
+                    <span class="pill">🎓 Student</span> <span class="pill">👨‍🏫 Lecturer</span> <span class="pill">🛡️ Admin</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how" style="background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+        <div class="wrap">
+            <div class="s-head reveal">
+                <div class="s-tag">How it works</div>
+                <h2>Up and running in three steps</h2>
+                <p>No manuals, no onboarding calls — just sign in and go.</p>
+            </div>
+            <div class="steps">
+                <div class="step reveal"><div class="step-n">1</div><h3>Sign in to your role</h3><p>Students, lecturers and admins land on a dashboard built for exactly what they do.</p></div>
+                <div class="step reveal"><div class="step-n">2</div><h3>Join or create modules</h3><p>Students join with an invite code; lecturers spin up modules, materials and quizzes.</p></div>
+                <div class="step reveal"><div class="step-n">3</div><h3>Learn, quiz &amp; track</h3><p>Take quizzes, get instant results, and watch progress build on a live dashboard.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section" id="reviews">
+        <div class="wrap">
+            <div class="s-head reveal">
+                <div class="s-tag">Loved on campus</div>
+                <h2>What students &amp; lecturers say</h2>
+            </div>
+            <div class="tgrid">
+                <div class="quote reveal">
+                    <div class="stars">★★★★★</div>
+                    <p>"I finally see all my quiz scores and progress in one place. Taking a quiz and getting the result instantly is so satisfying."</p>
+                    <div class="who"><div class="av">A</div><div><div class="nm">Aisha R.</div><div class="rl">Year 2 Student</div></div></div>
+                </div>
+                <div class="quote reveal">
+                    <div class="stars">★★★★★</div>
+                    <p>"Setting up a module and seeing which students joined and how they score takes minutes. The dashboards are genuinely useful."</p>
+                    <div class="who"><div class="av">J</div><div><div class="nm">Dr. John Smith</div><div class="rl">Lecturer</div></div></div>
+                </div>
+                <div class="quote reveal">
+                    <div class="stars">★★★★★</div>
+                    <p>"Clean, fast and easy to manage. Announcements and user management are right where I expect them."</p>
+                    <div class="who"><div class="av">M</div><div><div class="nm">Maya T.</div><div class="rl">Administrator</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dark CTA -->
+    <section class="cta">
+        <div class="glow"></div>
+        <div class="wrap">
+            <h2 class="display">Ready to get started?</h2>
+            <p>Create your account or sign in — your dashboard is waiting.</p>
+            <div class="cta-row">
+                <a href="/FrontEnd/Register" class="btn btn-primary btn-lg" data-magnetic><i class="fas fa-user-plus"></i> Create account</a>
+                <a href="/FrontEnd/Login" class="btn btn-light btn-lg"><i class="fas fa-right-to-bracket"></i> Sign in</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="foot">
+        <div class="wrap">
+            <a href="/" class="brand" style="color:#fff; font-size:1.1rem;"><span class="brand-mark" style="width:28px;height:28px;font-size:.85rem;"><i class="fas fa-graduation-cap"></i></span> APMoodle</a>
+            <div>
+                <a href="/FrontEnd/Login">Sign in</a><span class="sep">·</span>
+                <a href="/FrontEnd/Register">Register</a><span class="sep">·</span>
+                <a href="/FrontEnd/Privacy">Privacy</a>
+            </div>
+            <div style="opacity:.7; font-size:.85rem;">© 2026 APMoodle</div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll progress + nav shadow
+        var progress = document.getElementById('progress');
+        var navShell = document.getElementById('navShell');
+        function onScroll() {
+            var h = document.documentElement;
+            var sc = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
+            progress.style.width = (sc * 100) + '%';
+            navShell.classList.toggle('scrolled', h.scrollTop > 8);
+        }
+        window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+        // Reveal on scroll
+        (function () {
+            var els = document.querySelectorAll('.reveal');
+            if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('in'); }); return; }
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+            }, { threshold: 0.12 });
+            els.forEach(function (e) { io.observe(e); });
+        })();
+
+        // Count-up for numeric stat cells
+        (function () {
+            var el = document.querySelector('[data-count]');
+            if (!el) return;
+            var target = parseInt(el.getAttribute('data-count'), 10);
+            var seen = false;
+            var io = new IntersectionObserver(function (ents) {
+                ents.forEach(function (en) {
+                    if (en.isIntersecting && !seen) {
+                        seen = true;
+                        var start = null;
+                        function step(ts) {
+                            if (!start) start = ts;
+                            var p = Math.min((ts - start) / 800, 1);
+                            el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target);
+                            if (p < 1) requestAnimationFrame(step); else el.textContent = target;
+                        }
+                        requestAnimationFrame(step);
+                    }
+                });
+            }, { threshold: 0.6 });
+            io.observe(el);
+        })();
+
+        // Cursor tilt on the product mock
+        (function () {
+            var stage = document.getElementById('mockStage'), mock = document.getElementById('mock');
+            if (!stage || !mock || window.matchMedia('(max-width: 720px)').matches) return;
+            var raf = null;
+            stage.addEventListener('mousemove', function (e) {
+                var r = stage.getBoundingClientRect();
+                var dx = (e.clientX - r.left) / r.width - 0.5;
+                var dy = (e.clientY - r.top) / r.height - 0.5;
+                if (raf) return;
+                raf = requestAnimationFrame(function () {
+                    raf = null;
+                    mock.style.transform = 'rotateX(' + (6 - dy * 8) + 'deg) rotateY(' + (dx * 9) + 'deg)';
+                });
+            });
+            stage.addEventListener('mouseleave', function () { mock.style.transform = 'rotateX(6deg)'; });
+        })();
+
+        // Bento spotlight follows the cursor
+        document.querySelectorAll('.cell').forEach(function (c) {
+            c.addEventListener('mousemove', function (e) {
+                var r = c.getBoundingClientRect();
+                c.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+                c.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+            });
+        });
+
+        // Magnetic buttons (subtle pull toward cursor)
+        document.querySelectorAll('[data-magnetic]').forEach(function (b) {
+            b.addEventListener('mousemove', function (e) {
+                var r = b.getBoundingClientRect();
+                b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * 0.18) + 'px,' + ((e.clientY - r.top - r.height / 2) * 0.28) + 'px)';
+            });
+            b.addEventListener('mouseleave', function () { b.style.transform = ''; });
+        });
+    </script>
+</body>
+</html>

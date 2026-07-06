@@ -1,0 +1,466 @@
+/* ============================================================
+   APMoodle — Global Theme (design-system unification layer)
+   Palette taken from the Login page: warm tan-gold (#8b7355 →
+   #6b5d4f), cream parchment (#f5ebdc) and espresso (#3d3027),
+   with a brighter gold accent (#c9a24b) for highlights.
+   Loaded on EVERY page via _Layout AFTER site.css so these
+   rules win. Only colours + interaction polish are changed —
+   every navbar/sidebar dimension (55px nav, 60/260px sidebar,
+   .expanded states, body:has() shifts) is left to site.css so
+   the JS toggle + layout keep working.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #8b7355;          /* tan-gold */
+    --primary-dark: #6b5d4f;     /* deeper tan */
+    --primary-deep: #3d3027;     /* espresso */
+    --gold: #c9a24b;             /* bright gold accent */
+    --gold-light: #e3c987;
+    --cream: #f5ebdc;            /* parchment (text on dark) */
+    --cream-2: #eee0cb;
+    --ink: #3d3027;              /* deep text */
+    --muted: #7a6a55;            /* muted brown text */
+    --parchment: #faf6ee;        /* warm page background */
+    --line: #e8ddc9;             /* warm border */
+    --white: #ffffff;
+    --success: #4e8b5b;
+    --danger: #b4503c;
+
+    --shadow-sm: 0 1px 2px 0 rgba(61, 48, 39, 0.06);
+    --shadow: 0 1px 3px 0 rgba(61, 48, 39, 0.10), 0 1px 2px -1px rgba(61, 48, 39, 0.10);
+    --shadow-md: 0 6px 14px -4px rgba(61, 48, 39, 0.16);
+    --shadow-lg: 0 16px 30px -12px rgba(61, 48, 39, 0.24);
+
+    --radius: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --brand-grad: linear-gradient(135deg, #b8935a 0%, #8b7355 55%, #6b5d4f 100%);
+    --gold-grad: linear-gradient(135deg, #e3c987 0%, #c9a24b 100%);
+}
+
+/* ---- Global typography base (pages using _Layout inherit Inter) ---- */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* =========================================================
+   TOP NAVBAR — frosted parchment with gold accents
+   ========================================================= */
+.custom-navbar {
+    background: rgba(251, 250, 248, 0.82) !important;
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    border-bottom: 1px solid rgba(28, 25, 23, 0.06);
+    box-shadow: 0 2px 16px rgba(61, 48, 39, 0.05);
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+/* Signature gold hairline along the navbar's bottom edge */
+.custom-navbar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 4%, rgba(201, 162, 75, 0.55), rgba(184, 147, 90, 0.55), transparent 96%);
+    opacity: 0.55;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.custom-navbar.sticky-scroll {
+    box-shadow: 0 6px 24px rgba(61, 48, 39, 0.12);
+    background: rgba(251, 250, 248, 0.96) !important;
+}
+
+.custom-navbar.sticky-scroll::after {
+    opacity: 1;
+}
+
+.custom-navbar .navbar-brand {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #1c1917 !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    transition: var(--transition);
+}
+
+/* small gold brand chip — gold as an accent, not the whole wordmark */
+.custom-navbar .navbar-brand::before {
+    content: '';
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: var(--gold-grad);
+    box-shadow: 0 3px 9px rgba(184, 147, 90, 0.45);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.custom-navbar .navbar-brand:hover {
+    color: #000 !important;
+}
+
+.custom-navbar .navbar-brand:hover::before {
+    transform: rotate(-10deg) scale(1.12);
+    box-shadow: 0 5px 14px rgba(184, 147, 90, 0.55);
+}
+
+/* centred "… Portal" label → refined pill badge with a pulsing gold dot */
+.custom-navbar .nav-link.text-dark {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-dark) !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+    background: rgba(244, 236, 221, 0.65);
+    border: 1px solid rgba(184, 147, 90, 0.25);
+    border-radius: 999px;
+    padding: 0.35rem 0.95rem !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: var(--transition);
+}
+
+.custom-navbar .nav-link.text-dark::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 0 rgba(201, 162, 75, 0.55);
+    animation: apmPortalPulse 2.4s infinite;
+}
+
+@keyframes apmPortalPulse {
+    0% { box-shadow: 0 0 0 0 rgba(201, 162, 75, 0.5); }
+    70% { box-shadow: 0 0 0 7px rgba(201, 162, 75, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(201, 162, 75, 0); }
+}
+
+.custom-navbar .nav-link.text-dark:hover {
+    background: rgba(244, 236, 221, 1);
+    border-color: rgba(184, 147, 90, 0.45);
+}
+
+/* =========================================================
+   BUTTONS — golden pills with a shine sweep on hover
+   ========================================================= */
+.nav-link-login,
+.nav-link-logout {
+    position: relative;
+    overflow: hidden;
+    background: var(--brand-grad) !important;
+    color: var(--cream) !important;
+    border: none;
+    box-shadow: 0 4px 12px rgba(61, 48, 39, 0.28);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+}
+
+/* moving light sweep */
+.nav-link-login::after,
+.nav-link-logout::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(245, 235, 220, 0.45), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+}
+
+.nav-link-login:hover,
+.nav-link-logout:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 10px 22px rgba(61, 48, 39, 0.38);
+    color: var(--cream) !important;
+}
+
+.nav-link-login:hover::after,
+.nav-link-logout:hover::after {
+    left: 130%;
+}
+
+.nav-link-login:active,
+.nav-link-logout:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(61, 48, 39, 0.3);
+}
+
+.profile-icon {
+    border: 2px solid var(--gold);
+    background: var(--cream);
+    transition: var(--transition);
+}
+
+.profile-icon:hover {
+    transform: scale(1.08) rotate(-3deg);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.25);
+}
+
+/* =========================================================
+   LEFT SIDEBAR — espresso→tan gradient (colours only)
+   ========================================================= */
+.menu-panel {
+    background: linear-gradient(180deg, #262320 0%, #1b1916 100%) !important;
+    box-shadow: 2px 0 20px rgba(28, 26, 23, 0.3);
+}
+
+.menu-item {
+    color: var(--cream);
+    border-left: 3px solid transparent;
+    transition: background 0.25s ease, padding-left 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+}
+
+.menu-item:hover {
+    background: linear-gradient(90deg, rgba(201, 162, 75, 0.16), rgba(245, 235, 220, 0.06)) !important;
+    border-left: 3px solid rgba(201, 162, 75, 0.5);
+    color: #fff;
+    padding-left: 22px;
+}
+
+.menu-item.active {
+    background: linear-gradient(90deg, rgba(201, 162, 75, 0.24), rgba(201, 162, 75, 0.06)) !important;
+    border-left: 3px solid var(--gold);
+    border-right: none !important;
+    color: #fff !important;
+}
+
+.menu-icon {
+    color: var(--gold-light);
+    transition: color 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+}
+
+.menu-item:hover .menu-icon {
+    color: var(--gold);
+    transform: scale(1.15) rotate(-5deg);
+    filter: drop-shadow(0 0 6px rgba(201, 162, 75, 0.55));
+}
+
+.menu-item.active .menu-icon {
+    color: var(--gold);
+    filter: drop-shadow(0 0 6px rgba(201, 162, 75, 0.45));
+}
+
+.btn-expand-menu {
+    background: rgba(0, 0, 0, 0.20) !important;
+    border-top: 1px solid rgba(245, 235, 220, 0.12) !important;
+    transition: background 0.25s ease;
+}
+
+.btn-expand-menu:hover {
+    background: rgba(201, 162, 75, 0.22) !important;
+}
+
+.btn-expand-menu:hover .expand-icon {
+    transform: translateX(3px);
+}
+
+.expandable-vertical-menu.expanded .btn-expand-menu:hover .expand-icon {
+    transform: rotate(180deg) translateX(3px);
+}
+
+.expand-icon,
+.expand-text {
+    color: var(--cream) !important;
+}
+
+.menu-footer {
+    color: rgba(245, 235, 220, 0.5) !important;
+}
+
+/* =========================================================
+   FOOTER — espresso with a gold top glow
+   ========================================================= */
+footer.footer {
+    background: linear-gradient(135deg, #1b1916 0%, #262320 50%, #1b1916 100%);
+    color: #e7e3da;
+    border-top: 1px solid rgba(201, 162, 75, 0.28);
+}
+
+footer.footer::before {
+    background: linear-gradient(90deg, transparent, #c9a24b, #e3c987, #c9a24b, transparent);
+    opacity: 0.55;
+}
+
+footer.footer a {
+    color: var(--gold-light);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+footer.footer a:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(227, 201, 135, 0.6);
+}
+
+footer.footer .footer-brand,
+footer.footer .footer-brand i {
+    color: var(--gold-light);
+}
+
+/* =========================================================
+   REUSABLE ENHANCED BUTTONS (used by the new pages)
+   ========================================================= */
+.apm-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.8rem 1.6rem;
+    border-radius: 0.7rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    font-family: inherit;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease, background 0.22s ease;
+}
+
+.apm-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+}
+
+.apm-btn:hover::after { left: 130%; }
+
+.apm-btn-primary {
+    background: var(--brand-grad);
+    color: var(--cream);
+    box-shadow: 0 5px 16px rgba(61, 48, 39, 0.3);
+}
+
+.apm-btn-primary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 12px 26px rgba(61, 48, 39, 0.4);
+    color: var(--cream);
+}
+
+.apm-btn-primary:active { transform: translateY(0); }
+
+.apm-btn-gold {
+    background: var(--gold-grad);
+    color: var(--primary-deep);
+    box-shadow: 0 5px 16px rgba(201, 162, 75, 0.35);
+}
+
+.apm-btn-gold:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+    box-shadow: 0 12px 26px rgba(201, 162, 75, 0.45);
+    color: var(--primary-deep);
+}
+
+.apm-btn-ghost {
+    background: var(--white);
+    color: var(--primary-dark);
+    border: 1.5px solid var(--line);
+}
+
+.apm-btn-ghost:hover {
+    border-color: var(--primary);
+    background: #fdfbf6;
+    color: var(--primary-deep);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   GLOBAL UX POLISH — links, focus rings, generic buttons
+   ========================================================= */
+a { transition: color 0.2s ease; }
+
+/* Warm gold focus ring for form controls (accessibility + on-brand) */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.35);
+    border-radius: 4px;
+}
+
+/* Nudge Bootstrap's default primary buttons onto the gold theme so
+   plainer pages inherit the look without per-page edits. */
+.btn-primary {
+    background: var(--brand-grad) !important;
+    border: none !important;
+    color: var(--cream) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    box-shadow: 0 8px 18px rgba(61, 48, 39, 0.3) !important;
+}
+
+/* ============================================================
+   Creative polish (app-wide) — tasteful accents, not noise.
+   Gold stays an accent; motion is subtle and respects reduced-motion.
+   ============================================================ */
+
+/* Gold-tinted text selection */
+::selection { background: rgba(201, 162, 75, 0.28); color: #1c1917; }
+
+/* Refined gold scrollbar */
+* { scrollbar-width: thin; scrollbar-color: #d9c9a3 transparent; }
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #e3c987, #c9a24b);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #b8935a;
+    background-clip: padding-box;
+    border: 3px solid transparent;
+}
+
+/* Card hover lift so panels feel responsive (stat-card handled in dashboard.css) */
+.chart-card, .top-students-card, .activities-card, .trend-card, .announcements-card {
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1), box-shadow .3s ease, border-color .3s ease;
+}
+.chart-card:hover, .top-students-card:hover, .activities-card:hover,
+.trend-card:hover, .announcements-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 34px -18px rgba(61, 48, 39, 0.26);
+}
+
+/* Staggered entrance for dashboard sections + gentle fade for full pages */
+@keyframes apmFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.dashboard-container > * { animation: apmFadeUp .55s cubic-bezier(.4, 0, .2, 1) both; }
+.dashboard-container > *:nth-child(1) { animation-delay: .03s; }
+.dashboard-container > *:nth-child(2) { animation-delay: .09s; }
+.dashboard-container > *:nth-child(3) { animation-delay: .15s; }
+.dashboard-container > *:nth-child(4) { animation-delay: .21s; }
+.dashboard-container > *:nth-child(5) { animation-delay: .27s; }
+.dashboard-container > *:nth-child(6) { animation-delay: .33s; }
+#horizontalNavbar .PageComponent { animation: apmFadeUp .5s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

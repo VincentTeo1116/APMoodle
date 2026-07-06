@@ -20,7 +20,7 @@
 
 .material-title {
     font-size: 28px;
-    color: #013D42;
+    color: #6b5d4f;
     margin: 0 0 15px 0;
 }
 
@@ -28,9 +28,9 @@
     display: flex;
     gap: 20px;
     font-size: 13px;
-    color: #888;
+    color: #78716c;
     padding-bottom: 15px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #ece7df;
     margin-bottom: 20px;
 }
 
@@ -43,7 +43,7 @@
 }
 
 .edit-btn {
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #c9a24b, #8b7355);
     color: white;
     padding: 8px 20px;
     border-radius: 25px;
@@ -55,7 +55,7 @@
 
 .edit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(1, 61, 66, 0.3);
+    box-shadow: 0 4px 12px rgba(184, 147, 90, 0.3);
     color: white;
 }
 
@@ -72,13 +72,13 @@
 
 .delete-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(1, 61, 66, 0.3);
+    box-shadow: 0 4px 12px rgba(184, 147, 90, 0.3);
     color: white;
 }
 
 .material-description p {
     font-size: 15px;
-    color: #555;
+    color: #44403c;
     line-height: 1.6;
 }
 
@@ -86,19 +86,19 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    background: #f0f4f0;
+    background: #faf7f0;
     border-radius: 12px;
     padding: 15px 20px;
     margin-top: 20px;
 }
 
 .file-icon { font-size: 28px; }
-.file-name { flex: 1; font-weight: 500; color: #013D42; }
-.download-btn { color: #1d767e; text-decoration: none; font-weight: 600; }
+.file-name { flex: 1; font-weight: 500; color: #6b5d4f; }
+.download-btn { color: #b8935a; text-decoration: none; font-weight: 600; }
 
 .text-content {
     margin-top: 20px;
-    background: #f8f9fa;
+    background: #faf7f0;
     border-radius: 12px;
     padding: 20px;
     font-size: 14px;
@@ -118,7 +118,7 @@
 }
 
 .preview-header {
-    background: #013D42;
+    background: #6b5d4f;
     color: white;
     padding: 15px 20px;
     font-weight: 600;
@@ -146,13 +146,13 @@
 }
 
 .external-link {
-    color: #1d767e;
+    color: #b8935a;
     font-size: 16px;
     text-decoration: none;
 }
 
 .no-preview {
-    color: #888;
+    color: #78716c;
     text-align: center;
 }
 
@@ -169,16 +169,16 @@
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #BEE3DB;
+    border-bottom: 2px solid #e3c987;
 }
 
 .quizzes-header h3 {
-    color: #013D42;
+    color: #6b5d4f;
     margin: 0;
 }
 
 .add-quiz-btn {
-    background: linear-gradient(135deg, #013D42, #1d767e);
+    background: linear-gradient(135deg, #c9a24b, #8b7355);
     color: white;
     padding: 6px 18px;
     border-radius: 25px;
@@ -197,20 +197,20 @@
     align-items: center;
     gap: 15px;
     padding: 12px 15px;
-    background: #f8f9fa;
+    background: #faf7f0;
     border-radius: 12px;
 }
 
 .quiz-icon { font-size: 22px; }
 .quiz-info { flex: 1; }
-.quiz-title { font-weight: 600; color: #013D42; text-decoration: none; }
-.take-quiz-link { color: #1d767e; text-decoration: none; font-size: 13px; transition: 0.2s ease-in-out;}
-.take-quiz-link:hover { background-color: #d3e1e1; color: #093236; text-decoration: none; font-size: 13px; border-radius: 20px; padding: 5px; transform: translateX(-1px);}
+.quiz-title { font-weight: 600; color: #6b5d4f; text-decoration: none; }
+.take-quiz-link { color: #b8935a; text-decoration: none; font-size: 13px; transition: 0.2s ease-in-out;}
+.take-quiz-link:hover { background-color: #f4ecdd; color: #6b5d4f; text-decoration: none; font-size: 13px; border-radius: 20px; padding: 5px; transform: translateX(-1px);}
 
 .empty-quizzes {
     text-align: center;
     padding: 40px;
-    color: #888;
+    color: #78716c;
 }
 
 .empty-quizzes span { font-size: 48px; display: block; margin-bottom: 15px; }
@@ -287,12 +287,12 @@
 .delete-modal-content h3 {
     font-size: 24px;
     font-weight: 700;
-    color: #1e293b;
+    color: #1c1917;
     margin: 0 0 12px 0;
 }
 
 .delete-modal-content p {
-    color: #64748b;
+    color: #78716c;
     font-size: 14px;
     line-height: 1.5;
     margin: 0 0 8px 0;
@@ -331,12 +331,12 @@
 }
 
 .delete-modal-btn.cancel-btn {
-    background: #f1f5f9;
-    color: #475569;
+    background: #f4ecdd;
+    color: #44403c;
 }
 
 .delete-modal-btn.cancel-btn:hover {
-    background: #e2e8f0;
+    background: #ece7df;
     transform: translateY(-1px);
 }
 

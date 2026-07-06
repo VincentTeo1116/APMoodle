@@ -365,11 +365,11 @@ namespace APMoodle.Pages.BackEnd
 
         private string HashPassword(string password)
         {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashedBytes);
-            }
+            // Use BCrypt so the stored hash starts with "$2" and Login's
+            // VerifyPassword (BCrypt.Verify) can validate it. The previous
+            // SHA256/Base64 hash was unverifiable by Login, so admin-created
+            // students/lecturers could never sign in with their emailed password.
+            return BCrypt.Net.BCrypt.HashPassword(password);
         }
 
         private async Task SendWelcomeEmailAsync(string email, string name, string code, string password, string role, DateOnly dob, string phone, string gender, string? department = null)

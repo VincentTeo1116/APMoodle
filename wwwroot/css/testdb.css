@@ -1,6 +1,6 @@
 .database-page {
     padding: 24px 28px;
-    background: #f8fafc;
+    background: #faf7f0;
     min-height: 100vh;
 }
 
@@ -11,19 +11,19 @@
 .database-header-section h1 {
     font-size: 26px;
     font-weight: 600;
-    color: #1e293b;
+    color: #1c1917;
     margin-bottom: 6px;
     letter-spacing: -0.3px;
 }
 
 .database-header-section h1 i {
-    color: #3b82f6;
+    color: #b8935a;
     margin-right: 8px;
 }
 
 .database-subtitle {
     font-size: 14px;
-    color: #64748b;
+    color: #78716c;
     margin: 0;
 }
 
@@ -75,7 +75,7 @@
     min-width: 200px;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    border: 1px solid #e9edf2;
+    border: 1px solid #ece7df;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -83,14 +83,14 @@
 .database-stat-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
-    border-color: #dee4ec;
+    border-color: #d6cfc4;
 }
 
 /* Icon circle */
 .stat-icon {
     width: 44px;
     height: 44px;
-    background: #f8fafc;
+    background: #faf7f0;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -120,13 +120,13 @@
 .stat-number {
     font-size: 32px;
     font-weight: 700;
-    color: #1e293b;
+    color: #1c1917;
     margin-bottom: 6px;
 }
 
 .stat-label {
     font-size: 13px;
-    color: #64748b;
+    color: #78716c;
     font-weight: 500;
     letter-spacing: 0.3px;
     text-transform: uppercase;
@@ -155,24 +155,24 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #013D42, #037984);
+    background: linear-gradient(135deg, #c9a24b, #8b7355);
     color: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(1, 61, 66, 0.25);
+    box-shadow: 0 8px 20px rgba(184, 147, 90, 0.3);
     color: white;
 }
 
 .btn-secondary {
-    background: #e9edf2;
-    color: #1e293b;
+    background: #ece7df;
+    color: #1c1917;
 }
 
 .btn-secondary:hover {
-    background: #d5dce6;
+    background: #d6cfc4;
     transform: translateY(-2px);
 }
 

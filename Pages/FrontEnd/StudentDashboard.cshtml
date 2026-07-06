@@ -17,19 +17,26 @@
             .Select(s => new
             {
                 title = s.Quiz?.Title ?? "Quiz",
-                score = s.TotalScore ?? 0,
-                time = s.Timestamp.ToString("hh:mm tt")
+                score = s.TotalScore ?? 0
             }).ToList())
         .ToList();
+
+    // Performance-band breakdown (status severity) from the scored attempts we have
+    var scored = attemptsChrono.Where(s => s.TotalScore.HasValue).ToList();
+    var bandExcellent = scored.Count(s => s.TotalScore >= 80);
+    var bandGood = scored.Count(s => s.TotalScore >= 60 && s.TotalScore < 80);
+    var bandFair = scored.Count(s => s.TotalScore >= 40 && s.TotalScore < 60);
+    var bandWeak = scored.Count(s => s.TotalScore < 40);
+    var hasBands = scored.Count > 0;
 }
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["title"] - APMoodle</title>
+    <title>Student Dashboard - APMoodle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="~/css/dashboard.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 
 <div class="dashboard-container">
@@ -49,51 +56,43 @@
     <!-- Stats Cards -->
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon module-icon">
-                <i class="fas fa-book"></i>
-            </div>
+            <div class="stat-icon module-icon"><i class="fas fa-book"></i></div>
             <div class="stat-details">
                 <h3>Enrolled Modules</h3>
-                <div class="stat-value">@Model.EnrolledModuleCount</div>
+                <div class="stat-value js-count">@Model.EnrolledModuleCount</div>
                 <span class="stat-label">Active Courses</span>
             </div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon enrollment-icon">
-                <i class="fas fa-circle-check"></i>
-            </div>
+            <div class="stat-icon enrollment-icon"><i class="fas fa-circle-check"></i></div>
             <div class="stat-details">
                 <h3>Quizzes Completed</h3>
-                <div class="stat-value">@Model.CompletedQuizCount</div>
+                <div class="stat-value js-count">@Model.CompletedQuizCount</div>
                 <span class="stat-label">Total Attempts</span>
             </div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon student-icon">
-                <i class="fas fa-chart-line"></i>
-            </div>
+            <div class="stat-icon student-icon"><i class="fas fa-chart-line"></i></div>
             <div class="stat-details">
                 <h3>Average Score</h3>
-                <div class="stat-value">@(Model.CompletedQuizCount > 0 ? $"{Model.AverageScore}%" : "—")</div>
+                <div class="stat-value js-count">@(Model.CompletedQuizCount > 0 ? $"{Model.AverageScore}%" : "—")</div>
                 <span class="stat-label">Across All Quizzes</span>
             </div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon lecturer-icon">
-                <i class="fas fa-trophy"></i>
-            </div>
+            <div class="stat-icon lecturer-icon"><i class="fas fa-trophy"></i></div>
             <div class="stat-details">
                 <h3>Best Score</h3>
-                <div class="stat-value">@(Model.CompletedQuizCount > 0 ? $"{Model.BestScore}%" : "—")</div>
+                <div class="stat-value js-count">@(Model.CompletedQuizCount > 0 ? $"{Model.BestScore}%" : "—")</div>
                 <span class="stat-label">Personal Best</span>
             </div>
         </div>
     </div>
 
-    <!-- Announcements (horizontal slider, under the stats cards) -->
+    <!-- Announcements (horizontal slider) -->
     <div class="announcements-card">
         <div class="card-header">
             <h3><i class="fas fa-bullhorn"></i> Announcements</h3>
@@ -103,12 +102,8 @@
                     <span class="card-subtitle" id="annCounter">1 / @Model.Announcements.Count</span>
                     @if (Model.Announcements.Count > 1)
                     {
-                        <button type="button" class="ann-arrow" id="annPrev" aria-label="Previous announcement">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button type="button" class="ann-arrow" id="annNext" aria-label="Next announcement">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                        <button type="button" class="ann-arrow" id="annPrev" aria-label="Previous announcement"><i class="fas fa-chevron-left"></i></button>
+                        <button type="button" class="ann-arrow" id="annNext" aria-label="Next announcement"><i class="fas fa-chevron-right"></i></button>
                     }
                 </div>
             }
@@ -122,9 +117,7 @@
                         {
                             <div class="announcement-slide">
                                 <div class="announcement-item">
-                                    <div class="announcement-item-icon">
-                                        <i class="fas fa-bullhorn"></i>
-                                    </div>
+                                    <div class="announcement-item-icon"><i class="fas fa-bullhorn"></i></div>
                                     <div class="announcement-item-body">
                                         <div class="announcement-item-title">@a.Title</div>
                                         <div class="announcement-item-message">@a.Message</div>
@@ -143,49 +136,78 @@
                     <div class="announcement-dots" id="annDots">
                         @for (int i = 0; i < Model.Announcements.Count; i++)
                         {
-                            <button type="button" class="ann-dot @(i == 0 ? "active" : "")" data-index="@i"
-                                    aria-label="Go to announcement @(i + 1)"></button>
+                            <button type="button" class="ann-dot @(i == 0 ? "active" : "")" data-index="@i" aria-label="Go to announcement @(i + 1)"></button>
                         }
                     </div>
                 }
             }
             else
             {
-                <div class="no-data-message">
-                    <i class="fas fa-bullhorn"></i>
-                    <p>No announcements right now — check back later.</p>
-                </div>
+                <div class="no-data-message"><i class="fas fa-bullhorn"></i><p>No announcements right now — check back later.</p></div>
             }
         </div>
     </div>
 
-    <!-- Quiz Score Trend + Recent Quiz Attempts (same row) -->
-    <div class="charts-row">
-
-        <!-- Quiz Score Trend -->
+    <!-- Insights: score trend (wide) + average gauge -->
+    <div class="charts-row" style="grid-template-columns: 1.9fr 1fr;">
         <div class="chart-card">
             <div class="card-header">
                 <h3><i class="fas fa-chart-line"></i> Quiz Score Trend</h3>
-                <span class="card-subtitle">Your recent quiz results</span>
+                <span class="card-subtitle">Average score per day</span>
             </div>
             <div class="card-body">
                 @if (scoreValues.Any())
                 {
-                    <div style="position: relative; height: 300px;">
-                        <canvas id="scoreChart"></canvas>
-                    </div>
+                    <div id="apexTrend" style="height: 300px;"></div>
                 }
                 else
                 {
-                    <div class="no-data-message">
-                        <i class="fas fa-chart-line"></i>
-                        <p>No quiz results yet — take a quiz to see your progress here</p>
-                    </div>
+                    <div class="no-data-message"><i class="fas fa-chart-line"></i><p>No quiz results yet — take a quiz to see your progress here</p></div>
                 }
             </div>
         </div>
 
-        <!-- Recent Quiz Attempts -->
+        <div class="chart-card">
+            <div class="card-header">
+                <h3><i class="fas fa-gauge-high"></i> Average Score</h3>
+                <span class="card-subtitle">Across all quizzes</span>
+            </div>
+            <div class="card-body">
+                @if (Model.CompletedQuizCount > 0)
+                {
+                    <div id="apexGauge" style="height: 250px;"></div>
+                    <div class="gauge-foot">
+                        <span class="gauge-chip"><i class="fas fa-trophy"></i> Best @Model.BestScore%</span>
+                        <span class="gauge-chip"><i class="fas fa-list-check"></i> @Model.CompletedQuizCount attempts</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="no-data-message"><i class="fas fa-gauge-high"></i><p>No scores yet</p></div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis: performance breakdown + recent attempts -->
+    <div class="charts-row">
+        <div class="chart-card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-pie"></i> Performance Breakdown</h3>
+                <span class="card-subtitle">How your attempts scored</span>
+            </div>
+            <div class="card-body">
+                @if (hasBands)
+                {
+                    <div id="apexBands" style="height: 290px;"></div>
+                }
+                else
+                {
+                    <div class="no-data-message"><i class="fas fa-chart-pie"></i><p>No scored attempts yet</p></div>
+                }
+            </div>
+        </div>
+
         <div class="activities-card">
             <div class="card-header">
                 <h3><i class="fas fa-clock-rotate-left"></i> Recent Quiz Attempts</h3>
@@ -201,24 +223,12 @@
                         @foreach (var s in Model.RecentAttempts)
                         {
                             var sc = s.TotalScore ?? -1;
-                            var scoreBand = sc < 0 ? "score-none"
-                                : sc >= 80 ? "score-good"
-                                : sc >= 60 ? "score-ok"
-                                : sc >= 40 ? "score-low"
-                                : "score-bad";
+                            var scoreBand = sc < 0 ? "score-none" : sc >= 80 ? "score-good" : sc >= 60 ? "score-ok" : sc >= 40 ? "score-low" : "score-bad";
                             <a class="activity-item" href="/FrontEnd/QuizResult/@s.SessionID" style="text-decoration:none;">
-                                <div class="activity-icon @scoreBand">
-                                    <i class="fas fa-pen-to-square"></i>
-                                </div>
+                                <div class="activity-icon @scoreBand"><i class="fas fa-pen-to-square"></i></div>
                                 <div class="activity-details">
-                                    <div class="activity-description">
-                                        <strong>@(s.TotalScore.HasValue ? $"{s.TotalScore}%" : "—")</strong>
-                                        on @(s.Quiz?.Title ?? "Quiz")
-                                    </div>
-                                    <div class="activity-time">
-                                        <i class="far fa-clock"></i>
-                                        @s.Timestamp.ToString("MMM dd, yyyy • hh:mm tt")
-                                    </div>
+                                    <div class="activity-description"><strong>@(s.TotalScore.HasValue ? $"{s.TotalScore}%" : "—")</strong> on @(s.Quiz?.Title ?? "Quiz")</div>
+                                    <div class="activity-time"><i class="far fa-clock"></i> @s.Timestamp.ToString("MMM dd, yyyy • hh:mm tt")</div>
                                 </div>
                                 <i class="fas fa-chevron-right module-go"></i>
                             </a>
@@ -227,19 +237,14 @@
                 }
                 else
                 {
-                    <div class="no-data-message">
-                        <i class="fas fa-clock-rotate-left"></i>
-                        <p>No quiz attempts yet</p>
-                    </div>
+                    <div class="no-data-message"><i class="fas fa-clock-rotate-left"></i><p>No quiz attempts yet</p></div>
                 }
             </div>
         </div>
     </div>
 
-    <!-- Your Modules (below Quiz Score) + Quick Actions -->
+    <!-- Your Modules + Quick Actions -->
     <div class="bottom-row">
-
-        <!-- Your Modules -->
         <div class="top-students-card">
             <div class="card-header">
                 <h3><i class="fas fa-layer-group"></i> Your Modules</h3>
@@ -258,11 +263,7 @@
                             var avatarColor = "c" + ((moduleColorIndex % 5) + 1);
                             moduleColorIndex++;
                             <a class="student-item" href="/FrontEnd/TeachingMaterial/@m.ModuleID" style="text-decoration:none;">
-                                <div class="student-avatar">
-                                    <div class="avatar-placeholder @avatarColor">
-                                        <i class="fas fa-book-open" style="font-size:1rem;"></i>
-                                    </div>
-                                </div>
+                                <div class="student-avatar"><div class="avatar-placeholder @avatarColor"><i class="fas fa-book-open" style="font-size:1rem;"></i></div></div>
                                 <div class="student-info">
                                     <div class="student-name">@m.Name</div>
                                     <div class="student-code">@m.ModuleCode &nbsp;·&nbsp; 👨‍🏫 @(m.Lecturer?.Name ?? "Staff")</div>
@@ -275,163 +276,172 @@
                 else
                 {
                     <div class="no-data-message">
-                        <i class="fas fa-book"></i>
-                        <p>You haven't joined any modules yet</p>
-                        <a href="/FrontEnd/JoinModule" class="dash-link-btn">
-                            <i class="fas fa-plus"></i> Join a Module
-                        </a>
+                        <i class="fas fa-book"></i><p>You haven't joined any modules yet</p>
+                        <a href="/FrontEnd/JoinModule" class="dash-link-btn"><i class="fas fa-plus"></i> Join a Module</a>
                     </div>
                 }
             </div>
         </div>
 
-        <!-- Quick Actions -->
         <div class="trend-card">
-            <div class="card-header">
-                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
-            </div>
+            <div class="card-header"><h3><i class="fas fa-bolt"></i> Quick Actions</h3></div>
             <div class="card-body">
                 <div class="quick-actions">
-                    <a class="quick-action qa1" href="/FrontEnd/ModuleOverview">
-                        <i class="fas fa-book"></i>
-                        <span>Browse My Modules</span>
-                        <i class="fas fa-arrow-right qa-arrow"></i>
-                    </a>
-                    <a class="quick-action qa2" href="/FrontEnd/JoinModule">
-                        <i class="fas fa-plus"></i>
-                        <span>Join a Module</span>
-                        <i class="fas fa-arrow-right qa-arrow"></i>
-                    </a>
-                    <a class="quick-action qa3" href="/FrontEnd/QuizHistory">
-                        <i class="fas fa-clock-rotate-left"></i>
-                        <span>Quiz History</span>
-                        <i class="fas fa-arrow-right qa-arrow"></i>
-                    </a>
-                    <a class="quick-action qa4" href="/FrontEnd/Chat">
-                        <i class="fas fa-comments"></i>
-                        <span>Open Chat</span>
-                        <i class="fas fa-arrow-right qa-arrow"></i>
-                    </a>
+                    <a class="quick-action qa1" href="/FrontEnd/ModuleOverview"><i class="fas fa-book"></i><span>Browse My Modules</span><i class="fas fa-arrow-right qa-arrow"></i></a>
+                    <a class="quick-action qa2" href="/FrontEnd/JoinModule"><i class="fas fa-plus"></i><span>Join a Module</span><i class="fas fa-arrow-right qa-arrow"></i></a>
+                    <a class="quick-action qa3" href="/FrontEnd/QuizHistory"><i class="fas fa-clock-rotate-left"></i><span>Quiz History</span><i class="fas fa-arrow-right qa-arrow"></i></a>
+                    <a class="quick-action qa4" href="/FrontEnd/Chat"><i class="fas fa-comments"></i><span>Open Chat</span><i class="fas fa-arrow-right qa-arrow"></i></a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    /* gauge footer chips */
+    .gauge-foot { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 0.25rem; }
+    .gauge-chip {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        font-size: 0.78rem; font-weight: 600; color: #6b5d4f;
+        background: #f5ecd9; border: 1px solid #e8ddc9;
+        padding: 0.35rem 0.7rem; border-radius: 999px;
+    }
+    .gauge-chip i { color: #b8935a; }
+    .apexcharts-tooltip.apexcharts-theme-light {
+        border: none !important;
+        box-shadow: 0 8px 24px rgba(61,48,39,0.22) !important;
+        border-radius: 10px !important;
+    }
+    .apm-tt { padding: 8px 12px; font-family: 'Inter', sans-serif; }
+    .apm-tt-day { font-weight: 700; color: #3d3027; margin-bottom: 4px; font-size: 0.82rem; }
+    .apm-tt-row { color: #6b5d4f; font-size: 0.8rem; display: flex; gap: 8px; justify-content: space-between; }
+    .apm-tt-row b { color: #8b7355; }
+</style>
+
 <script>
-    window.scoreTrend = {
+    window.dash = {
         labels: @Html.Raw(JsonSerializer.Serialize(scoreLabels)),
         values: @Html.Raw(JsonSerializer.Serialize(scoreValues)),
-        details: @Html.Raw(JsonSerializer.Serialize(scoreDetails))
+        details: @Html.Raw(JsonSerializer.Serialize(scoreDetails)),
+        avg: @Model.AverageScore,
+        bands: [@bandExcellent, @bandGood, @bandFair, @bandWeak]
     };
 
     (function () {
-        var canvas = document.getElementById('scoreChart');
-        if (!canvas || !window.scoreTrend || !window.scoreTrend.values.length) return;
+        var GOLD = '#b8935a', GOLD_LT = '#e3c987', TAN = '#8b7355';
+        var ink = '#6b5d4f', grid = '#ece3d2';
 
-        new Chart(canvas.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: window.scoreTrend.labels,
-                datasets: [{
-                    label: 'Score',
-                    data: window.scoreTrend.values,
-                    borderColor: '#4f46e5',
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#4f46e5',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 8,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1f2937',
-                        titleColor: '#ffffff',
-                        bodyColor: '#e5e7eb',
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: false,
-                        callbacks: {
-                            // Title = the day; if more than one quiz, note the count + average
-                            title: function (items) {
-                                var i = items[0].dataIndex;
-                                var day = window.scoreTrend.labels[i];
-                                var list = (window.scoreTrend.details && window.scoreTrend.details[i]) || [];
-                                if (list.length > 1) {
-                                    return day + '  ·  ' + list.length + ' quizzes (avg ' + items[0].raw + '%)';
-                                }
-                                return day;
-                            },
-                            // Body = one line per quiz taken that day
-                            label: function (context) {
-                                var list = (window.scoreTrend.details && window.scoreTrend.details[context.dataIndex]) || [];
-                                if (list.length === 0) {
-                                    return 'Score: ' + context.raw + '%';
-                                }
-                                if (list.length === 1) {
-                                    return list[0].title + ': ' + list[0].score + '%';
-                                }
-                                return list.map(function (q) {
-                                    return '• ' + q.title + ': ' + q.score + '%';
-                                });
-                            }
+        // ---- Area: score trend ----
+        var trendEl = document.getElementById('apexTrend');
+        if (trendEl && window.ApexCharts && window.dash.values.length) {
+            new ApexCharts(trendEl, {
+                chart: { type: 'area', height: 300, fontFamily: 'Inter, sans-serif', toolbar: { show: false }, animations: { easing: 'easeinout', speed: 900 } },
+                series: [{ name: 'Avg score', data: window.dash.values }],
+                colors: [GOLD],
+                stroke: { curve: 'smooth', width: 3, lineCap: 'round' },
+                fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.45, opacityTo: 0.03, stops: [0, 95], gradientToColors: [GOLD_LT] } },
+                dataLabels: { enabled: false },
+                markers: { size: 0, hover: { size: 6 }, colors: ['#fff'], strokeColors: GOLD, strokeWidth: 3 },
+                xaxis: { categories: window.dash.labels, labels: { style: { colors: ink, fontSize: '12px' } }, axisBorder: { show: false }, axisTicks: { show: false }, tooltip: { enabled: false } },
+                yaxis: { min: 0, max: 100, tickAmount: 4, labels: { style: { colors: ink }, formatter: function (v) { return Math.round(v) + '%'; } } },
+                grid: { borderColor: grid, strokeDashArray: 0, xaxis: { lines: { show: false } } },
+                tooltip: {
+                    custom: function (o) {
+                        var i = o.dataPointIndex;
+                        var day = window.dash.labels[i];
+                        var list = (window.dash.details && window.dash.details[i]) || [];
+                        var rows = list.map(function (q) { return '<div class="apm-tt-row"><span>' + q.title + '</span><b>' + q.score + '%</b></div>'; }).join('');
+                        var head = list.length > 1 ? (day + ' · ' + list.length + ' quizzes (avg ' + window.dash.values[i] + '%)') : day;
+                        return '<div class="apm-tt"><div class="apm-tt-day">' + head + '</div>' + rows + '</div>';
+                    }
+                }
+            }).render();
+        }
+
+        // ---- RadialBar: average gauge ----
+        var gaugeEl = document.getElementById('apexGauge');
+        if (gaugeEl && window.ApexCharts) {
+            new ApexCharts(gaugeEl, {
+                chart: { type: 'radialBar', height: 250, fontFamily: 'Inter, sans-serif', animations: { speed: 1000 } },
+                series: [window.dash.avg],
+                colors: [GOLD],
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -135, endAngle: 135,
+                        hollow: { size: '62%' },
+                        track: { background: '#f0e6d0', strokeWidth: '100%', margin: 6 },
+                        dataLabels: {
+                            name: { show: true, offsetY: 22, color: '#7a6a55', fontSize: '13px', fontWeight: 600 },
+                            value: { show: true, offsetY: -12, color: '#3d3027', fontSize: '40px', fontWeight: 800, formatter: function (v) { return Math.round(v) + '%'; } }
                         }
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        grid: { color: '#e5e7eb' },
-                        ticks: { callback: function (v) { return v + '%'; } }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
+                fill: { type: 'gradient', gradient: { shade: 'light', type: 'horizontal', gradientToColors: [GOLD_LT], stops: [0, 100] } },
+                stroke: { lineCap: 'round' },
+                labels: ['Average']
+            }).render();
+        }
+
+        // ---- Doughnut: performance bands (status severity) ----
+        var bandsEl = document.getElementById('apexBands');
+        if (bandsEl && window.ApexCharts && window.dash.bands.some(function (n) { return n > 0; })) {
+            new ApexCharts(bandsEl, {
+                chart: { type: 'donut', height: 290, fontFamily: 'Inter, sans-serif', animations: { speed: 900 } },
+                series: window.dash.bands,
+                labels: ['Excellent (80+)', 'Good (60–79)', 'Fair (40–59)', 'Weak (<40)'],
+                colors: ['#0ca30c', '#fab219', '#ec835a', '#d03b3b'],
+                stroke: { width: 2, colors: ['#fff'] },
+                dataLabels: { enabled: true, style: { fontSize: '12px', fontWeight: 700 }, dropShadow: { enabled: false } },
+                plotOptions: { pie: { donut: { size: '62%', labels: { show: true, total: { show: true, label: 'Attempts', color: '#7a6a55', formatter: function (w) { return w.globals.seriesTotals.reduce(function (a, b) { return a + b; }, 0); } } } } } },
+                legend: { position: 'bottom', fontSize: '12px', labels: { colors: '#6b5d4f' }, markers: { width: 10, height: 10, radius: 3 } },
+                tooltip: { y: { formatter: function (v) { return v + ' attempt' + (v === 1 ? '' : 's'); } } }
+            }).render();
+        }
+    })();
+
+    // ---- Count-up on stat values ----
+    (function () {
+        var els = document.querySelectorAll('.stat-value.js-count');
+        els.forEach(function (el) {
+            var raw = el.textContent.trim();
+            var m = raw.match(/(\d+)/);
+            if (!m) return;
+            var target = parseInt(m[1], 10);
+            var prefix = raw.slice(0, m.index);
+            var suffix = raw.slice(m.index + m[1].length);
+            var start = null, dur = 900;
+            function step(ts) {
+                if (!start) start = ts;
+                var p = Math.min((ts - start) / dur, 1);
+                var val = Math.floor((1 - Math.pow(1 - p, 3)) * target);
+                el.textContent = prefix + val + suffix;
+                if (p < 1) requestAnimationFrame(step);
+                else el.textContent = raw;
             }
+            requestAnimationFrame(step);
         });
     })();
 
-    // ── Announcements horizontal slider ──────────────────────
+    // ---- Announcements horizontal slider ----
     (function () {
         var track = document.getElementById('annTrack');
         if (!track) return;
         var total = track.querySelectorAll('.announcement-slide').length;
-        if (total < 2) return; // single announcement → nothing to slide
-
+        if (total < 2) return;
         var counter = document.getElementById('annCounter');
         var prev = document.getElementById('annPrev');
         var next = document.getElementById('annNext');
         var dots = Array.prototype.slice.call(document.querySelectorAll('#annDots .ann-dot'));
         var index = 0;
-
         function render() {
             track.style.transform = 'translateX(' + (-index * 100) + '%)';
             if (counter) counter.textContent = (index + 1) + ' / ' + total;
             dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
         }
-
-        function go(i) {
-            index = (i + total) % total; // wrap around so an arrow always moves
-            render();
-        }
-
+        function go(i) { index = (i + total) % total; render(); }
         if (prev) prev.addEventListener('click', function () { go(index - 1); });
         if (next) next.addEventListener('click', function () { go(index + 1); });
-        dots.forEach(function (d) {
-            d.addEventListener('click', function () { go(parseInt(d.dataset.index, 10) || 0); });
-        });
-
+        dots.forEach(function (d) { d.addEventListener('click', function () { go(parseInt(d.dataset.index, 10) || 0); }); });
         render();
     })();
 </script>

@@ -58,6 +58,18 @@ window.addEventListener('scroll', function() {
     }
 });
 
+// Highlight the current page in the side menu ("you are here" indicator).
+// The .menu-item.active style existed but nothing ever applied the class.
+document.addEventListener('DOMContentLoaded', function () {
+    const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+    document.querySelectorAll('#expandableMenu .menu-item').forEach(function (link) {
+        const href = (link.getAttribute('href') || '').toLowerCase().replace(/\/+$/, '');
+        if (href && (path === href || path.startsWith(href + '/'))) {
+            link.classList.add('active');
+        }
+    });
+});
+
 // Logout confirmation function
 function confirmLogout() {
     if (confirm('Are you sure you want to logout?')) {
