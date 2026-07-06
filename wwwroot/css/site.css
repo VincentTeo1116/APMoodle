@@ -1033,6 +1033,10 @@ footer.footer .footer-copy i {
     }
 }
 
+.brand { display: flex; align-items: center; gap: 0.6rem; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.3rem;  text-decoration: none; color:#080a0f;}
+.brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--gold-grad); display: grid; place-items: center; color: #fff; font-size: 1rem; box-shadow: 0 5px 14px rgba(184,147,90,.4); transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+.brand:hover .brand-mark { transform: rotate(-8deg) scale(1.08); }
+
 .guest-navbar {
     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 40%, #fae8ff 100%) !important;
     border-bottom: 1px solid rgba(79, 70, 229, 0.05) !important;
