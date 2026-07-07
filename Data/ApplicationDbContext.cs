@@ -10,32 +10,19 @@ namespace APMoodle.Data
         {
         }
 
-        // DbSets for all tables
         public DbSet<Student> Students { get; set; } = null!;
-
         public DbSet<Lecturer> Lecturers { get; set; } = null!;
-
         public DbSet<Admin> Admins { get; set; } = null!;
-
         public DbSet<Module> Modules { get; set; } = null!;
-
         public DbSet<Material> Materials { get; set; } = null!;
-
         public DbSet<Quiz> Quizzes { get; set; } = null!;
-
         public DbSet<Question> Questions { get; set; } = null!;
-
         public DbSet<Session> Sessions { get; set; } = null!;
-
         public DbSet<Result> Results { get; set; } = null!;
-
         public DbSet<Announcement> Announcements { get; set; } = null!;
-
         public DbSet<Enrollment>? Enrollments { get; set; }
-
         public DbSet<ChatSession> ChatSessions { get; set; } = null!;
         public DbSet<Message> Messages { get; set; } = null!;
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -248,7 +235,6 @@ namespace APMoodle.Data
                 entity.HasKey(a => a.AnnouncementID);
                 entity.Property(a => a.Title).HasMaxLength(200).IsRequired();
                 entity.Property(a => a.Message).HasMaxLength(2000).IsRequired();
-
                 entity.Property(a => a.CreatedAt)
                     .HasColumnType("timestamp with time zone")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -256,19 +242,16 @@ namespace APMoodle.Data
                         v => v.ToUniversalTime(),
                         v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
                     );
-
                 entity.Property(a => a.Status)
                     .HasMaxLength(20)
                     .IsRequired()
                     .HasDefaultValue("Active");
-
                 entity.Property(a => a.DeletedAt)
                     .HasColumnType("timestamp with time zone")
                     .HasConversion(
                         v => v.HasValue ? v.Value.ToUniversalTime() : v,
                         v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v
                     );
-                
                 entity.Property(a => a.LastModifiedAt)
                     .HasColumnType("timestamp with time zone")
                     .HasConversion(
@@ -278,7 +261,6 @@ namespace APMoodle.Data
 
                 entity.Property(a => a.LastModifiedBy);
                 entity.HasIndex(a => a.Status);
-
                 // Relationships
                 entity.HasOne(a => a.Creator)
                     .WithMany(ad => ad.Announcements)

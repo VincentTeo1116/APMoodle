@@ -54,8 +54,7 @@ namespace APMoodle.Services.Interfaces
 
             _context.Entry(existingAnnouncement).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            
-            // Reload with navigation properties
+
             return await GetAnnouncementByIdAsync(id) ?? existingAnnouncement;
         }
 

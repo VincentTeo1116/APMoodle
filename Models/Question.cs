@@ -14,7 +14,7 @@ namespace APMoodle.Models
 
         [Required]
         [MaxLength(1)]
-        public string CorrectAnswer { get; set; } = "A";  // A, B, C, or D
+        public string CorrectAnswer { get; set; } = "A"; 
 
         [Required]
         [MaxLength(200)]
