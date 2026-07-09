@@ -24,9 +24,6 @@ namespace APMoodle.Pages.BackEnd
             _environment = environment;
         }
 
-        public string? Message { get; set; }
-        public bool IsSuccess { get; set; }
-
         // Common properties
         public string UserCode { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
@@ -35,8 +32,6 @@ namespace APMoodle.Pages.BackEnd
         public DateTime? DOB { get; set; }
         public string Gender { get; set; } = string.Empty;
         public string? ProfilePic { get; set; }
-        
-        // Lecturer specific
         public string? Department { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
@@ -45,9 +40,7 @@ namespace APMoodle.Pages.BackEnd
             var userRole = HttpContext.Session.GetString("UserRole");
 
             if (string.IsNullOrEmpty(userId))
-            {
                 return RedirectToPage("/FrontEnd/Login");
-            }
 
             await LoadUserData(int.Parse(userId), userRole ?? "");
             return Page();
@@ -71,22 +64,15 @@ namespace APMoodle.Pages.BackEnd
                 var student = await _studentService.GetStudentByIdAsync(id);
                 if (student == null) return NotFound();
 
-                // Update phone
                 student.PhoneNumber = phoneNumber;
-
-                // Handle profile picture: either remove, upload new, or keep existing
                 if (removePhoto)
-                {
                     student.ProfilePic = null;
-                }
                 else
                 {
                     var newPic = await HandleProfilePictureUpload();
                     if (!string.IsNullOrEmpty(newPic))
                         student.ProfilePic = newPic;
                 }
-
-                // Save everything at once
                 success = await _studentService.UpdateStudentAsync(student);
             }
             else if (userRole == "lecturer")
@@ -95,18 +81,14 @@ namespace APMoodle.Pages.BackEnd
                 if (lecturer == null) return NotFound();
 
                 lecturer.PhoneNumber = phoneNumber;
-
                 if (removePhoto)
-                {
                     lecturer.ProfilePic = null;
-                }
                 else
                 {
                     var newPic = await HandleProfilePictureUpload();
                     if (!string.IsNullOrEmpty(newPic))
                         lecturer.ProfilePic = newPic;
                 }
-
                 success = await _lecturerService.UpdateLecturerAsync(lecturer);
             }
             else if (userRole == "admin")
@@ -115,40 +97,33 @@ namespace APMoodle.Pages.BackEnd
                 if (admin == null) return NotFound();
 
                 admin.PhoneNumber = phoneNumber;
-
                 if (removePhoto)
-                {
                     admin.ProfilePic = null;
-                }
                 else
                 {
                     var newPic = await HandleProfilePictureUpload();
                     if (!string.IsNullOrEmpty(newPic))
                         admin.ProfilePic = newPic;
                 }
-
                 success = await _adminService.UpdateAdminAsync(admin);
             }
             else
-            {
                 return Forbid();
-            }
 
             if (success)
             {
-                Message = "Profile updated successfully!";
-                IsSuccess = true;
-                await LoadUserData(id, userRole);
+                TempData["ShowSuccessModal"] = true;
+                TempData["SuccessMessage"] = "Profile updated successfully!";
+                return RedirectToPage(); 
             }
             else
             {
-                Message = "Failed to update profile. Please try again.";
-                IsSuccess = false;
-                await LoadUserData(id, userRole);
+                TempData["ShowErrorModal"] = true;
+                TempData["ErrorMessage"] = "Failed to update profile. Please try again.";
+                return RedirectToPage();
             }
-
-            return Page();
         }
+
         private async Task<string?> HandleProfilePictureUpload()
         {
             var file = Request.Form.Files.GetFile("profilePic");
@@ -172,9 +147,7 @@ namespace APMoodle.Pages.BackEnd
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
-            {
                 await file.CopyToAsync(stream);
-            }
 
             return $"/uploads/profiles/{uniqueFileName}";
         }

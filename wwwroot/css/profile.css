@@ -152,6 +152,176 @@
     margin-bottom: 20px;
 }
 
+.cropper-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.1);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 1 !important;
+}
+
+.cropper-modal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+.cropper-modal.show {
+    display: flex;
+}
+
+.cropper-modal-content {
+    background: #fff !important;
+    border-radius: 20px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    opacity: 1 !important;
+}
+
+.cropper-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #faf7f0;
+    border-radius: 20px 20px 0 0;
+}
+
+.cropper-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1c1917;
+}
+
+.cropper-modal-close {
+    font-size: 28px;
+    cursor: pointer;
+    color: #78716c;
+    transition: all 0.2s;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: none;
+    border: none;
+}
+
+.cropper-modal-close:hover {
+    background: #e5e7eb;
+    color: #1c1917;
+}
+
+.cropper-modal-body {
+    padding: 20px;
+    flex: 1;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+.cropper-modal-body .cropper-container {
+    max-height: 400px;
+    width: 100%;
+}
+
+.cropper-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    background: #faf7f0;
+    border-radius: 0 0 20px 20px;
+}
+
+.cropper-modal-footer .btn-secondary {
+    padding: 10px 24px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.cropper-modal-footer .btn-secondary:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.cropper-modal-footer .btn-primary {
+    padding: 10px 28px;
+    background: linear-gradient(135deg, #c9a24b, #8b7355);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(139, 115, 85, 0.2);
+}
+
+.cropper-modal-footer .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@media (max-width: 640px) {
+    .cropper-modal {
+        padding: 10px;
+    }
+    .cropper-modal-content {
+        border-radius: 16px;
+    }
+    .cropper-modal-header {
+        padding: 12px 16px;
+    }
+    .cropper-modal-body {
+        padding: 12px;
+    }
+    .cropper-modal-footer {
+        flex-direction: column;
+        padding: 12px 16px;
+    }
+    .cropper-modal-footer button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 @media (max-width: 768px) {
     .profile-dashboard {
         flex-direction: column;

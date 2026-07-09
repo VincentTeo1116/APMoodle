@@ -9,6 +9,28 @@
     var userId = HttpContext.Session.GetString("UserID");
     var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
     var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
+
+    string GetAvatarColor(string role) => role switch
+    {
+        "student" => "#3b82f6",
+        "lecturer" => "#f59e0b",
+        "admin" => "#ef4444",
+        _ => "#64748b"
+    };
+
+    string GetInitials(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return "?";
+        var parts = name.Trim().Split(' ');
+        if (parts.Length >= 2) return $"{parts[0][0]}{parts[1][0]}".ToUpper();
+        return name.Substring(0, Math.Min(2, name.Length)).ToUpper();
+    }
+
+    var avatarColor = GetAvatarColor(userRole);
+    var initials = GetInitials(Model.Name);
+    var profilePicUrl = !string.IsNullOrEmpty(Model.ProfilePic) 
+        ? Model.ProfilePic + "?v=" + DateTime.Now.Ticks
+        : null;
 }
 
 <head>
@@ -23,30 +45,27 @@
         <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard > @ViewData["Title"]</p>
     </div>
 
-    @if (!string.IsNullOrEmpty(Model.Message))
-    {
-        <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-error")">
-            @Model.Message
-        </div>
-    }
-
     <form method="post" enctype="multipart/form-data" id="profileForm">
+        @Html.AntiForgeryToken()
+
         <div class="profile-dashboard">
             <!-- Left Section: Profile Picture -->
             <div class="profile-picture">
                 <div class="picture" id="profilePictureContainer">
-                    @if (!string.IsNullOrEmpty(Model.ProfilePic))
+                    @if (!string.IsNullOrEmpty(profilePicUrl))
                     {
-                        <img src="@Model.ProfilePic" alt="Profile Picture" class="profile-img" id="profileImg" />
+                        <img src="@profilePicUrl"
+                             alt="Profile Picture"
+                             class="profile-img"
+                             id="profileImg"
+                             data-color="@avatarColor"
+                             data-initials="@initials"
+                             onerror="handleImageError(this)" />
                     }
                     else
                     {
-                        <div class="default-avatar" id="defaultAvatar">
-                            @{
-                                var displayName = string.IsNullOrEmpty(Model.Name) ? "👤" : 
-                                    (Model.Name.Length >= 2 ? Model.Name.Substring(0, 2).ToUpper() : Model.Name.ToUpper());
-                            }
-                            @displayName
+                        <div class="avatar-placeholder" style="background-color: @avatarColor; width: 200px; height: 200px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 700; color: white; border: 3px solid #e2e8f0;">
+                            @initials
                         </div>
                     }
                 </div>
@@ -151,60 +170,112 @@
         <div class="form-actions">
             <button type="submit" class="btn-update">Update Profile</button>
         </div>
+
+        <input type="hidden" name="RemovePhoto" id="removePhotoInput" value="false" />
     </form>
 </div>
 
-<!-- Cropper Modal -->
-<div id="cropModal" class="modal" style="display:none;">
-    <div class="modal-content" style="max-width:700px;">
-        <div class="modal-header">
+<div id="cropModal" class="cropper-modal">
+    <div class="cropper-modal-content">
+        <div class="cropper-modal-header">
             <h3>Crop Profile Picture</h3>
-            <span class="modal-close" id="cropModalClose">&times;</span>
+            <button class="cropper-modal-close" id="cropModalClose">&times;</button>
         </div>
-        <div class="modal-body" style="padding:20px;">
+        <div class="cropper-modal-body">
             <div style="max-height:400px; overflow:hidden;">
                 <img id="cropImage" src="" alt="Crop Image" />
             </div>
         </div>
-        <div class="modal-footer" style="display:flex; gap:12px; justify-content:flex-end; padding:16px 24px;">
+        <div class="cropper-modal-footer">
             <button class="btn-secondary" id="cropCancelBtn">Cancel</button>
             <button class="btn-primary" id="cropSaveBtn">Crop & Upload</button>
         </div>
     </div>
 </div>
 
-<!-- Hidden input to signal photo removal -->
-<input type="hidden" name="RemovePhoto" id="removePhotoInput" value="false" />
+@if (TempData["ShowSuccessModal"] != null && (bool)TempData["ShowSuccessModal"])
+{
+    <div id="successModal" class="modal-overlay-full" style="display: flex !important; align-items: center; justify-content: center;" onclick="if(event.target===this)this.style.display='none'">
+        <div class="modal-container">
+            <div class="modal-icon success-icon">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <h3 class="modal-title">Profile Updated</h3>
+            <p class="modal-message">@(TempData["SuccessMessage"]?.ToString() ?? "Your profile has been updated successfully.")</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-success" onclick="document.getElementById('successModal').style.display='none'">
+                    <i class="bi bi-check-circle"></i> OK
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="deleteConfirmModal" class="modal-overlay-full" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-icon warning-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <h3 class="modal-title">Remove Profile Picture?</h3>
+        <p class="modal-message">You are about to remove your profile picture. This action can be undone later by uploading a new one.</p>
+        <div class="modal-warning">
+            <i class="bi bi-shield-exclamation"></i>
+            <span>Your current picture will be permanently deleted.</span>
+        </div>
+        <div class="modal-actions">
+            <button class="modal-btn modal-cancel" id="deleteCancelBtn">
+                <i class="bi bi-x-circle"></i> Cancel
+            </button>
+            <button class="modal-btn modal-danger" id="deleteConfirmBtn">
+                <i class="bi bi-trash"></i> Remove
+            </button>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
+    function handleImageError(img) {
+        img.onerror = null;
+        const color = img.dataset.color || '#64748b';
+        const initials = img.dataset.initials || '?';
+        const parent = img.parentElement;
+        if (!parent || !parent.nodeType) return;
+
+        const placeholder = document.createElement('div');
+        placeholder.className = 'avatar-placeholder';
+        placeholder.style.backgroundColor = color;
+        placeholder.style.width = '200px';
+        placeholder.style.height = '200px';
+        placeholder.style.borderRadius = '50%';
+        placeholder.style.display = 'flex';
+        placeholder.style.alignItems = 'center';
+        placeholder.style.justifyContent = 'center';
+        placeholder.style.fontSize = '40px';
+        placeholder.style.fontWeight = '700';
+        placeholder.style.color = 'white';
+        placeholder.style.border = '3px solid #e2e8f0';
+        placeholder.textContent = initials;
+
+        parent.replaceChild(placeholder, img);
+    }
+    window.handleImageError = handleImageError;
+
     let cropper = null;
-    const modal = document.getElementById('cropModal');
+    const cropModal = document.getElementById('cropModal');
     const cropImage = document.getElementById('cropImage');
     const fileInput = document.getElementById('profilePic');
     const removePhotoBtn = document.getElementById('removePhotoBtn');
     const removePhotoInput = document.getElementById('removePhotoInput');
-    const profileImg = document.getElementById('profileImg');
-    const defaultAvatar = document.getElementById('defaultAvatar');
-    const container = document.getElementById('profilePictureContainer');
+    const form = document.getElementById('profileForm');
 
-    // Trigger file input when "Change Profile" clicked
-    document.querySelector('.upload-picture').addEventListener('click', function(e) {
-        // Prevent triggering if clicking the remove button inside
-        if (e.target.classList.contains('remove-btn')) return;
-        fileInput.click();
-    });
-
-    // Handle file selection
     fileInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = function(event) {
             cropImage.src = event.target.result;
-            // Show modal
-            modal.style.display = 'flex';
-            // Initialize cropper after image loads
+            cropModal.classList.add('show');
             if (cropImage.complete) {
                 initCropper();
             } else {
@@ -216,11 +287,9 @@
     });
 
     function initCropper() {
-        if (cropper) {
-            cropper.destroy();
-        }
+        if (cropper) cropper.destroy();
         cropper = new Cropper(cropImage, {
-            aspectRatio: 1, // Square crop
+            aspectRatio: 1,
             viewMode: 1,
             autoCropArea: 1,
             movable: true,
@@ -230,58 +299,83 @@
         });
     }
 
-    function closeModal() {
-        modal.style.display = 'none';
+    function closeCropModal() {
+        cropModal.classList.remove('show');
         if (cropper) {
             cropper.destroy();
             cropper = null;
         }
     }
 
-    // Cancel crop
-    document.getElementById('cropCancelBtn').addEventListener('click', closeModal);
-    document.getElementById('cropModalClose').addEventListener('click', closeModal);
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) closeModal();
+    document.getElementById('cropCancelBtn').addEventListener('click', closeCropModal);
+    document.getElementById('cropModalClose').addEventListener('click', closeCropModal);
+    cropModal.addEventListener('click', function(e) {
+        if (e.target === cropModal) closeCropModal();
     });
 
-    // Save cropped image
     document.getElementById('cropSaveBtn').addEventListener('click', function() {
         if (!cropper) return;
-        // Get cropped canvas as blob
         cropper.getCroppedCanvas().toBlob(function(blob) {
-            // Create a file from the blob
             const file = new File([blob], 'profile_cropped.jpg', { type: 'image/jpeg' });
-            // Create a new FormData and append the cropped file
-            const formData = new FormData();
-            formData.append('profilePic', file);
-            // Also send the other form fields (PhoneNumber)
-            const phoneInput = document.querySelector('input[name="PhoneNumber"]');
-            if (phoneInput) formData.append('PhoneNumber', phoneInput.value);
-            // Send via AJAX
+            const formData = new FormData(form);
+            formData.set('profilePic', file, 'profile_cropped.jpg');
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const headers = {};
+            if (token) headers['RequestVerificationToken'] = token;
+
             fetch(window.location.href, {
                 method: 'POST',
+                headers: headers,
                 body: formData
             })
             .then(response => response.text())
             .then(html => {
-                // Reload the page to show updated profile picture
                 window.location.reload();
             })
             .catch(error => {
                 alert('Error uploading cropped image.');
             });
         }, 'image/jpeg', 0.9);
-        closeModal();
+        closeCropModal();
     });
 
-    // Remove photo
+    const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+    const deleteCancelBtn = document.getElementById('deleteCancelBtn');
+    const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+
     removePhotoBtn.addEventListener('click', function() {
-        if (confirm('Are you sure you want to remove your profile picture?')) {
-            removePhotoInput.value = 'true';
-            // Submit the form with removal flag
-            document.getElementById('profileForm').submit();
+        deleteConfirmModal.style.display = 'flex';
+    });
+
+    deleteCancelBtn.addEventListener('click', function() {
+        deleteConfirmModal.style.display = 'none';
+    });
+
+    deleteConfirmModal.addEventListener('click', function(e) {
+        if (e.target === deleteConfirmModal) {
+            deleteConfirmModal.style.display = 'none';
         }
     });
 
+    deleteConfirmBtn.addEventListener('click', function() {
+        deleteConfirmModal.style.display = 'none';
+        removePhotoInput.value = 'true';
+        form.submit();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const successModal = document.getElementById('successModal');
+            if (successModal && successModal.style.display !== 'none') {
+                successModal.style.display = 'none';
+            }
+            if (deleteConfirmModal.style.display === 'flex') {
+                deleteConfirmModal.style.display = 'none';
+            }
+            if (cropModal.style.display === 'flex') {
+                closeCropModal();
+            }
+        }
+    });
 </script>

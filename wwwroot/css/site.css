@@ -131,18 +131,15 @@ body {
     transform: translateY(-2px);
 }
 
-/* Adjust body padding to account for fixed navbar and sidebar */
 body {
     padding-top: 55px;
     margin-bottom: 60px;
 }
 
-/* Container adjustment when sidebar is present */
 .container {
     transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
-/* When sidebar exists (logged in users) */
 body:has(.expandable-vertical-menu) .container {
     margin-left: 60px;
     width: calc(100% - 60px);
@@ -155,7 +152,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     max-width: calc(100% - 260px);
 }
 
-/* Fixed sidebar - always visible */
 .expandable-vertical-menu {
     position: fixed;
     left: 0;
@@ -166,12 +162,10 @@ body:has(.expandable-vertical-menu.expanded) .container {
     transition: width 0.3s ease;
 }
 
-/* Expanded width */
 .expandable-vertical-menu.expanded {
     width: 260px;
 }
 
-/* Menu panel */
 .menu-panel {
     width: 60px;
     height: 100%;
@@ -188,14 +182,12 @@ body:has(.expandable-vertical-menu.expanded) .container {
     width: 260px;
 }
 
-/* Menu links - takes remaining space (pushes button to bottom) */
 .menu-links {
     padding: 10px 0;
     flex: 1;
     overflow-y: auto;
 }
 
-/* Menu items */
 .menu-item {
     display: flex;
     align-items: center;
@@ -225,7 +217,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     min-width: 28px;
 }
 
-/* Hide text when collapsed */
 .menu-item span:not(.menu-icon) {
     display: none;
 }
@@ -234,7 +225,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     display: inline;
 }
 
-/* Expand/Collapse Button at BOTTOM */
 .btn-expand-menu {
     background: linear-gradient(135deg, #9b8168, #a68f7a);
     width: 100%;
@@ -341,7 +331,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     justify-content: center;
 }
 
-/* Modal Container - base container for all modals */
 .modal-container {
     background: white;
     border-radius: 20px;
@@ -353,7 +342,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     animation: modalSlideIn 0.3s ease-out;
 }
 
-/* Modal Icon Base */
 .modal-icon {
     font-size: 48px;
     margin-bottom: 16px;
@@ -363,7 +351,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     font-size: 64px;
 }
 
-/* Modal Icon Variants */
 .error-icon {
     color: #ef4444;
 }
@@ -384,7 +371,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     color: #3b82f6;
 }
 
-/* Modal Title */
 .modal-title {
     font-size: 24px;
     font-weight: 700;
@@ -392,7 +378,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     color: #1e293b;
 }
 
-/* Modal Message */
 .modal-message {
     color: #64748b;
     margin-bottom: 24px;
@@ -400,7 +385,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     font-size: 15px;
 }
 
-/* Modal Warning */
 .modal-warning {
     background: #fef3c7;
     border-radius: 12px;
@@ -422,14 +406,12 @@ body:has(.expandable-vertical-menu.expanded) .container {
     font-size: 13px;
 }
 
-/* Modal Actions Buttons Container */
 .modal-actions {
     display: flex;
     justify-content: center;
     gap: 12px;
 }
 
-/* Modal Buttons Base */
 .modal-btn {
     padding: 12px 32px;
     border-radius: 40px;
@@ -441,7 +423,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     min-width: 120px;
 }
 
-/* Modal Button Variants */
 .modal-btn.modal-cancel {
     background: #f3f4f6;
     color: #6b7280;

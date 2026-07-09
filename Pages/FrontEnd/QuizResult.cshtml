@@ -224,16 +224,22 @@
                         <a class="qr-btn qr-btn-ghost" href="/FrontEnd/QuizHistory">
                             <i class="fas fa-clock-rotate-left"></i> Quiz History
                         </a>
+                        @if (Model.CurrentQuiz?.MaterialID > 0)
+                        {
+                            <a class="qr-btn qr-btn-ghost" href="/FrontEnd/TeachingMaterialOverview/@Model.CurrentQuiz.MaterialID">
+                                <i class="fas fa-arrow-left"></i> Back to Material
+                            </a>
+                        }
                     }
                     @if (Model.IsGuest)
                     {
                         <a class="qr-btn qr-btn-primary" href="/FrontEnd/ViewAvailableQuiz">
                             <i class="fas fa-arrow-left"></i> Back to Public Quizzes
                         </a>
+                        <a class="qr-btn qr-btn-ghost" href="/FrontEnd/Login">
+                            <i class="bi bi-person-check"></i> Back to Login Page
+                        </a>
                     }
-                    <a class="qr-btn qr-btn-ghost" href="/FrontEnd/Login">
-                        <i class="bi bi-person-check"></i> Back to Login Page
-                    </a>
                 </div>
             </div>
         }

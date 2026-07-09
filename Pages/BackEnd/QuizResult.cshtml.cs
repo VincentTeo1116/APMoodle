@@ -18,6 +18,7 @@ namespace APMoodle.Pages.BackEnd
         public Session? CurrentSession { get; set; }
         public Quiz? CurrentQuiz { get; set; }
         public List<QuestionReview> Reviews { get; set; } = new();
+        public int MaterialId { get; set; }
         public int CorrectCount { get; set; }
         public int TotalQuestions { get; set; }
         public int TotalTimeUsed { get; set; }
@@ -33,26 +34,22 @@ namespace APMoodle.Pages.BackEnd
 
         public async Task<IActionResult> OnGetAsync(int id, [FromQuery] int guest = 0)
         {
-            // ---- Guest mode ----
             if (id == 0 && guest == 1)
             {
                 return await LoadGuestResultAsync();
             }
 
-            // ---- Authenticated user ----
             var userId = HttpContext.Session.GetString("UserID");
             var userRole = HttpContext.Session.GetString("UserRole");
 
             if (string.IsNullOrEmpty(userId))
                 return RedirectToPage("/FrontEnd/Login");
 
-            // Student: must own the session
             if (userRole == "student")
             {
                 if (!await _sessionService.IsSessionOwnedByStudentAsync(id, int.Parse(userId)))
                     return StatusCode(StatusCodes.Status403Forbidden);
             }
-            // Lecturer or Admin: allowed to view any session
             else if (userRole != "lecturer" && userRole != "admin")
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
@@ -63,6 +60,7 @@ namespace APMoodle.Pages.BackEnd
                 return NotFound();
 
             CurrentQuiz = CurrentSession.Quiz;
+            MaterialId = CurrentQuiz?.MaterialID ?? 0;
             var questions = (CurrentQuiz?.Questions ?? new List<Question>())
                 .OrderBy(q => q.QuestionID)
                 .ToList();
@@ -100,7 +98,6 @@ namespace APMoodle.Pages.BackEnd
 
             IsGuest = true;
 
-            // Build a fake session-like structure to reuse the existing view
             CurrentSession = new Session
             {
                 SessionID = 0,
