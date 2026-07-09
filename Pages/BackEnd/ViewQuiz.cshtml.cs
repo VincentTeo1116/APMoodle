@@ -31,7 +31,6 @@ namespace APMoodle.Pages.BackEnd
             CurrentQuiz = await _quizService.GetQuizByIdAsync(id);
             if (CurrentQuiz == null) return NotFound();
 
-            // If quiz is not public, only students can access
             if (!CurrentQuiz.IsPublic && userRole != "student")
             {
                 return RedirectToPage("/FrontEnd/Login");
@@ -47,14 +46,12 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
-            // If user isnt a student, show the quiz without creating a session
             if (userRole != "student")
             {
                 IsGuest = true;
                 return Page();
             }
 
-            // Student flow: create session
             SessionId = await _sessionService.StartSessionAsync(int.Parse(userId), id);
             return Page();
         }
@@ -72,7 +69,6 @@ namespace APMoodle.Pages.BackEnd
                 .OrderBy(q => q.QuestionID)
                 .ToList();
 
-            // Collect submitted answers (using the service's AnswerSubmission type)
             var submissions = new List<AnswerSubmission>();
             foreach (var question in questions)
             {
@@ -86,7 +82,6 @@ namespace APMoodle.Pages.BackEnd
                 });
             }
 
-            // ========== GUEST SUBMISSION ==========
             if (userRole != "student")
             {
                 var correctCount = submissions.Count(s =>
@@ -96,7 +91,6 @@ namespace APMoodle.Pages.BackEnd
                 var total = questions.Count;
                 var score = (int)Math.Round((double)correctCount / total * 100);
 
-                // Build guest result object
                 var guestResult = new GuestQuizResult
                 {
                     QuizTitle = CurrentQuiz.Title,
@@ -124,13 +118,11 @@ namespace APMoodle.Pages.BackEnd
                     }).ToList()
                 };
 
-                // Serialize and store in TempData
                 TempData["GuestResultData"] = JsonSerializer.Serialize(guestResult);
 
                 return RedirectToPage("/FrontEnd/QuizResult", new { id = 0, guest = 1 });
             }
 
-            // ========== STUDENT SUBMISSION ==========
             if (!int.TryParse(Request.Form["SessionId"], out var sessionId) || sessionId <= 0)
             {
                 Message = "Quiz session is invalid. Please reload the quiz and try again.";

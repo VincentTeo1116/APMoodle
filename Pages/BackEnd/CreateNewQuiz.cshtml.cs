@@ -22,7 +22,6 @@ namespace APMoodle.Pages.BackEnd
             _quizService = quizService;
         }
 
-        // Hidden so the form posts back the same context every time
         [BindProperty]
         public int MaterialId { get; set; }
 
@@ -51,7 +50,6 @@ namespace APMoodle.Pages.BackEnd
 
         public class QuestionInput
         {
-            // 0 = new question (Create flow only ever has new ones)
             public int QuestionID { get; set; }
 
             [Required(ErrorMessage = "Question text is required")]
@@ -95,7 +93,7 @@ namespace APMoodle.Pages.BackEnd
             var auth = await GuardAndLoadMaterial(MaterialId);
             if (auth != null) return auth;
 
-            ModelState.Clear(); // user just clicked +Add; don't surface validation errors yet
+            ModelState.Clear();
             Questions.Add(new QuestionInput());
             return Page();
         }
@@ -130,7 +128,6 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
-            // Build domain objects from the input model
             var quiz = new Quiz
             {
                 Title = Title.Trim(),
@@ -161,10 +158,6 @@ namespace APMoodle.Pages.BackEnd
             return RedirectToPage("/FrontEnd/TeachingMaterialOverview", new { id = MaterialId });
         }
 
-        // -------- helpers --------
-
-        // Centralised session + ownership guard. Returns null when the lecturer may proceed,
-        // otherwise returns the IActionResult the page should respond with (redirect / 403 / 404).
         private async Task<IActionResult?> GuardAndLoadMaterial(int materialId)
         {
             var userId = HttpContext.Session.GetString("UserID");

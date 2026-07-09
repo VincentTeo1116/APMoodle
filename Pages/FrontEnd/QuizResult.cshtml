@@ -19,7 +19,6 @@
     var mins = Model.TotalTimeUsed / 60;
     var secs = Model.TotalTimeUsed % 60;
 
-    // Only true right after a fresh submit (ViewQuiz adds ?celebrate=1 to the redirect)
     var celebrate = Model.HttpContext.Request.Query["celebrate"].ToString() == "1";
 }
 
@@ -69,7 +68,6 @@
 
                 }
 
-                <!-- ===== Score summary hero ===== -->
                 <div class="qr-hero">
                     <div class="qr-hero-glow"></div>
 
@@ -156,7 +154,6 @@
                     </div>
                 </div>
 
-                <!-- ===== Review ===== -->
                 <div class="qr-review-head">
                     <h3><i class="fas fa-list-check"></i> Answer Review</h3>
                     <span class="qr-review-sub">@Model.CorrectCount of @Model.TotalQuestions correct</span>
@@ -259,9 +256,6 @@
 </div>
 
 <style>
-    /* ===== APMoodle Quiz Result — design tokens mirror dashboard.css ===== */
-
-    /* Center the page title at the top (instead of left-aligned) */
     #horizontalNavbar > .PageTitle { text-align: center; }
     #horizontalNavbar > .PageTitle h1 { display: inline-block; }
 
@@ -288,7 +282,6 @@
     .qr-band-low  { --accent: #f97316; --accent-2: #fb923c; }
     .qr-band-bad  { --accent: #ef4444; --accent-2: #f87171; }
 
-    /* ---- Hero ---- */
     .qr-hero {
         position: relative;
         display: flex;
@@ -314,7 +307,6 @@
         pointer-events: none;
     }
 
-    /* Score ring (conic gauge) */
     .qr-ring {
         --val: 0;
         flex-shrink: 0;
@@ -367,7 +359,6 @@
         color: var(--gray-light);
     }
 
-    /* Stat chips */
     .qr-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
     @@media (max-width: 640px) { .qr-stats { grid-template-columns: repeat(2, 1fr); } }
     .qr-stat { display: flex; align-items: center; gap: .65rem; background: var(--light); border-radius: .85rem; padding: .7rem .8rem; }
@@ -381,13 +372,11 @@
     .qr-stat-val-sm { font-size: .85rem; }
     .qr-stat-lbl { font-size: .68rem; color: var(--gray-light); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-top: .2rem; }
 
-    /* ---- Review header ---- */
     .qr-review-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 2rem .25rem 1rem; }
     .qr-review-head h3 { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: .55rem; margin: 0; }
     .qr-review-head h3 i { color: var(--primary); }
     .qr-review-sub { font-size: .8rem; color: var(--gray-light); font-weight: 600; }
 
-    /* ---- Question cards ---- */
     .qr-questions { display: flex; flex-direction: column; gap: 1rem; }
     .qr-qcard {
         background: #fff; border-radius: 1rem; padding: 1.25rem 1.4rem;
@@ -440,7 +429,6 @@
     .qr-yourpick { color: var(--gray); }
     .qr-yourpick strong { color: #dc2626; }
 
-    /* ---- Actions ---- */
     .qr-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
     .qr-btn {
         display: inline-flex; align-items: center; gap: .55rem;
@@ -461,7 +449,6 @@
     @@keyframes qrFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
     @@keyframes qrPop  { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
 
-    /* ---- Congrats celebration overlay ---- */
     .qr-celebrate {
         position: fixed; inset: 0; z-index: 1000;
         display: flex; align-items: center; justify-content: center;

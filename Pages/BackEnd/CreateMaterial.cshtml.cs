@@ -75,7 +75,7 @@ namespace APMoodle.Pages.BackEnd
                     ModuleID = moduleId,
                     ContentType = contentType,
                     CreatedAt = DateTime.UtcNow,
-                    Status = "Active"  // ✅ Make sure status is set
+                    Status = "Active"
                 };
 
                 switch (contentType)
@@ -125,11 +125,9 @@ namespace APMoodle.Pages.BackEnd
                 
                 if (success)
                 {
-                    // ✅ Set TempData BEFORE redirect
                     TempData["ShowSuccessPopup"] = true;
                     TempData["SuccessMessage"] = "Material created successfully!";
                     
-                    // ✅ Redirect to GET request
                     return RedirectToPage("/FrontEnd/CreateMaterial", new { moduleId = moduleId });
                 }
         

@@ -38,7 +38,6 @@ namespace APMoodle.Pages.BackEnd
                 .ToList();
         }
     
-        // Updated Delete handler - uses form data instead of JSON
         public async Task<IActionResult> OnPostDeleteAsync([FromForm] int id)
         {
             try

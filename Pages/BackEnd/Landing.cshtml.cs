@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace APMoodle.Pages.BackEnd
 {
-    // Public introduction / landing page served at the site root ("/").
-    // If the visitor is already logged in, bounce them straight to the
-    // dashboard for their role instead of showing the marketing page.
     public class LandingModel : PageModel
     {
         public IActionResult OnGet()

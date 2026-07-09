@@ -5,9 +5,6 @@ using APMoodle.Services.Interfaces;
 
 namespace APMoodle.Pages.BackEnd
 {
-    // Read-only announcements viewer for STUDENTS and LECTURERS.
-    // Admins have the full management console (AnnouncementList); if an admin
-    // lands here we send them there instead.
     public class ViewAnnouncementsModel : PageModel
     {
         private readonly IAnnouncementService _announcementService;
@@ -29,13 +26,11 @@ namespace APMoodle.Pages.BackEnd
                 return RedirectToPage("/FrontEnd/Login");
             }
 
-            // Admins get the management console instead of the read-only view.
             if (role == "admin")
             {
                 return RedirectToPage("/FrontEnd/AnnouncementList");
             }
 
-            // Active announcements, newest first, with the admin creator included.
             Announcements = await _announcementService.GetAllAnnouncementsAsync();
 
             return Page();

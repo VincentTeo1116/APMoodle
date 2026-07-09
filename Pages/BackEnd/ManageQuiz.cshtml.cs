@@ -47,8 +47,6 @@ namespace APMoodle.Pages.BackEnd
             return RedirectToPage("/FrontEnd/TeachingMaterialOverview", new { id = materialId });
         }
 
-        // Loads the quiz, verifies the current user is its owning lecturer,
-        // and populates CurrentQuiz / Questions / MaterialId for the view.
         private async Task<IActionResult?> GuardAndLoadAsync(int quizId)
         {
             var userId = HttpContext.Session.GetString("UserID");
@@ -57,7 +55,6 @@ namespace APMoodle.Pages.BackEnd
             if (string.IsNullOrEmpty(userId))
                 return RedirectToPage("/FrontEnd/Login");
 
-            // Allow both lecturer and admin
             if (userRole != "lecturer" && userRole != "admin")
                 return StatusCode(StatusCodes.Status403Forbidden);
 
@@ -68,7 +65,6 @@ namespace APMoodle.Pages.BackEnd
             CurrentModule = CurrentQuiz.Material?.Module;
             MaterialTitle = CurrentQuiz.Material?.Title;
 
-            // Admin can view any quiz 
             if (userRole == "admin")
             {
                 Questions = (CurrentQuiz.Questions ?? new List<Question>())
@@ -79,7 +75,6 @@ namespace APMoodle.Pages.BackEnd
                 return null;
             }
 
-            // For lecturer, it must own the quiz
             var ownerId = await _quizService.GetLecturerIdForQuizAsync(quizId);
             if (ownerId == null || ownerId.ToString() != userId)
                 return StatusCode(StatusCodes.Status403Forbidden);
