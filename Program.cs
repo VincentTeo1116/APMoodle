@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using APMoodle.Data;
 using APMoodle.Services;
 using APMoodle.Services.Interfaces;
+using BCrypt.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,7 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build(); 
+
 
 // Use session after app is created
 app.UseSession();

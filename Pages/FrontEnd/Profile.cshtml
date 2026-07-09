@@ -180,6 +180,7 @@
         </div>
 
         <div class="form-actions">
+            <button type="button" class="btn-change-password" id="openPasswordModalBtn">Change Password</button>
             <button type="submit" class="btn-update">Update Profile</button>
         </div>
 
@@ -187,6 +188,7 @@
     </form>
 </div>
 
+<!-- Crop Modal -->
 <div id="cropModal" class="cropper-modal">
     <div class="cropper-modal-content">
         <div class="cropper-modal-header">
@@ -205,6 +207,7 @@
     </div>
 </div>
 
+<!-- Success Modal -->
 @if (TempData["ShowSuccessModal"] != null && (bool)TempData["ShowSuccessModal"])
 {
     <div id="successModal" class="modal-overlay-full" style="display: flex !important; align-items: center; justify-content: center;" onclick="if(event.target===this)this.style.display='none'">
@@ -223,6 +226,7 @@
     </div>
 }
 
+<!-- Delete Confirmation Modal -->
 <div id="deleteConfirmModal" class="modal-overlay-full" style="display: none;">
     <div class="modal-container">
         <div class="modal-icon warning-icon">
@@ -245,13 +249,69 @@
     </div>
 </div>
 
+<!-- Password Change Modal -->
+<div id="passwordModal" class="cropper-modal">
+    <div class="cropper-modal-content" style="max-width: 480px;">
+        <div class="cropper-modal-header">
+            <h3>Change Password</h3>
+            <button class="cropper-modal-close" id="passwordModalClose">&times;</button>
+        </div>
+        <div class="cropper-modal-body">
+            <div id="passwordChangeForm">
+                <div class="form-group" id="currentPasswordGroup">
+                    <label>Current Password <span class="required">*</span></label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password" />
+                    <div class="error-message" id="currentPasswordError">Please enter your current password.</div>
+                </div>
+                <div class="form-group" id="newPasswordGroup">
+                    <label>New Password <span class="required">*</span></label>
+                    <input type="password" id="newPassword" placeholder="Enter new password (min 6 chars)" />
+                    <div class="error-message" id="newPasswordError">Password must be at least 6 characters.</div>
+                </div>
+                <div class="form-group" id="confirmPasswordGroup">
+                    <label>Confirm New Password <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter new password" />
+                    <div class="error-message" id="confirmPasswordError">Passwords do not match.</div>
+                </div>
+                <div id="passwordMessage" style="display: none; margin-top: 12px; padding: 10px; border-radius: 8px;"></div>
+            </div>
+        </div>
+        <div class="cropper-modal-footer" style="justify-content: flex-end;">
+            <button class="btn-secondary" id="passwordCancelBtn">Cancel</button>
+            <button class="btn-primary" id="passwordSaveBtn">Update Password</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
-    // Phone number validation
+    let cropper = null;
+    const cropModal = document.getElementById('cropModal');
+    const cropImage = document.getElementById('cropImage');
+    const fileInput = document.getElementById('profilePic');
+    const removePhotoBtn = document.getElementById('removePhotoBtn');
+    const removePhotoInput = document.getElementById('removePhotoInput');
+
+    const form = document.getElementById('profileForm');
     const phoneInput = document.getElementById('PhoneNumber');
     const phoneGroup = document.getElementById('phoneGroup');
     const phoneError = document.getElementById('phoneError');
     const phoneSuccess = document.getElementById('phoneSuccess');
+        
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordModalClose = document.getElementById('passwordModalClose');
+    const passwordCancelBtn = document.getElementById('passwordCancelBtn');
+    const passwordSaveBtn = document.getElementById('passwordSaveBtn');
+    const openPasswordModalBtn = document.getElementById('openPasswordModalBtn');
+
+    const currentPasswordInput = document.getElementById('currentPassword');
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const passwordMessage = document.getElementById('passwordMessage');
+
+    const currentGroup = document.getElementById('currentPasswordGroup');
+    const newGroup = document.getElementById('newPasswordGroup');
+    const confirmGroup = document.getElementById('confirmPasswordGroup');
 
     function validatePhone() {
         const value = phoneInput.value.trim();
@@ -309,14 +369,6 @@
         parent.replaceChild(placeholder, img);
     }
     window.handleImageError = handleImageError;
-
-    let cropper = null;
-    const cropModal = document.getElementById('cropModal');
-    const cropImage = document.getElementById('cropImage');
-    const fileInput = document.getElementById('profilePic');
-    const removePhotoBtn = document.getElementById('removePhotoBtn');
-    const removePhotoInput = document.getElementById('removePhotoInput');
-    const form = document.getElementById('profileForm');
 
     fileInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -425,6 +477,144 @@
             if (cropModal.style.display === 'flex') {
                 closeCropModal();
             }
+        }
+    });
+
+    // Open modal
+    if (openPasswordModalBtn) {
+        openPasswordModalBtn.addEventListener('click', function() {
+            passwordModal.classList.add('show');
+            @* passwordModal.style.display = 'flex'; *@
+            // Clear previous state
+            currentPasswordInput.value = '';
+            newPasswordInput.value = '';
+            confirmPasswordInput.value = '';
+            passwordMessage.style.display = 'none';
+            passwordMessage.textContent = '';
+            [currentGroup, newGroup, confirmGroup].forEach(g => g.classList.remove('has-error'));
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+        });
+    }
+
+    // Close modal
+    function closePasswordModal() {
+        passwordModal.classList.remove('show');
+        @* passwordModal.style.display = 'none'; *@
+    }
+    passwordModalClose.addEventListener('click', closePasswordModal);
+    passwordCancelBtn.addEventListener('click', closePasswordModal);
+    passwordModal.addEventListener('click', function(e) {
+        if (e.target === passwordModal) closePasswordModal();
+    });
+
+    // Validation helpers
+    function validateCurrent() {
+        const val = currentPasswordInput.value.trim();
+        const group = currentGroup;
+        const err = document.getElementById('currentPasswordError');
+        if (!val) {
+            group.classList.add('has-error');
+            err.classList.add('show');
+            return false;
+        }
+        group.classList.remove('has-error');
+        err.classList.remove('show');
+        return true;
+    }
+
+    function validateNew() {
+        const val = newPasswordInput.value.trim();
+        const group = newGroup;
+        const err = document.getElementById('newPasswordError');
+        if (val.length < 6) {
+            group.classList.add('has-error');
+            err.classList.add('show');
+            return false;
+        }
+        group.classList.remove('has-error');
+        err.classList.remove('show');
+        return true;
+    }
+
+    function validateConfirm() {
+        const val = confirmPasswordInput.value.trim();
+        const newVal = newPasswordInput.value.trim();
+        const group = confirmGroup;
+        const err = document.getElementById('confirmPasswordError');
+        if (val !== newVal || val === '') {
+            group.classList.add('has-error');
+            err.classList.add('show');
+            return false;
+        }
+        group.classList.remove('has-error');
+        err.classList.remove('show');
+        return true;
+    }
+
+    // Real-time validation
+    currentPasswordInput.addEventListener('input', validateCurrent);
+    newPasswordInput.addEventListener('input', function() {
+        validateNew();
+        if (confirmPasswordInput.value) validateConfirm();
+    });
+    confirmPasswordInput.addEventListener('input', validateConfirm);
+
+    // Save password
+    passwordSaveBtn.addEventListener('click', function() {
+        const isCurrentValid = validateCurrent();
+        const isNewValid = validateNew();
+        const isConfirmValid = validateConfirm();
+
+        if (!isCurrentValid || !isNewValid || !isConfirmValid) {
+            passwordMessage.style.display = 'block';
+            passwordMessage.className = 'alert-error';
+            passwordMessage.textContent = 'Please fix the errors before saving.';
+            return;
+        }
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+        fetch(window.location.href + '?handler=ChangePassword', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify({
+                currentPassword: currentPasswordInput.value.trim(),
+                newPassword: newPasswordInput.value.trim(),
+                confirmNewPassword: confirmPasswordInput.value.trim()
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            passwordMessage.style.display = 'block';
+            if (data.success) {
+                passwordMessage.className = 'alert-success';
+                passwordMessage.textContent = data.message;
+                if (data.reload) {
+                    // Close modal and reload after 1.5s to show success modal
+                    setTimeout(() => {
+                        closePasswordModal();
+                        window.location.reload();
+                    }, 1500);
+                }
+            } else {
+                passwordMessage.className = 'alert-error';
+                passwordMessage.textContent = data.message;
+            }
+        })
+        .catch(error => {
+            passwordMessage.style.display = 'block';
+            passwordMessage.className = 'alert-error';
+            passwordMessage.textContent = 'An error occurred. Please try again.';
+        });
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && passwordModal.style.display === 'flex') {
+            closePasswordModal();
         }
     });
 </script>

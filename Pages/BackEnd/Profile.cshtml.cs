@@ -33,6 +33,12 @@ namespace APMoodle.Pages.BackEnd
         public string Gender { get; set; } = string.Empty;
         public string? ProfilePic { get; set; }
         public string? Department { get; set; }
+        public class ChangePasswordRequest
+        {
+            public string CurrentPassword { get; set; } = string.Empty;
+            public string NewPassword { get; set; } = string.Empty;
+            public string ConfirmNewPassword { get; set; } = string.Empty;
+        }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -129,6 +135,75 @@ namespace APMoodle.Pages.BackEnd
                 TempData["ErrorMessage"] = "Failed to update profile. Please try again.";
                 return RedirectToPage();
             }
+        }
+
+        public async Task<IActionResult> OnPostChangePasswordAsync([FromBody] ChangePasswordRequest request)
+        {
+            var userId = HttpContext.Session.GetString("UserID");
+            var userRole = HttpContext.Session.GetString("UserRole");
+
+            if (string.IsNullOrEmpty(userId))
+                return new JsonResult(new { success = false, message = "You must be logged in." });
+
+            if (request.NewPassword != request.ConfirmNewPassword)
+                return new JsonResult(new { success = false, message = "New password and confirmation do not match." });
+
+            if (request.NewPassword.Length < 6)
+                return new JsonResult(new { success = false, message = "New password must be at least 6 characters long." });
+
+            var id = int.Parse(userId);
+            bool passwordUpdated = false;
+            string errorMessage = string.Empty;
+
+            if (userRole == "student")
+            {
+                var student = await _studentService.GetStudentByIdAsync(id);
+                if (student == null) return new JsonResult(new { success = false, message = "Student not found." });
+
+                if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, student.Password))
+                    return new JsonResult(new { success = false, message = "Current password is incorrect." });
+
+                var hashed = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                passwordUpdated = await _studentService.UpdatePasswordAsync(id, hashed);
+                if (!passwordUpdated) errorMessage = "Failed to update password.";
+            }
+            else if (userRole == "lecturer")
+            {
+                var lecturer = await _lecturerService.GetLecturerByIdAsync(id);
+                if (lecturer == null) return new JsonResult(new { success = false, message = "Lecturer not found." });
+
+                if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, lecturer.Password))
+                    return new JsonResult(new { success = false, message = "Current password is incorrect." });
+
+                var hashed = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                passwordUpdated = await _lecturerService.UpdatePasswordAsync(id, hashed);
+                if (!passwordUpdated) errorMessage = "Failed to update password.";
+            }
+            else if (userRole == "admin")
+            {
+                var admin = await _adminService.GetAdminByIdAsync(id);
+                if (admin == null) return new JsonResult(new { success = false, message = "Admin not found." });
+
+                if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, admin.Password))
+                    return new JsonResult(new { success = false, message = "Current password is incorrect." });
+
+                var hashed = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                passwordUpdated = await _adminService.UpdatePasswordAsync(id, hashed);
+                if (!passwordUpdated) errorMessage = "Failed to update password.";
+            }
+            else
+                return new JsonResult(new { success = false, message = "Invalid user role." });
+
+            if (passwordUpdated)
+                {
+                    TempData["ShowSuccessModal"] = true;
+                    // TempData["SuccessMessage"] = "Password updated successfully!";
+                    return new JsonResult(new { success = true, message = "Password updated successfully!", reload = true });
+                }
+                else
+                {
+                    return new JsonResult(new { success = false, message = errorMessage ?? "An error occurred." });
+                }
         }
 
         private async Task<string?> HandleProfilePictureUpload()

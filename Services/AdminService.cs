@@ -41,8 +41,7 @@ namespace APMoodle.Services
             {
                 var existingAdmin = await _context.Admins.FindAsync(admin.AdminID);
                 if (existingAdmin == null) return false;
-
-                // Only update allowed fields
+                
                 existingAdmin.Name = admin.Name;
                 existingAdmin.PhoneNumber = admin.PhoneNumber;
                 existingAdmin.DOB = admin.DOB;

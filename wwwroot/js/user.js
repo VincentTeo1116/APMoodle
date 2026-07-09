@@ -3,8 +3,8 @@ function handleImageError(img) {
     img.onerror = null;
 
     // Get data attributes with fallbacks
-    const color = img.dataset.color || '#64748b';   // default gray
-    const initials = img.dataset.initials || '?';   // default question mark
+    const color = img.dataset.color || '#64748b';
+    const initials = img.dataset.initials || '?';
     const parent = img.parentElement;
 
     // Safety: if parent is missing, abort
@@ -23,7 +23,6 @@ function handleImageError(img) {
     console.log('Image fallback used for:', img.alt, '→', initials);
 }
 
-// Make it globally available (already done, but good practice)
 window.handleImageError = handleImageError;
 
 document.addEventListener('DOMContentLoaded', function () {
