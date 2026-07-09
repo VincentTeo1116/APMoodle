@@ -712,7 +712,7 @@
             <div class="form-group" id="dobGroup">
                 <label for="DOB">Date of Birth <span class="required">*</span></label>
                 <input type="date" id="DOB" asp-for="DOB" />
-                <div class="error-message" id="dobError">Please select a valid date of birth (must be 5-120 years old).</div>
+                <div class="error-message" id="dobError">Please select a valid date of birth (must be 15-80 years old).</div>
                 <div class="validation-success" id="dobSuccess"><i class="bi bi-check-circle"></i> Valid</div>
             </div>
             <div class="form-group" id="departmentGroup" style="display: none;">
@@ -811,8 +811,6 @@
         const dobInput = document.getElementById('DOB');
         const departmentInput = document.getElementById('Department');
 
-        // ============ USER TYPE SELECTION ============
-
         window.selectUserType = function(type) {
             userTypeHidden.value = type;
             
@@ -841,8 +839,6 @@
             // Clear validation summary
             document.getElementById('validationSummary').classList.remove('show');
         };
-
-        // ============ VALIDATION FUNCTIONS ============
 
         function validateUserType() {
             const group = document.getElementById('userTypeGroup');
@@ -969,9 +965,9 @@
                 age--;
             }
             
-            if (age < 5 || age > 120) {
+            if (age < 15 || age > 80) {
                 group.classList.add('has-error');
-                error.textContent = 'Please select a valid date of birth (must be 5-120 years old).';
+                error.textContent = 'Please select a valid date of birth (must be 15-80 years old).';
                 error.classList.add('show');
                 success.classList.remove('show');
                 return false;
@@ -1003,8 +999,6 @@
                 return true;
             }
         }
-
-        // ============ ATTACH VALIDATION EVENTS ============
 
         nameInput.addEventListener('input', validateName);
         nameInput.addEventListener('blur', validateName);
@@ -1055,7 +1049,7 @@
             if (!isEmailValid) errors.push('Please enter a valid email address.');
             if (!isPhoneValid) errors.push('Please enter a valid phone number (10 - 11 digits, starting with 0).');
             if (!isGenderValid) errors.push('Please select a gender.');
-            if (!isDOBValid) errors.push('Please select a valid date of birth (must be 5-120 years old).');
+            if (!isDOBValid) errors.push('Please select a valid date of birth (must be 15-80 years old).');
             if (!isDepartmentValid) errors.push('Please enter a department.');
 
             if (errors.length > 0) {

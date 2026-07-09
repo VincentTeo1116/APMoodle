@@ -55,6 +55,13 @@ namespace APMoodle.Pages.BackEnd
 
             if (string.IsNullOrEmpty(userId))
                 return RedirectToPage("/FrontEnd/Login");
+            
+            if (!System.Text.RegularExpressions.Regex.IsMatch(phoneNumber, @"^0\d{9,10}$"))
+            {
+                TempData["ShowErrorModal"] = true;
+                TempData["ErrorMessage"] = "Phone number must be 10-11 digits starting with 0.";
+                return RedirectToPage();
+            }
 
             var id = int.Parse(userId);
             bool success = false;

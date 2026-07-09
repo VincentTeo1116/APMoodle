@@ -15,13 +15,109 @@
     <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Inline validation styles (matching UserCreate) */
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #44403c;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        .form-group label .required {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ece7df;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #faf7f0;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #b8935a;
+            box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.1);
+            background: white;
+        }
+        .form-group .error-message {
+            font-size: 12px;
+            color: #ef4444;
+            margin-top: 4px;
+            display: none;
+        }
+        .form-group .error-message.show {
+            display: block;
+        }
+        .form-group.has-error input,
+        .form-group.has-error select {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        .form-group.has-error input:focus,
+        .form-group.has-error select:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        .form-group.has-error .error-message {
+            display: block;
+        }
+        .form-group .validation-success {
+            color: #22c55e;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        .form-group .validation-success.show {
+            display: block;
+        }
+        .validation-summary {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .validation-summary.show {
+            display: block;
+        }
+        .validation-summary ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #991b1b;
+            font-size: 13px;
+        }
+        .validation-summary h4 {
+            color: #991b1b;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+        .alert-pending {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .alert-pending i { font-size: 20px; margin-right: 8px; }
+    </style>
 </head>
 <body>
 
 <!-- ───────────── PAGE LOADER ───────────── -->
 <div id="apm-loader" class="apm-loader apm-loader--rings">
     <div class="apm-loader-stage">
-        <!-- Paper variant pieces (hidden when --rings class is on parent) -->
         <svg class="apm-loader-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <g class="tassel-group">
                 <path class="draw tassel-line" d="M150 60 L150 95" />
@@ -34,7 +130,6 @@
             <path class="fill-book-left"  d="M30 140 Q65 158 100 148 L100 170 Q65 180 30 165 Z" fill="#f5ebdc" opacity="0.9"/>
             <path class="fill-book-right" d="M170 140 Q135 158 100 148 L100 170 Q135 180 170 165 Z" fill="#f5ebdc" opacity="0.75"/>
         </svg>
-        <!-- Rings variant (default) -->
         <div class="apm-loader-rings">
             <div class="ring r1"></div>
             <div class="ring r2"></div>
@@ -48,28 +143,19 @@
 
 <div class="login-wrapper">
 
-    <!-- LEFT SIDE -->
+    <!-- LEFT SIDE (logo) -->
     <div class="login-left">
-
-        <!-- Floating particles -->
         <div class="logo-particles" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
             <span></span><span></span><span></span><span></span>
         </div>
-
         <div class="logo-stage">
-
-            <!-- Decorative orbit rings -->
             <div class="logo-orbit" aria-hidden="true"></div>
             <div class="logo-orbit-inner" aria-hidden="true"></div>
-
-            <!-- Hover sparkle burst (6 particles fly outward when logo is hovered) -->
             <div class="logo-sparkles" aria-hidden="true">
                 <span></span><span></span><span></span>
                 <span></span><span></span><span></span>
             </div>
-
-            <!-- The animated APMoodle mark: graduation cap + open book + hanging tassel -->
             <svg class="logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="APMoodle logo">
 
                 <!-- ───── CAP ─────
@@ -138,7 +224,7 @@
         </div>
     </div>
 
-    <!-- RIGHT SIDE -->
+    <!-- RIGHT SIDE (form) -->
     <div class="login-right">
 
         <!-- Toggle -->
@@ -149,12 +235,21 @@
 
         <h2>CREATE ACCOUNT</h2>
 
+        <!-- Server messages -->
         @if (!string.IsNullOrEmpty(Model.Message))
         {
             if (Model.IsSuccess)
             {
                 <div class="alert-success">
                     ✅ @Model.Message
+                </div>
+            }
+            else if (Model.ShowPendingMessage)
+            {
+                <div class="alert-pending">
+                    <i class="fas fa-clock"></i>
+                    <strong>Pending Approval</strong>
+                    <p style="margin: 6px 0 0;">Your registration is pending admin approval. You will receive an email when your account is activated.</p>
                 </div>
             }
             else
@@ -165,28 +260,58 @@
             }
         }
 
-        <form method="post">
-            <label>FULL NAME</label>
-            <input type="text" name="FullName" placeholder="Enter Full Name" required />
+        <!-- Validation Summary -->
+        <div class="validation-summary" id="validationSummary">
+            <h4><i class="fas fa-exclamation-circle"></i> Please fix the following errors:</h4>
+            <ul id="validationList"></ul>
+        </div>
 
-            <label>DATE OF BIRTH</label>
-            <input type="text" id="dob" name="Dob" placeholder="Select Date of Birth" required />
+        <form method="post" id="registerForm">
+            <!-- Full Name -->
+            <div class="form-group" id="nameGroup">
+                <label>FULL NAME <span class="required">*</span></label>
+                <input type="text" name="FullName" id="FullName" placeholder="Enter Full Name" />
+                <div class="error-message" id="nameError">Please enter a valid name (at least 2 characters).</div>
+                <div class="validation-success" id="nameSuccess"><i class="fas fa-check-circle"></i> Valid</div>
+            </div>
 
-            <label>CONTACT NUMBER</label>
-            <input type="text" name="Contact" placeholder="Enter Contact Number" required />
+            <!-- Date of Birth (flatpickr) -->
+            <div class="form-group" id="dobGroup">
+                <label>DATE OF BIRTH <span class="required">*</span></label>
+                <input type="text" id="dob" name="Dob" placeholder="Select Date of Birth" />
+                <div class="error-message" id="dobError">Please select a valid date of birth (must be 15-80 years old).</div>
+                <div class="validation-success" id="dobSuccess"><i class="fas fa-check-circle"></i> Valid</div>
+            </div>
 
-            <label>EMAIL</label>
-            <input type="email" name="Email" placeholder="Enter Email" required />
+            <!-- Contact Number -->
+            <div class="form-group" id="contactGroup">
+                <label>CONTACT NUMBER <span class="required">*</span></label>
+                <input type="text" name="Contact" id="Contact" placeholder="Enter Contact Number" />
+                <div class="error-message" id="contactError">Please enter a valid phone number (10-11 digits, starting with 0).</div>
+                <div class="validation-success" id="contactSuccess"><i class="fas fa-check-circle"></i> Valid</div>
+            </div>
 
-            <label>GENDER</label>
-            <select name="Gender" required>
-                <option value="">-- Select Gender --</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
+            <!-- Email -->
+            <div class="form-group" id="emailGroup">
+                <label>EMAIL <span class="required">*</span></label>
+                <input type="email" name="Email" id="Email" placeholder="Enter Email" />
+                <div class="error-message" id="emailError">Please enter a valid email address.</div>
+                <div class="validation-success" id="emailSuccess"><i class="fas fa-check-circle"></i> Valid</div>
+            </div>
 
-            <button type="submit" class="btn-login">REGISTER</button>
+            <!-- Gender -->
+            <div class="form-group" id="genderGroup">
+                <label>GENDER <span class="required">*</span></label>
+                <select name="Gender" id="Gender">
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <div class="error-message" id="genderError">Please select a gender.</div>
+                <div class="validation-success" id="genderSuccess"><i class="fas fa-check-circle"></i> Valid</div>
+            </div>
 
+            <button type="submit" class="btn-login" id="registerBtn">REGISTER</button>
         </form>
 
         <div class="register-text">
@@ -201,7 +326,6 @@
 <script src="~/js/loader.js" asp-append-version="true"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="~/js/register.js" asp-append-version="true"></script>
-
 
 </body>
 </html>

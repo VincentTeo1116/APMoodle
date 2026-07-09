@@ -94,8 +94,12 @@
                         <input type="email" value="@Model.Email" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
-                        <label class="info-label">Phone Number</label>
-                        <input type="tel" name="PhoneNumber" value="@Model.PhoneNumber" required />
+                        <label class="info-label">Phone Number <span class="required">*</span></label>
+                        <div class="form-group" id="phoneGroup">
+                            <input type="tel" name="PhoneNumber" id="PhoneNumber" value="@Model.PhoneNumber" required />
+                            <div class="error-message" id="phoneError">Please enter a valid phone number (10-11 digits, starting with 0).</div>
+                            <div class="validation-success" id="phoneSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+                        </div>
                     </div>
                     <div class="info-group">
                         <label class="info-label">Date of Birth</label>
@@ -121,8 +125,12 @@
                         <input type="email" value="@Model.Email" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
-                        <label class="info-label">Phone Number</label>
-                        <input type="tel" name="PhoneNumber" value="@Model.PhoneNumber" required />
+                        <label class="info-label">Phone Number <span class="required">*</span></label>
+                        <div class="form-group" id="phoneGroup">
+                            <input type="tel" name="PhoneNumber" id="PhoneNumber" value="@Model.PhoneNumber" required />
+                            <div class="error-message" id="phoneError">Please enter a valid phone number (10-11 digits, starting with 0).</div>
+                            <div class="validation-success" id="phoneSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+                        </div>
                     </div>
                     <div class="info-group">
                         <label class="info-label">Date of Birth</label>
@@ -152,8 +160,12 @@
                         <input type="email" value="@Model.Email" readonly class="readonly-input" />
                     </div>
                     <div class="info-group">
-                        <label class="info-label">Phone Number</label>
-                        <input type="tel" name="PhoneNumber" value="@Model.PhoneNumber" required />
+                        <label class="info-label">Phone Number <span class="required">*</span></label>
+                        <div class="form-group" id="phoneGroup">
+                            <input type="tel" name="PhoneNumber" id="PhoneNumber" value="@Model.PhoneNumber" required />
+                            <div class="error-message" id="phoneError">Please enter a valid phone number (10-11 digits, starting with 0).</div>
+                            <div class="validation-success" id="phoneSuccess"><i class="bi bi-check-circle"></i> Valid</div>
+                        </div>
                     </div>
                     <div class="info-group">
                         <label class="info-label">Date of Birth</label>
@@ -235,6 +247,43 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
+    // Phone number validation
+    const phoneInput = document.getElementById('PhoneNumber');
+    const phoneGroup = document.getElementById('phoneGroup');
+    const phoneError = document.getElementById('phoneError');
+    const phoneSuccess = document.getElementById('phoneSuccess');
+
+    function validatePhone() {
+        const value = phoneInput.value.trim();
+        const pattern = /^0\d{9,10}$/;
+        if (!pattern.test(value)) {
+            phoneGroup.classList.add('has-error');
+            phoneError.classList.add('show');
+            phoneSuccess.classList.remove('show');
+            return false;
+        } else {
+            phoneGroup.classList.remove('has-error');
+            phoneError.classList.remove('show');
+            phoneSuccess.classList.add('show');
+            return true;
+        }
+    }
+
+    phoneInput.addEventListener('input', validatePhone);
+    phoneInput.addEventListener('blur', validatePhone);
+
+    // Validate on form submit
+    const profileForm = document.getElementById('profileForm');
+    profileForm.addEventListener('submit', function(e) {
+        if (!validatePhone()) {
+            e.preventDefault();
+            phoneInput.focus();
+            phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+        return true;
+    });
+
     function handleImageError(img) {
         img.onerror = null;
         const color = img.dataset.color || '#64748b';
