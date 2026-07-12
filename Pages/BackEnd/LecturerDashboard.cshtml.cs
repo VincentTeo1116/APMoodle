@@ -26,10 +26,12 @@ namespace APMoodle.Pages.BackEnd
         public string LecturerName { get; set; } = "Lecturer";
         public string LecturerCode { get; set; } = string.Empty;
 
-        public int EnrolledModuleCount { get; set; }
-        public int StudentsJoinedCount { get; set; } 
-        public int QuizzesCreatedCount { get; set; } 
+        // Top-line stats (live counts shown in the three stat cards)
+        public int EnrolledModuleCount { get; set; }   // modules this lecturer owns
+        public int StudentsJoinedCount { get; set; }    // distinct students across those modules
+        public int QuizzesCreatedCount { get; set; }    // quizzes that live under those modules
 
+        // Listings for the two panels + announcements
         public List<LecturerModuleRow> Modules { get; set; } = new();
         public List<QuizAverageRow> TopQuizzes { get; set; } = new();
         public List<Announcement> Announcements { get; set; } = new();
@@ -44,6 +46,8 @@ namespace APMoodle.Pages.BackEnd
                 return RedirectToPage("/FrontEnd/Login");
             }
 
+            // Only lecturers have a lecturer dashboard; bounce everyone else
+            // to ModuleOverview (which re-routes based on their own role).
             if (userRole != "lecturer")
             {
                 return RedirectToPage("/FrontEnd/ModuleOverview");
@@ -51,6 +55,7 @@ namespace APMoodle.Pages.BackEnd
 
             var lecturerId = int.Parse(userId);
 
+            // Display name + code from session if present, otherwise fall back to the DB
             LecturerName = HttpContext.Session.GetString("UserName") ?? "Lecturer";
             LecturerCode = HttpContext.Session.GetString("UserCode") ?? string.Empty;
             if (string.IsNullOrEmpty(LecturerCode))
@@ -63,6 +68,7 @@ namespace APMoodle.Pages.BackEnd
                 }
             }
 
+            // ── This lecturer's modules ───────────────────────────────
             var modules = await _context.Modules
                 .Where(m => m.LecturerID == lecturerId && m.Status == "Active")
                 .OrderBy(m => m.Name)
@@ -71,6 +77,7 @@ namespace APMoodle.Pages.BackEnd
             var moduleIds = modules.Select(m => m.ModuleID).ToList();
             EnrolledModuleCount = modules.Count;
 
+            // ── No. of students joined (distinct, Active enrolments) ───
             var enrollmentCountByModule = new Dictionary<int, int>();
             if (_context.Enrollments != null && moduleIds.Count > 0)
             {
@@ -89,6 +96,8 @@ namespace APMoodle.Pages.BackEnd
                     .ToDictionary(g => g.Key, g => g.Count());
             }
 
+            // ── Quizzes created under this lecturer's modules ──────────
+            // Quiz -> Material -> Module, so we filter on the material's module id.
             var lecturerQuizzes = moduleIds.Count == 0
                 ? new List<QuizLookup>()
                 : await _context.Quizzes
@@ -110,6 +119,7 @@ namespace APMoodle.Pages.BackEnd
                 .GroupBy(q => q.ModuleID)
                 .ToDictionary(g => g.Key, g => g.Count());
 
+            // ── Build the "Your Modules" rows ─────────────────────────
             Modules = modules.Select(m => new LecturerModuleRow
             {
                 ModuleID = m.ModuleID,
@@ -119,6 +129,7 @@ namespace APMoodle.Pages.BackEnd
                 QuizCount = quizCountByModule.TryGetValue(m.ModuleID, out var qc) ? qc : 0
             }).ToList();
 
+            // ── Quiz Average Score — Top 5 ────────────────────────────
             var quizIds = lecturerQuizzes.Select(q => q.QuizID).ToList();
             if (quizIds.Count > 0)
             {
@@ -151,11 +162,13 @@ namespace APMoodle.Pages.BackEnd
                     .ToList();
             }
 
+            // ── Active announcements (newest first) ───────────────────
             Announcements = await _announcementService.GetAllAnnouncementsAsync();
 
             return Page();
         }
 
+        // Row shown in the "Your Modules" panel
         public class LecturerModuleRow
         {
             public int ModuleID { get; set; }
@@ -165,6 +178,7 @@ namespace APMoodle.Pages.BackEnd
             public int QuizCount { get; set; }
         }
 
+        // Row shown in the "Quiz Average Score — Top 5" panel
         public class QuizAverageRow
         {
             public string Title { get; set; } = string.Empty;
@@ -174,6 +188,7 @@ namespace APMoodle.Pages.BackEnd
             public int AttemptCount { get; set; }
         }
 
+        // Internal projection used while aggregating quizzes
         private class QuizLookup
         {
             public int QuizID { get; set; }

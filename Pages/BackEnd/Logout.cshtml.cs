@@ -9,9 +9,9 @@ namespace APMoodle.Pages.BackEnd
         {
             // Clear all session data
             HttpContext.Session.Clear();
-            
-            // Redirect to login page
-            return RedirectToPage("/FrontEnd/Login");
+
+            // Back to the public landing page (the site's default entry point)
+            return Redirect("/");
         }
     }
 }

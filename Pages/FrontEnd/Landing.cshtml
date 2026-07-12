@@ -162,7 +162,7 @@
         .s-head p { color: var(--muted); font-size: 1.05rem; }
 
         /* ---------- Bento ---------- */
-        .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 230px; gap: 1.1rem; }
+        .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 200px; gap: 1.1rem; }
         .cell { background: var(--surface); border: 1px solid var(--line); border-radius: 1.15rem; padding: 1.5rem; overflow: hidden; position: relative; transition: transform .28s cubic-bezier(.4,0,.2,1), box-shadow .28s ease, border-color .28s ease; }
         .cell::before { content:''; position:absolute; inset:0; border-radius:inherit; background: radial-gradient(320px circle at var(--mx,50%) var(--my,0%), rgba(201,162,75,.12), transparent 60%); opacity:0; transition: opacity .3s ease; pointer-events:none; }
         .cell:hover { transform: translateY(-6px); box-shadow: 0 22px 44px -22px rgba(28,25,23,.24); border-color: rgba(184,147,90,.4); }
@@ -173,6 +173,14 @@
         .cell p { color: var(--muted); font-size: 0.92rem; position: relative; }
         .cell-lg { grid-column: span 2; grid-row: span 2; }
         .cell-wide { grid-column: span 2; }
+        /* full-width horizontal banner cells (fit text on one row, no clipping) */
+        .cell-full { grid-column: 1 / -1; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+        .cell-full .fic { margin-bottom: 0; flex-shrink: 0; }
+        .cell-full .cf-text { flex: 1; min-width: 240px; }
+        .cell-full .cf-text h3 { margin-bottom: 0.3rem; }
+        .cell-full .cf-text p { margin: 0; }
+        .cell-full .role-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .cell-full .role-pills .pill { margin-top: 0; }
         .cell-dark { background: var(--char); color: #fff; border-color: transparent; }
         .cell-dark p { color: #b9b2a6; }
         .cell-dark .fic { background: rgba(201,162,75,.2); color: var(--gold-2); }
@@ -366,16 +374,24 @@
                     <h3>All materials</h3>
                     <p>Files, links &amp; notes in one place.</p>
                 </div>
-                <div class="cell cell-wide reveal">
+                <div class="cell cell-full reveal">
                     <div class="fic"><i class="fas fa-comments"></i></div>
-                    <h3>Announcements &amp; chat</h3>
-                    <p>Keep everyone in the loop and let students reach lecturers directly, in real time.</p>
+                    <div class="cf-text">
+                        <h3>Announcements &amp; chat</h3>
+                        <p>Keep everyone in the loop and let students reach lecturers directly, in real time.</p>
+                    </div>
                 </div>
-                <div class="cell cell-dark cell-wide reveal">
+                <div class="cell cell-dark cell-full reveal">
                     <div class="fic"><i class="fas fa-user-shield"></i></div>
-                    <h3>Built for every role</h3>
-                    <p>Students, lecturers and admins each get a tailored experience — the tools they need, nothing they don't.</p>
-                    <span class="pill">🎓 Student</span> <span class="pill">👨‍🏫 Lecturer</span> <span class="pill">🛡️ Admin</span>
+                    <div class="cf-text">
+                        <h3>Built for every role</h3>
+                        <p>Students, lecturers and admins each get a tailored experience — the tools they need, nothing they don't.</p>
+                    </div>
+                    <div class="role-pills">
+                        <span class="pill">🎓 Student</span>
+                        <span class="pill">👨‍🏫 Lecturer</span>
+                        <span class="pill">🛡️ Admin</span>
+                    </div>
                 </div>
             </div>
         </div>

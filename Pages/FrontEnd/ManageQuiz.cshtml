@@ -35,7 +35,7 @@
 <div id="horizontalNavbar">
     <div class="PageTitle">
         <h1>Manage Quiz</h1>
-        <p class="path">@(char.ToUpper(userRole[0]) + userRole.Substring(1)) Dashboard &gt; @(Model.CurrentModule?.Name) &gt; @(Model.MaterialTitle ?? "Material") &gt; Manage Quiz</p>
+        <p class="path">Lecturer Dashboard &gt; @(Model.CurrentModule?.Name) &gt; @(Model.MaterialTitle ?? "Material") &gt; Manage Quiz</p>
     </div>
 
     <div class="PageComponent">
@@ -48,6 +48,7 @@
 
             @if (Model.CurrentQuiz != null)
             {
+                <!-- ── Hero card ── -->
                 <section class="mq-hero">
                     <div class="mq-hero-left">
                         <div class="mq-pill">@Model.CurrentQuiz.Subject</div>
@@ -278,6 +279,7 @@
                     </div>
                 </section>
 
+                <!-- ── Questions list ── -->
                 <section class="mq-card">
                     <header class="mq-card-head">
                         <div class="mq-card-icon"><i class="bi bi-patch-question"></i></div>
@@ -417,35 +419,36 @@
 </script>
 
 <style>
-    .mq-page { max-width: 1100px; margin: 0 auto; padding: 8px 4px 60px; color: #1e293b; }
+    .mq-page { max-width: 1100px; margin: 0 auto; padding: 8px 4px 60px; color: #1c1917; }
     .mq-alert { background: #fef3c7; border: 1px solid #fcd34d; color: #78350f; padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; font-size: 14px; }
 
+    /* ── Hero ── */
     .mq-hero {
         display: grid; grid-template-columns: 1fr 200px; gap: 28px; align-items: center;
-        background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
-        border: 1px solid #e2e8f0; border-radius: 16px;
+        background: linear-gradient(135deg, #ffffff 0%, #faf7f0 100%);
+        border: 1px solid #ece7df; border-radius: 16px;
         padding: 28px 32px; margin-bottom: 18px;
         box-shadow: 0 4px 20px rgba(15, 23, 42, .04);
     }
     @@media (max-width: 720px) { .mq-hero { grid-template-columns: 1fr; } .mq-hero-right { justify-self: start; } }
 
     .mq-pill {
-        display: inline-block; background: linear-gradient(135deg, #013D42, #037984);
+        display: inline-block; background: linear-gradient(135deg, #c9a24b, #8b7355);
         color: #fff; font-size: 11px; font-weight: 700;
         padding: 4px 12px; border-radius: 999px;
         letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 8px;
     }
-    .mq-title { font-size: 30px; font-weight: 800; margin: 0 0 18px; color: #0f172a; line-height: 1.2; }
+    .mq-title { font-size: 30px; font-weight: 800; margin: 0 0 18px; color: #1c1917; line-height: 1.2; }
 
     .mq-meta {
         display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 12px 24px; margin-bottom: 22px;
-        padding: 14px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;
+        padding: 14px 0; border-top: 1px solid #ece7df; border-bottom: 1px solid #ece7df;
     }
     .mq-meta-item { display: flex; flex-direction: column; gap: 2px; }
-    .mq-meta-label { font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
-    .mq-meta-val { font-size: 14px; color: #0f172a; font-weight: 600; }
-    .mq-meta-val code { background: #f1f5f9; color: #475569; padding: 1px 6px; border-radius: 4px; font-size: 11px; margin-left: 4px; font-weight: 600; }
+    .mq-meta-label { font-size: 11px; color: #78716c; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+    .mq-meta-val { font-size: 14px; color: #1c1917; font-weight: 600; }
+    .mq-meta-val code { background: #f1f5f9; color: #44403c; padding: 1px 6px; border-radius: 4px; font-size: 11px; margin-left: 4px; font-weight: 600; }
 
     .mq-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
     .mq-delete-form { display: inline; margin: 0; padding: 0; }
@@ -457,17 +460,17 @@
     }
     .mq-btn-icon { font-size: 15px; line-height: 1; }
     .mq-btn-primary {
-        background: linear-gradient(135deg, #013D42, #037984); color: #fff;
-        box-shadow: 0 4px 12px rgba(3, 121, 132, .3);
+        background: linear-gradient(135deg, #c9a24b, #8b7355); color: #fff;
+        box-shadow: 0 4px 12px rgba(184, 147, 90, .3);
     }
     .mq-btn-primary:hover {
-        transform: translateY(-1px); box-shadow: 0 6px 16px rgba(3, 121, 132, .4);
-        background: linear-gradient(135deg, #012b2f, #025259); color: #fff;
+        transform: translateY(-1px); box-shadow: 0 6px 16px rgba(184, 147, 90, .4);
+        background: linear-gradient(135deg, #b8935a, #6b5d4f); color: #fff;
     }
-    .mq-btn-ghost { background: #f1f5f9; color: #475569; }
-    .mq-btn-ghost:hover { background: #e2e8f0; color: #334155; }
-    .mq-btn-info { background: #ecfaff; color: #1a4250; }
-    .mq-btn-info:hover { background: #b7d6e4; color: #05161c; }
+    .mq-btn-ghost { background: #f1f5f9; color: #44403c; }
+    .mq-btn-ghost:hover { background: #ece7df; color: #44403c; }
+    .mq-btn-info { background: #f4ecdd; color: #6b5d4f; }
+    .mq-btn-info:hover { background: #e6d3a3; color: #1c1917; }
     .mq-btn-danger {
         background: #fef2f2; color: #b91c1c; border: 1.5px solid #fecaca;
     }
@@ -475,7 +478,7 @@
 
     /* ── Theme preview thumbnail ── */
     .mq-hero-right { display: flex; flex-direction: column; gap: 6px; align-items: center; }
-    .mq-preview-label { font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+    .mq-preview-label { font-size: 11px; color: #78716c; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
 
     .mq-mini {
         width: 180px; height: 122px; border-radius: 10px;
@@ -483,7 +486,7 @@
         box-shadow: 0 4px 14px rgba(15, 23, 42, .15), inset 0 0 0 1px rgba(0,0,0,.06);
     }
 
-    /* Studio (default) */
+    /* Studio (default) mini */
     .mq-mini-studio { background: linear-gradient(135deg, #e0e7ff 0%, #f5d0fe 50%, #fce7f3 100%); display: flex; align-items: center; justify-content: center; }
     .mq-mini-studio .mq-mini-studio-card { width: 88%; background: rgba(255,255,255,.85); backdrop-filter: blur(4px); border-radius: 8px; padding: 10px 12px; box-shadow: 0 2px 8px rgba(99, 102, 241, .2); display: flex; flex-direction: column; gap: 5px; }
     .mq-mini-studio .mq-mini-studio-dot { width: 18px; height: 5px; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 3px; }
@@ -631,21 +634,21 @@
 
     /* ── Questions card ── */
     .mq-card {
-        background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+        background: #fff; border: 1px solid #ece7df; border-radius: 14px;
         padding: 24px; box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
     }
     .mq-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
     .mq-card-icon {
         width: 42px; height: 42px; border-radius: 10px;
-        background: linear-gradient(135deg, #013D42, #037984);
+        background: linear-gradient(135deg, #c9a24b, #8b7355);
         color: #fff; display: flex; align-items: center; justify-content: center;
         font-size: 20px; flex-shrink: 0;
     }
-    .mq-card-head h3 { margin: 0; font-size: 18px; font-weight: 700; color: #0f172a; }
-    .mq-card-head small { color: #64748b; font-size: 13px; }
-    .mq-card-head small a { color: #037984; }
+    .mq-card-head h3 { margin: 0; font-size: 18px; font-weight: 700; color: #1c1917; }
+    .mq-card-head small { color: #78716c; font-size: 13px; }
+    .mq-card-head small a { color: #b8935a; }
     .mq-count {
-        display: inline-block; background: #f1f5f9; color: #475569;
+        display: inline-block; background: #f1f5f9; color: #44403c;
         padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 600;
         margin-left: 6px;
     }
@@ -653,19 +656,19 @@
     .mq-empty {
         text-align: center; padding: 30px;
         background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px;
-        color: #64748b; font-size: 14px;
+        color: #78716c; font-size: 14px;
     }
-    .mq-empty a { color: #037984; font-weight: 600; text-decoration: none; }
+    .mq-empty a { color: #b8935a; font-weight: 600; text-decoration: none; }
     .mq-empty a:hover { text-decoration: underline; }
 
     .mq-q-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
     .mq-q {
-        border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px;
+        border: 1px solid #ece7df; border-radius: 12px; padding: 18px 20px;
         background: #fafbfc; scroll-margin-top: 80px;
     }
     .mq-q-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .mq-q-num {
-        background: linear-gradient(135deg, #013D42, #037984); color: #fff;
+        background: linear-gradient(135deg, #c9a24b, #8b7355); color: #fff;
         padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
     }
     .mq-q-correct {
@@ -673,21 +676,21 @@
         background: #dcfce7; padding: 3px 10px; border-radius: 999px;
     }
     .mq-q-correct b { font-weight: 800; }
-    .mq-q-text { font-size: 16px; color: #0f172a; font-weight: 600; line-height: 1.4; margin: 4px 0 12px; }
+    .mq-q-text { font-size: 16px; color: #1c1917; font-weight: 600; line-height: 1.4; margin: 4px 0 12px; }
 
     .mq-q-options { display: flex; flex-direction: column; gap: 6px; }
     .mq-q-opt {
         display: grid; grid-template-columns: 32px 1fr auto; gap: 12px; align-items: center;
         padding: 9px 14px; border-radius: 8px; background: #fff;
-        border: 1.5px solid #e2e8f0; transition: background .15s;
+        border: 1.5px solid #ece7df; transition: background .15s;
     }
     .mq-q-opt-letter {
         width: 28px; height: 28px; border-radius: 6px;
-        background: #f1f5f9; color: #475569;
+        background: #f1f5f9; color: #44403c;
         display: flex; align-items: center; justify-content: center;
         font-weight: 700; font-size: 13px; flex-shrink: 0;
     }
-    .mq-q-opt-text { font-size: 14px; color: #334155; }
+    .mq-q-opt-text { font-size: 14px; color: #44403c; }
     .mq-q-opt-tag {
         font-size: 11px; font-weight: 700; color: #15803d;
         background: #dcfce7; padding: 3px 10px; border-radius: 999px;

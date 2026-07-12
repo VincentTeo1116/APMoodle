@@ -30,13 +30,13 @@ namespace APMoodle.Pages.BackEnd
         // Top-line stats
         public int EnrolledModuleCount { get; set; }
         public int CompletedQuizCount { get; set; }
-        public int AverageScore { get; set; } 
-        public int BestScore { get; set; }
+        public int AverageScore { get; set; } // rounded percentage 0..100
+        public int BestScore { get; set; } // 0..100
 
         // Listings
         public List<Module> EnrolledModules { get; set; } = new();
-        public List<Session> RecentAttempts { get; set; } = new(); 
-        public List<Session> TrendAttempts { get; set; } = new(); 
+        public List<Session> RecentAttempts { get; set; } = new(); // 5 newest, for the activity feed
+        public List<Session> TrendAttempts { get; set; } = new();  // wider window, for the score-trend chart
         public List<Announcement> Announcements { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync()

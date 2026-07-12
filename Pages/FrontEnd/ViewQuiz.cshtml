@@ -1031,3 +1031,32 @@
         }
     </div>
 </div>
+
+<script>
+    // Block submitting a quiz with unanswered questions — applies to every theme
+    // (they all share id="quizForm" and radio inputs named "Answer_{QuestionID}").
+    (function () {
+        var form = document.getElementById('quizForm');
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+            var radios = form.querySelectorAll('input[type="radio"][name^="Answer_"]');
+            var answered = {};
+            var seen = {};
+            radios.forEach(function (r) {
+                seen[r.name] = true;
+                if (r.checked) answered[r.name] = true;
+            });
+            var questions = Object.keys(seen);
+            if (questions.length === 0) return; // nothing to validate
+            var unanswered = questions.filter(function (n) { return !answered[n]; });
+            if (unanswered.length > 0) {
+                e.preventDefault();
+                e.stopPropagation();
+                alert(unanswered.length === questions.length
+                    ? 'Please answer the quiz before submitting.'
+                    : 'Please answer all questions before finishing — ' + unanswered.length + ' still unanswered.');
+                return false;
+            }
+        }, true); // capture phase: runs before the theme's own submit handler
+    })();
+</script>

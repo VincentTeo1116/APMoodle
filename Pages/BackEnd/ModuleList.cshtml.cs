@@ -39,6 +39,7 @@ namespace APMoodle.Pages.BackEnd
                 .ToList();
         }
 
+        // View details (AJAX)
         public async Task<IActionResult> OnGetDetailsAsync(int id)
         {
             var module = await _moduleService.GetModuleByIdAsync(id);

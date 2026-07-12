@@ -108,11 +108,11 @@
 }
 
 /* Color coding per card type – keep same as original testdb */
-.database-stat-card[data-table="Students"] .stat-icon i { color: #3b82f6; }
-.database-stat-card[data-table="Lecturers"] .stat-icon i { color: #10b981; }
+.database-stat-card[data-table="Students"] .stat-icon i { color: #b8935a; }
+.database-stat-card[data-table="Lecturers"] .stat-icon i { color: #a8935f; }
 .database-stat-card[data-table="Admins"] .stat-icon i { color: #8b5cf6; }
 .database-stat-card[data-table="Modules"] .stat-icon i { color: #f59e0b; }
-.database-stat-card[data-table="Materials"] .stat-icon i { color: #06b6d4; }
+.database-stat-card[data-table="Materials"] .stat-icon i { color: #a07d4f; }
 .database-stat-card[data-table="Quizzes"] .stat-icon i { color: #ec4899; }
 .database-stat-card[data-table="Questions"] .stat-icon i { color: #ef4444; }
 .database-stat-card[data-table="Announcements"] .stat-icon i { color: #f97316; }

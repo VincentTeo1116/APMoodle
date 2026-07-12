@@ -511,13 +511,13 @@ body {
 }
 
 .activity-icon.enrollment {
-    background: #dbeafe;
-    color: #2563eb;
+    background: #f4ecdd;
+    color: #b8935a;
 }
 
 .activity-icon.module {
-    background: #dcfce7;
-    color: #16a34a;
+    background: #f3ead8;
+    color: #a07d4f;
 }
 
 .activity-icon.registration {
@@ -568,11 +568,17 @@ body {
     font-size: 0.875rem;
 }
 
+/* ========================================
+   TREND CHART
+   ======================================== */
 #trendChart {
     max-height: 260px;
     width: 100%;
 }
 
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
 @media (max-width: 1280px) {
     .dashboard-container {
         padding: 1.25rem;
@@ -1103,11 +1109,11 @@ body {
 /* ---- Colour variety (mirrors the admin dashboard's vibrancy) ---- */
 
 /* Module avatars cycle through the four brand gradients */
-.student-item .avatar-placeholder.c1 { background: linear-gradient(135deg, #667eea, #764ba2); }
-.student-item .avatar-placeholder.c2 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-.student-item .avatar-placeholder.c3 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-.student-item .avatar-placeholder.c4 { background: linear-gradient(135deg, #f093fb, #f5576c); }
-.student-item .avatar-placeholder.c5 { background: linear-gradient(135deg, #fa709a, #fee140); }
+.student-item .avatar-placeholder.c1 { background: linear-gradient(135deg, #e3c987, #c9a24b); }
+.student-item .avatar-placeholder.c2 { background: linear-gradient(135deg, #c9a24b, #a07d4f); }
+.student-item .avatar-placeholder.c3 { background: linear-gradient(135deg, #d9a441, #b8801f); }
+.student-item .avatar-placeholder.c4 { background: linear-gradient(135deg, #c68b5a, #a55a34); }
+.student-item .avatar-placeholder.c5 { background: linear-gradient(135deg, #a8935f, #8b7355); }
 
 /* Recent-attempt icon tinted by score band (same thresholds as admin score circles) */
 .activity-icon.score-good { background: #d1fae5; color: #059669; }

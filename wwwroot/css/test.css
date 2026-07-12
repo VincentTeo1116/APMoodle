@@ -9,7 +9,7 @@ body {
 
     background:
         radial-gradient(circle at top left, #6366f1, transparent),
-        radial-gradient(circle at bottom right, #06b6d4, transparent),
+        radial-gradient(circle at bottom right, #b8935a, transparent),
         radial-gradient(circle at center, #8b5cf6, transparent),
         #0b1220;
 
@@ -314,11 +314,11 @@ input::placeholder {
 }
 
 input:focus {
-    border-color: #06b6d4;
+    border-color: #b8935a;
 
     box-shadow:
-        0 0 0 3px rgba(6,182,212,0.2),
-        0 5px 20px rgba(6,182,212,0.15);
+        0 0 0 3px rgba(184,147,90,0.2),
+        0 5px 20px rgba(184,147,90,0.15);
 }
 
 /* ───────────────── PASSWORD ───────────────── */
@@ -364,7 +364,7 @@ input:focus {
     border: none;
     border-radius: 14px;
 
-    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    background: linear-gradient(135deg, #6366f1, #b8935a);
 
     color: white;
 

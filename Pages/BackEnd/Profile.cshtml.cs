@@ -137,6 +137,38 @@ namespace APMoodle.Pages.BackEnd
             }
         }
 
+        /// <summary>
+        /// Checks the user's CURRENT password safely.
+        ///
+        /// Not every account stores a BCrypt hash — the seeded/legacy accounts
+        /// (e.g. ST00001) still hold a PLAINTEXT password. Calling
+        /// BCrypt.Verify() on those throws SaltParseException("Invalid salt
+        /// version") and blew up the whole change-password request with a 500.
+        /// So: only run BCrypt when the stored value actually looks like a
+        /// BCrypt hash ("$2..."), otherwise fall back to a plaintext compare —
+        /// exactly what Login.cshtml.cs::VerifyPassword does.
+        /// The NEW password is always saved as a BCrypt hash, so changing it
+        /// also upgrades a legacy account.
+        /// </summary>
+        private static bool VerifyCurrentPassword(string input, string? stored)
+        {
+            if (string.IsNullOrEmpty(stored) || input == null) return false;
+
+            if (stored.StartsWith("$2"))
+            {
+                try
+                {
+                    return BCrypt.Net.BCrypt.Verify(input, stored);
+                }
+                catch (BCrypt.Net.SaltParseException)
+                {
+                    return false; // malformed hash → treat as a wrong password, never a 500
+                }
+            }
+
+            return input == stored; // legacy plaintext account
+        }
+
         public async Task<IActionResult> OnPostChangePasswordAsync([FromBody] ChangePasswordRequest request)
         {
             var userId = HttpContext.Session.GetString("UserID");
@@ -160,7 +192,7 @@ namespace APMoodle.Pages.BackEnd
                 var student = await _studentService.GetStudentByIdAsync(id);
                 if (student == null) return new JsonResult(new { success = false, message = "Student not found." });
 
-                if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, student.Password))
+                if (!VerifyCurrentPassword(request.CurrentPassword, student.Password))
                     return new JsonResult(new { success = false, message = "Current password is incorrect." });
 
                 var hashed = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
@@ -172,7 +204,7 @@ namespace APMoodle.Pages.BackEnd
                 var lecturer = await _lecturerService.GetLecturerByIdAsync(id);
                 if (lecturer == null) return new JsonResult(new { success = false, message = "Lecturer not found." });
 
-                if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, lecturer.Password))
+                if (!VerifyCurrentPassword(request.CurrentPassword, lecturer.Password))
                     return new JsonResult(new { success = false, message = "Current password is incorrect." });
 
                 var hashed = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
@@ -184,7 +216,7 @@ namespace APMoodle.Pages.BackEnd
                 var admin = await _adminService.GetAdminByIdAsync(id);
                 if (admin == null) return new JsonResult(new { success = false, message = "Admin not found." });
 
-                if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, admin.Password))
+                if (!VerifyCurrentPassword(request.CurrentPassword, admin.Password))
                     return new JsonResult(new { success = false, message = "Current password is incorrect." });
 
                 var hashed = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);

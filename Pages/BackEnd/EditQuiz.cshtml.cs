@@ -42,6 +42,11 @@ namespace APMoodle.Pages.BackEnd
         [BindProperty]
         public bool IsPublic { get; set; }
 
+        // CSV of QuestionIDs that the lecturer removed during editing.
+        // Tracked across postbacks via a hidden field so the final Save knows what to delete.
+        // Must be nullable: with nullable reference types enabled, a non-nullable string
+        // property is treated as Required by the model binder, and "" (no deletions) would
+        // wrongly fail ModelState validation.
         [BindProperty]
         public string? DeletedQuestionIDs { get; set; }
 
@@ -49,6 +54,7 @@ namespace APMoodle.Pages.BackEnd
 
         public class QuestionInput
         {
+            // 0 = newly added during this edit session (no DB row yet)
             public int QuestionID { get; set; }
 
             [Required(ErrorMessage = "Question text is required")]
@@ -104,6 +110,7 @@ namespace APMoodle.Pages.BackEnd
                 })
                 .ToList();
 
+            // Always edit with at least one question slot present
             if (Questions.Count == 0)
                 Questions.Add(new QuestionInput());
 
@@ -122,9 +129,11 @@ namespace APMoodle.Pages.BackEnd
 
         public async Task<IActionResult> OnPostRemoveQuestionAsync(int index)
         {
+            // Authorization check
             var auth = await GuardAsync(QuizId);
             if (auth != null) return auth;
 
+            // Clear model state to avoid validation errors on fields that are not posted
             ModelState.Clear();
 
             if (index >= 0 && index < Questions.Count)
@@ -140,9 +149,11 @@ namespace APMoodle.Pages.BackEnd
                 Questions.RemoveAt(index);
             }
 
+            // Ensure at least one question slot exists
             if (Questions.Count == 0)
                 Questions.Add(new QuestionInput());
             Console.WriteLine($"RemoveQuestion called with index={index}, Questions.Count={Questions.Count}");
+            // Return the same page with the updated model
             return Page();
             
         }
@@ -164,6 +175,7 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
+            // 1) Update Quiz header
             var quizUpdate = new Quiz
             {
                 QuizID = QuizId,
@@ -179,11 +191,13 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
+            // 2) Delete removed questions (cascade to Results — documented in service)
             foreach (var deletedId in ParseDeletedIds())
             {
                 await _quizService.DeleteQuestionAsync(deletedId);
             }
 
+            // 3) Insert/update questions
             foreach (var input in Questions)
             {
                 var domainQuestion = new Question
@@ -211,6 +225,8 @@ namespace APMoodle.Pages.BackEnd
             TempData["QuizUpdated"] = $"Quiz '{Title}' was updated.";
             return RedirectToPage("/FrontEnd/ManageQuiz", new { id = QuizId });
         }
+
+        // -------- helpers --------
 
         private List<int> ParseDeletedIds()
         {

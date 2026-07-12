@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using APMoodle.Data;
 using APMoodle.Services;
 using APMoodle.Services.Interfaces;
-using BCrypt.Net;
+using APMoodle.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +11,10 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnCh
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+// The global page filter centralises session/role access control for Razor
+// Pages (this app has no auth scheme — see APMoodle.Security.SessionAuthPageFilter).
+builder.Services.AddRazorPages()
+    .AddMvcOptions(options => options.Filters.Add<SessionAuthPageFilter>());
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -42,7 +45,6 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build(); 
-
 
 // Use session after app is created
 app.UseSession();

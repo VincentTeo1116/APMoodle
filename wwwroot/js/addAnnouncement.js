@@ -40,6 +40,7 @@ function initializeSuccessPopup() {
     }
 }
 
+// Show error modal - uses CSS from site.css
 function showErrorModal(message) {
     let modal = document.getElementById('errorModal');
     if (!modal) {

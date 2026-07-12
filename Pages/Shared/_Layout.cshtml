@@ -32,19 +32,19 @@
             <div class="container-fluid">
                 @if (userRole == "admin")
                 {
-                    <a class="brand" href="/FrontEnd/AdminDashboard" title="Back to main page"><span class="brand-mark"><i class="fas fa-graduation-cap"></i></span> APMoodle</a>
+                    <a class="navbar-brand" href="/FrontEnd/AdminDashboard" title="Back to main page"><span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle</a>
                 }
                 else if (userRole == "lecturer")
                 {
-                    <a class="brand" href="/FrontEnd/LecturerDashboard" title="Back to main page"><span class="brand-mark"><i class="fas fa-graduation-cap"></i></span> APMoodle</a>
+                    <a class="navbar-brand" href="/FrontEnd/LecturerDashboard" title="Back to main page"><span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle</a>
                 }
                 else if (userRole == "student")
                 {
-                    <a class="brand" href="/FrontEnd/StudentDashboard" title="Back to main page"><span class="brand-mark"><i class="fas fa-graduation-cap"></i></span> APMoodle</a>
+                    <a class="navbar-brand" href="/FrontEnd/StudentDashboard" title="Back to main page"><span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle</a>
                 }
                 else
                 {
-                    <a class="brand" href="/" title="Back to main page"><span class="brand-mark"><i class="fas fa-graduation-cap"></i></span> APMoodle</a>
+                    <a class="navbar-brand" href="/FrontEnd/ViewAvailableQuiz" title="Back to main page"><span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle</a>
                 }
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -56,7 +56,7 @@
 
                         <!-- Shows Portal Name based on role -->
                         <li class="nav-item" style="position: absolute; left: 50%; transform: translateX(-50%);">
-                            <a class="nav-link text-dark fw-bold" style="margin-top: 6px">
+                            <a class="nav-link text-dark fw-bold">
                                 @if (userRole == "admin")
                                 {
                                     @adminLayout
@@ -76,6 +76,7 @@
                             </a>
                         </li>
                         <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+                            <!-- Only show Logout button -->
                             @if (isLoggedIn)
                             {
                                 <li class="nav-profile-item">

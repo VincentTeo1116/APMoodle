@@ -116,7 +116,7 @@
                         @foreach (var a in Model.Announcements)
                         {
                             <div class="announcement-slide">
-                                <div class="announcement-item">
+                                <a class="announcement-item" href="/FrontEnd/ViewAnnouncements" title="View all announcements">
                                     <div class="announcement-item-icon"><i class="fas fa-bullhorn"></i></div>
                                     <div class="announcement-item-body">
                                         <div class="announcement-item-title">@a.Title</div>
@@ -126,7 +126,7 @@
                                             <span><i class="far fa-clock"></i> @a.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy • hh:mm tt")</span>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         }
                     </div>
@@ -299,6 +299,9 @@
 
 <style>
     /* gauge footer chips */
+    /* announcement cards are clickable → full announcements view */
+    .announcement-item { text-decoration: none; color: inherit; cursor: pointer; }
+    .announcement-item:hover .announcement-item-title { color: #8b7355; }
     .gauge-foot { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 0.25rem; }
     .gauge-chip {
         display: inline-flex; align-items: center; gap: 0.4rem;

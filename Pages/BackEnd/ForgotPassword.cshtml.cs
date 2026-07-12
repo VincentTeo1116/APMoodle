@@ -82,12 +82,14 @@ namespace APMoodle.Pages.BackEnd
             var user = await FindUserByEmailAsync(Input.Email);
             if (user == null)
             {
+                // Security: do not reveal existence
                 Message = "If the email exists, an OTP has been sent. Please check your inbox.";
                 IsOtpSent = true;
                 Email = Input.Email;
                 return Page();
             }
 
+            // Skip reCAPTCHA on localhost
             if (Request.Host.Host != "localhost" && Request.Host.Host != "127.0.0.1")
             {
                 var recaptchaResponse = Request.Form["g-recaptcha-response"];
@@ -140,13 +142,14 @@ namespace APMoodle.Pages.BackEnd
             if (!_cache.TryGetValue(cacheKey, out string? storedOtp) || storedOtp != request.Otp)
                 return new JsonResult(new { success = false, message = "Invalid or expired OTP." });
 
+            // OTP verified – keep it valid for 10 more minutes (for reset step)
             _cache.Set(cacheKey, storedOtp, TimeSpan.FromMinutes(10));
             return new JsonResult(new { success = true });
         }
 
         public async Task<IActionResult> OnPostResetPasswordAsync()
         {
-            // Validate OTP again
+            // Validate OTP again (should be verified, but double-check)
             var cacheKey = $"OTP_{Input.Email}";
             if (!_cache.TryGetValue(cacheKey, out string? storedOtp) || storedOtp != Input.Otp)
             {

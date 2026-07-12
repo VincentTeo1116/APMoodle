@@ -10,12 +10,13 @@
     var userRole = HttpContext.Session.GetString("UserRole") ?? "Guest";
     var isLoggedIn = !string.IsNullOrEmpty(userId) && userRole != "Guest";
 
+    // Warm/gold role colours (was blue/amber/red — off-theme)
     string GetAvatarColor(string role) => role switch
     {
-        "student" => "#3b82f6",
-        "lecturer" => "#f59e0b",
-        "admin" => "#ef4444",
-        _ => "#64748b"
+        "student" => "#b8935a",
+        "lecturer" => "#a55a34",
+        "admin" => "#6b5d4f",
+        _ => "#78716c"
     };
 
     string GetInitials(string name)
@@ -250,13 +251,18 @@
 </div>
 
 <!-- Password Change Modal -->
-<div id="passwordModal" class="cropper-modal">
-    <div class="cropper-modal-content" style="max-width: 480px;">
-        <div class="cropper-modal-header">
-            <h3>Change Password</h3>
-            <button class="cropper-modal-close" id="passwordModalClose">&times;</button>
+@* Uses the same modal shell as the Admin pages (UserList / AnnouncementList):
+   .modal overlay (dim + blur) > .modal-content > header / body / footer. *@
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-header-title">
+                <i class="bi bi-shield-lock"></i>
+                <h3>Change Password</h3>
+            </div>
+            <span class="modal-close" id="passwordModalClose">&times;</span>
         </div>
-        <div class="cropper-modal-body">
+        <div class="modal-body">
             <div id="passwordChangeForm">
                 <div class="form-group" id="currentPasswordGroup">
                     <label>Current Password <span class="required">*</span></label>
@@ -276,9 +282,9 @@
                 <div id="passwordMessage" style="display: none; margin-top: 12px; padding: 10px; border-radius: 8px;"></div>
             </div>
         </div>
-        <div class="cropper-modal-footer" style="justify-content: flex-end;">
-            <button class="btn-secondary" id="passwordCancelBtn">Cancel</button>
-            <button class="btn-primary" id="passwordSaveBtn">Update Password</button>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" id="passwordCancelBtn">Cancel</button>
+            <button type="button" class="btn-primary" id="passwordSaveBtn">Update Password</button>
         </div>
     </div>
 </div>
@@ -474,8 +480,13 @@
             if (deleteConfirmModal.style.display === 'flex') {
                 deleteConfirmModal.style.display = 'none';
             }
-            if (cropModal.style.display === 'flex') {
+            // These modals are opened via the .show CLASS (not an inline style),
+            // so check the class — style.display is always '' here.
+            if (cropModal.classList.contains('show')) {
                 closeCropModal();
+            }
+            if (passwordModal && passwordModal.style.display === 'flex') {
+                closePasswordModal();
             }
         }
     });
@@ -483,8 +494,7 @@
     // Open modal
     if (openPasswordModalBtn) {
         openPasswordModalBtn.addEventListener('click', function() {
-            passwordModal.classList.add('show');
-            @* passwordModal.style.display = 'flex'; *@
+            passwordModal.style.display = 'flex';   // admin .modal pattern
             // Clear previous state
             currentPasswordInput.value = '';
             newPasswordInput.value = '';
@@ -498,8 +508,7 @@
 
     // Close modal
     function closePasswordModal() {
-        passwordModal.classList.remove('show');
-        @* passwordModal.style.display = 'none'; *@
+        passwordModal.style.display = 'none';   // admin .modal pattern
     }
     passwordModalClose.addEventListener('click', closePasswordModal);
     passwordCancelBtn.addEventListener('click', closePasswordModal);

@@ -40,6 +40,7 @@ namespace APMoodle.Pages.BackEnd
                         var student = await _context.Students.FirstOrDefaultAsync(s => s.StudentID == id);
                         if (student != null)
                         {
+                            // Change from Pending to Inactive (Rejected)
                             student.Status = "Inactive";
                             _context.Students.Update(student);
                             await _context.SaveChangesAsync();
@@ -52,6 +53,7 @@ namespace APMoodle.Pages.BackEnd
                         var lecturer = await _context.Lecturers.FirstOrDefaultAsync(l => l.LecturerID == id);
                         if (lecturer != null)
                         {
+                            // Change from Pending to Inactive (Rejected)
                             lecturer.Status = "Inactive";
                             _context.Lecturers.Update(lecturer);
                             await _context.SaveChangesAsync();
@@ -64,6 +66,7 @@ namespace APMoodle.Pages.BackEnd
                         var admin = await _context.Admins.FirstOrDefaultAsync(a => a.AdminID == id);
                         if (admin != null)
                         {
+                            // Change from Pending to Inactive (Rejected)
                             admin.Status = "Inactive";
                             _context.Admins.Update(admin);
                             await _context.SaveChangesAsync();

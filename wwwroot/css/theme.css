@@ -91,23 +91,27 @@ body {
     transition: var(--transition);
 }
 
-/* small gold brand chip — gold as an accent, not the whole wordmark */
-.custom-navbar .navbar-brand::before {
-    content: '';
-    width: 22px;
-    height: 22px;
-    border-radius: 7px;
-    background: var(--gold-grad);
-    box-shadow: 0 3px 9px rgba(184, 147, 90, 0.45);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-}
-
 .custom-navbar .navbar-brand:hover {
     color: #000 !important;
 }
 
-.custom-navbar .navbar-brand:hover::before {
-    transform: rotate(-10deg) scale(1.12);
+/* gold brand logo chip — a real element (reliable everywhere), gold as accent */
+.custom-navbar .navbar-brand .apm-logo {
+    display: inline-grid;
+    place-items: center;
+    width: 29px;
+    height: 29px;
+    border-radius: 8px;
+    background: #c9a24b; /* solid fallback so the chip is always visible */
+    background: var(--gold-grad);
+    color: #fff;
+    font-size: 0.88rem;
+    box-shadow: 0 3px 9px rgba(184, 147, 90, 0.45);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.custom-navbar .navbar-brand:hover .apm-logo {
+    transform: rotate(-10deg) scale(1.1);
     box-shadow: 0 5px 14px rgba(184, 147, 90, 0.55);
 }
 

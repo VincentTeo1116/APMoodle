@@ -472,15 +472,15 @@
 }
 
 .activate-btn {
-    color: #0891b2;
-    background: #ecfeff;
-    border: 1px solid #a5f3fc;
+    color: #b8935a;
+    background: #f4ecdd;
+    border: 1px solid #e3c987;
 }
 
 .activate-btn:hover {
-    background: #cffafe;
-    color: #0e7490;
-    box-shadow: 0 2px 6px rgba(8, 145, 178, 0.2);
+    background: #f4ecdd;
+    color: #6b5d4f;
+    box-shadow: 0 2px 6px rgba(184, 147, 90, 0.2);
 }
 
 .toggle-status-btn {
@@ -505,6 +505,7 @@
     font-size: 15px;
 }
 
+/* ========= MODAL (View Details) ========= */
 .modal {
     display: none;
     position: fixed;

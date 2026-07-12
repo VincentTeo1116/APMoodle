@@ -57,6 +57,8 @@ namespace APMoodle.Pages.BackEnd
                 return Page();
             }
 
+            // Invitation codes are generated as uppercase letters + digits (see ModuleService.GenerateUniqueCode),
+            // and Postgres '=' is case-sensitive, so normalize the student's input to uppercase before lookup.
             var code = Input.InvitationCode.Trim().ToUpper();
             var module = await _moduleService.GetModuleByInvitationCodeAsync(code);
 

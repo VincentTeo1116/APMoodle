@@ -155,6 +155,9 @@ namespace APMoodle.Pages.BackEnd
                 return Unauthorized();
             }
 
+            // Verify the caller is actually a participant of this chat, otherwise
+            // any logged-in user could read another pair's private messages by
+            // guessing chatId (the send handler already checks this; read did not).
             var userRole = HttpContext.Session.GetString("UserRole");
             var currentUserId = int.Parse(sessionUserId);
             var chat = await _chatService.GetChatSessionByIdAsync(chatId);

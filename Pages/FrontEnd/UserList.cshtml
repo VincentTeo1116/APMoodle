@@ -142,33 +142,33 @@
                                 }
                             </td>
                      <td class="action-cell">
-                        <div class="action-buttons-wrapper">
-                            <button class="action-btn view-btn" data-id="@user.Id" data-type="@user.Role" title="View">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="action-btn edit-btn" data-id="@user.Id" data-type="@user.Role" title="Edit">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                            <button class="action-btn toggle-status-btn" 
-                                    data-id="@user.Id" 
-                                    data-type="@user.Role" 
-                                    data-status="@user.Status"
-                                    title="@(user.Status == "Active" ? "Deactivate" : user.Status == "Pending" ? "Activate / Reject" : "Reactivate")">
-                                @if (user.Status == "Active")
-                                {
-                                    <i class="bi bi-person-x"></i>
-                                }
-                                else if (user.Status == "Pending")
-                                {
-                                    <i class="bi bi-question-circle"></i>
-                                }
-                                else
-                                {
-                                    <i class="bi bi-person-check"></i>
-                                }
-                            </button>
-                        </div>
-                    </td>
+    <div class="action-buttons-wrapper">
+        <button class="action-btn view-btn" data-id="@user.Id" data-type="@user.Role" title="View">
+            <i class="bi bi-eye"></i>
+        </button>
+        <button class="action-btn edit-btn" data-id="@user.Id" data-type="@user.Role" title="Edit">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="action-btn toggle-status-btn" 
+                data-id="@user.Id" 
+                data-type="@user.Role" 
+                data-status="@user.Status"
+                title="@(user.Status == "Active" ? "Deactivate" : user.Status == "Pending" ? "Activate / Reject" : "Reactivate")">
+            @if (user.Status == "Active")
+            {
+                <i class="bi bi-person-x"></i>
+            }
+            else if (user.Status == "Pending")
+            {
+                <i class="bi bi-question-circle"></i>
+            }
+            else
+            {
+                <i class="bi bi-person-check"></i>
+            }
+        </button>
+    </div>
+</td>
                         </tr>
                     }
                 }

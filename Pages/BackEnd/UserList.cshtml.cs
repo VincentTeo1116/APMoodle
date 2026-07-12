@@ -92,6 +92,7 @@ namespace APMoodle.Pages.BackEnd
                 RoleIcon = "bi-person-workspace"
             }).ToList();
 
+            // Fetch admins - No RegisteredDate, set to null
             var admins = await _context.Admins
                 .Select(a => new
                 {
@@ -115,7 +116,7 @@ namespace APMoodle.Pages.BackEnd
                 Role = "Admin",
                 Status = a.Status,
                 ProfilePic = a.ProfilePic,
-                RegisteredDate = null,
+                RegisteredDate = null, // Admins don't have RegisteredDate
                 PhoneNumber = a.PhoneNumber,
                 Gender = a.Gender,
                 Department = null,
@@ -170,7 +171,7 @@ namespace APMoodle.Pages.BackEnd
         public string Role { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public string? ProfilePic { get; set; }
-        public DateTime? RegisteredDate { get; set; }
+        public DateTime? RegisteredDate { get; set; } // Made nullable
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
         public string? Department { get; set; }

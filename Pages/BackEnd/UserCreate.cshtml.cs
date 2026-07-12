@@ -118,10 +118,10 @@ namespace APMoodle.Pages.BackEnd
                     var age = today.Year - DOB.Value.Year;
                     if (DOB.Value > today.AddYears(-age)) age--;
                     
-                    if (age < 15 || age > 80)
+                    if (age < 5 || age > 120)
                     {
                         TempData["ShowErrorModal"] = true;
-                        TempData["ErrorMessage"] = "Date of birth must be between 15 and 80 years old.";
+                        TempData["ErrorMessage"] = "Date of birth must be between 5 and 120 years old.";
                         return Page();
                     }
                 }
