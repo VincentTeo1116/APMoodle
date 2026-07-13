@@ -8,22 +8,11 @@
     var latest = items.FirstOrDefault();
 }
 
-@*
-    Read-only announcements viewer for students & lecturers.
-    Matches the APMoodle dashboard design system (dashboard.css / theme.css tokens).
-    Backend contract: Model.Announcements — active Announcement list, newest first
-        .Title, .Message, .Creator?.Name, .CreatedAt
-*@
-
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <div id="horizontalNavbar">
-    <div class="PageTitle">
-        <h1>@ViewData["Title"]</h1>
-    </div>
-
     <div class="PageComponent">
         <div class="va-page">
 
@@ -81,7 +70,7 @@
 
 <style>
     .va-page {
-        max-width: 920px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 0.5rem 0 2rem;
         font-family: 'Inter', sans-serif;

@@ -208,12 +208,6 @@
     display: block;
 }
 
-/* Shared overlay for the Crop + Change-Password modals.
-   BUG FIX: this used to be `opacity: 0%` with .show only setting `display:flex`,
-   so the overlay never became opaque — the modal and its dim backdrop rendered
-   see-through and the page behind bled through the dialog. It also sat at
-   z-index 90, BELOW the fixed navbar (z-index 100), so the top bar was never
-   dimmed. Now it becomes fully opaque when shown and sits above the chrome. */
 .cropper-modal {
     display: none;
     position: fixed;
