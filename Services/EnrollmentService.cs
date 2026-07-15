@@ -27,6 +27,10 @@ namespace APMoodle.Services
                 // Check if already enrolled
                 if (await IsEnrolledAsync(studentId, moduleId))
                     return false;
+                
+                var module = await _context.Modules.FindAsync(moduleId);
+                if (module == null || module.Status != "Active")
+                    return false;
 
                 var enrollment = new Enrollment
                 {
@@ -72,6 +76,7 @@ namespace APMoodle.Services
                 .Where(e => e.StudentID == studentId && e.Status == "Active")
                 .Include(e => e.Module)
                     .ThenInclude(m => m!.Lecturer)
+                .Where(e => e.Module!.Status == "Active")
                 .Select(e => e.Module!)
                 .ToListAsync();
         }
@@ -94,7 +99,7 @@ namespace APMoodle.Services
                 .ToListAsync();
 
             return await _context.Modules
-                .Where(m => !enrolledModuleIds.Contains(m.ModuleID))
+                .Where(m => m.Status == "Active" && !enrolledModuleIds.Contains(m.ModuleID))
                 .Include(m => m.Lecturer)
                 .ToListAsync();
         }

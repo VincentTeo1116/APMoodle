@@ -104,7 +104,7 @@
     line-height: 1.5;
     word-break: break-word;
     overflow-wrap: break-word;
-    white-space: normal;
+    white-space: normal;  
 }
 
 .material-card-footer {
@@ -178,6 +178,7 @@
     border: 1px solid rgba(184, 147, 90, 0.15);
     width: 100%;
     box-sizing: border-box;
+    max-width: 500px;
 }
 
 .module-details-card h3 {

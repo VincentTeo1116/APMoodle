@@ -103,8 +103,21 @@
 
         @if (userRole == "student")
     {
-        <div class="student-actions">
-            <a href="/FrontEnd/JoinModule" class="btn-create">+ Join Module</a>
+        <div class="filter-search-bar">
+            <div class="filter-bar">
+                <select id="filterModule">
+                    <option value="all">All Modules</option>
+                    <option value="active">Active Modules</option>
+                    <option value="completed">Completed Modules</option>
+                </select>
+            </div>
+            <div class="search-bar">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" id="searchModule" placeholder="Search modules..." />
+            </div>
+            <div class="student-actions">
+                <a href="/FrontEnd/JoinModule" class="btn-create">+ Join Module</a>
+            </div>
         </div>
     }
 
@@ -125,7 +138,7 @@
                         <div class="module-code">@module.ModuleCode</div>
                         <h3 class="module-title">
                             @module.Name
-                            <span class="module-status-badge @statusClass">@status</span>
+                            @* <span class="module-status-badge @statusClass">@status</span> *@
                         </h3>
                         <p class="module-description">@(module.Description ?? "No description available")</p>
                     </div>
