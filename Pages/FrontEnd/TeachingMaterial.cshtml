@@ -50,82 +50,110 @@
                         <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">+ Add
                                 Material</a>
                     }
-                        </div>
+                </div>
 
-                        <div class="materials-list">
-                            @if (hasMaterials)
-                            {
-                                foreach (var material in Model.Materials)
-                                {
-                                    <div class="material-card">
-                                        <div class="material-card-header">
-                                            <div class="material-icon">📘</div>
-                                            <div class="material-info">
-                                                <h3 class="material-title">@material.Title</h3>
-                                                <p class="material-description">@(material.Description ?? "No description")</p>
-                                            </div>
-                                        </div>
-                                        <div class="material-card-footer">
-                                            <span class="material-date">Updated @(material.CreatedAt.ToString("MMM dd, yyyy")??"Unknown")</span>
-                                            @if (isLecturer)
-                                            {
-                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link" title="Edit teaching material"><i class="bi bi-pencil-square"></i> Edit</a>
-                                            }
-                                            else
-                                            {
-                                                <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link" title="View teaching material"><i class="bi bi-eye"></i>View</a>
-                                            }
-                                        </div>
+                <div class="materials-list">
+                    @if (hasMaterials)
+                    {
+                        foreach (var material in Model.Materials)
+                        {
+                            <div class="material-card">
+                                <div class="material-card-header">
+                                    <div class="material-icon">📘</div>
+                                    <div class="material-info">
+                                        <h3 class="material-title">@material.Title</h3>
+                                        <p class="material-description">@(material.Description ?? "No description")</p>
                                     </div>
-                                }
-                            }
-                            else
-                            {
-                                <div class="empty-state">
-                                    <span>📭</span>
-                                    <p>No teaching materials yet.</p>
-                                    @* @if (isLecturer)
+                                </div>
+                                <div class="material-card-footer">
+                                    <span class="material-date">Updated @(material.CreatedAt.ToString("MMM dd, yyyy")??"Unknown")</span>
+                                    @if (isLecturer)
                                     {
-                                    <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Your
-                                        First Material</a>
-                                    } *@
+                                        <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link" title="Edit teaching material"><i class="bi bi-pencil-square"></i> Edit</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/FrontEnd/TeachingMaterialOverview/@material.MaterialID" class="view-link" title="View teaching material"><i class="bi bi-eye"></i>View</a>
+                                    }
                                 </div>
-                            }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <span>📭</span>
+                            <p>No teaching materials yet.</p>
+                            @* @if (isLecturer)
+                            {
+                            <a href="/FrontEnd/CreateMaterial?moduleId=@Model.CurrentModule?.ModuleID" class="add-btn">Add Your
+                                First Material</a>
+                            } *@
                         </div>
-                    </div>
-                    <!-- Right Section: Module Details -->
-                    <div class="details-section">
-                        <div class="module-details-card">
-                            <h3>@Model.CurrentModule?.Name</h3>
-                            <div class="module-info-vertical">
-                                <div class="info-group">
-                                    <span class="info-label">Description</span>
-                                    <span class="info-value">@(Model.CurrentModule?.Description ?? "No description")</span>
-                                </div>
-                                <div class="info-group">
-                                    <span class="info-label">Start Date</span>
-                                    <span class="info-value">@(Model.CurrentModule?.StartDate.ToString("dd/MM/yyyy") ??
-                                                                                                                                                                                          "N/A")</span>
-                                    </div>
-                                    <div class="info-group">
-                                        <span class="info-label">End Date</span>
-                                        <span class="info-value">@(Model.CurrentModule?.EndDate.ToString("dd/MM/yyyy") ?? "N/A")</span>
-                                    </div>
-                                    <!-- Invitation Code Section - Independent -->
-                                    <div class="invitation-section">
-                                        <span class="invitation-label">Invitation Code</span>
-                                        <div class="code-row">
-                                            <span class="code-value" id="invitationCode">@(Model.CurrentModule?.InvitationCode ?? "N/A")</span>
-                                                @if (isLecturer)
-                                                {
-                                                    <button class="regenerate-btn" onclick="regenerateCode(@Model.CurrentModule?.ModuleID)">⟳
-                                                        Regenerate Code</button>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
+                    }
+                </div>
+            </div>
+            <!-- Right Section: Module Details -->
+            <div class="details-section">
+                <div class="module-details-card">
+                    <h3>@Model.CurrentModule?.Name</h3>
+                    <div class="module-info-vertical">
+                        <div class="info-group">
+                            <span class="info-label">Description</span>
+                            <span class="info-value">@(Model.CurrentModule?.Description ?? "No description")</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Start Date</span>
+                            <span class="info-value">@(Model.CurrentModule?.StartDate.ToString("dd/MM/yyyy") ??
+                                                                                                                                                                                    "N/A")</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">End Date</span>
+                            <span class="info-value">@(Model.CurrentModule?.EndDate.ToString("dd/MM/yyyy") ?? "N/A")</span>
+                        </div>
+                        <!-- Invitation Code Section - Independent -->
+                        <div class="invitation-section">
+                            <span class="invitation-label">Invitation Code</span>
+                            <div class="code-row">
+                                <span class="code-value" id="invitationCode">@(Model.CurrentModule?.InvitationCode ?? "N/A")</span>
+                                    @if (isLecturer)
+                                    {
+                                        <button class="regenerate-btn" onclick="regenerateCode(@Model.CurrentModule?.ModuleID)">⟳
+                                            Regenerate Code</button>
+                                    }
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
+<!-- Regenerate Code Modal -->
+<div id="codeRegenerateModal" class="modal-overlay-full" style="display: none;">
+    <div class="modal-container" style="max-width: 450px;">
+        <div class="modal-icon success-icon">
+            <i class="bi bi-arrow-repeat"></i>
+        </div>
+        <h3 class="modal-title">Invitation Code Regenerated</h3>
+        <p class="modal-message">Your new invitation code has been generated successfully.</p>
+        
+        <div style="margin: 16px 0; padding: 14px; background: #faf7f0; border-radius: 12px; border: 1px solid #ece7df; text-align: center;">
+            <p style="margin: 0 0 6px; font-weight: 600; font-size: 14px; color: #6b5d4f;">
+                <i class="bi bi-key-fill" style="color: #b8935a;"></i> New Invitation Code
+            </p>
+            <p id="newInvitationCodeDisplay" style="margin: 0; font-family: 'Courier New', monospace; font-size: 28px; font-weight: 700; color: #6b5d4f; letter-spacing: 2px; word-break: break-all;">
+                <!-- Code will be inserted here -->
+            </p>
+        </div>
+
+        <div class="modal-actions" style="gap: 12px;">
+            <button class="modal-btn modal-success" id="copyCodeBtn" style="background: #b8935a; min-width: 140px;">
+                <i class="bi bi-clipboard"></i> Copy Code
+            </button>
+            <button class="modal-btn modal-cancel" id="closeCodeModalBtn" style="min-width: 100px;">
+                <i class="bi bi-x-circle"></i> Close
+            </button>
+        </div>
+    </div>
+</div>
                         

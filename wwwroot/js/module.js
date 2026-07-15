@@ -1,8 +1,4 @@
 function regenerateCode(moduleId) {
-    if (!confirm('Generate a new invitation code? The previous code will be invalidated.')) {
-        return;
-    }
-
     const submitBtn = document.querySelector('.regenerate-btn');
     if (!submitBtn) return;
     
@@ -24,6 +20,7 @@ function regenerateCode(moduleId) {
     })
     .then(data => {
         if (data.success) {
+            // Update the inline code display
             const codeElement = document.getElementById('invitationCode');
             if (codeElement) {
                 codeElement.textContent = data.code;
@@ -33,7 +30,9 @@ function regenerateCode(moduleId) {
                     codeElement.style.backgroundColor = '';
                 }, 500);
             }
-            alert('Invitation code regenerated successfully! New code: ' + data.code);
+
+            // Show the custom modal with the new code
+            showCodeRegenerateModal(data.code);
         } else {
             alert('Failed: ' + (data.message || 'Unknown error'));
         }
@@ -47,6 +46,110 @@ function regenerateCode(moduleId) {
         submitBtn.disabled = false;
     });
 }
+
+// ─── Show the custom code modal ───
+function showCodeRegenerateModal(newCode) {
+    const modal = document.getElementById('codeRegenerateModal');
+    const codeDisplay = document.getElementById('newInvitationCodeDisplay');
+    if (!modal || !codeDisplay) return;
+
+    codeDisplay.textContent = newCode;
+    modal.style.display = 'flex';
+}
+
+// ─── Copy to clipboard ───
+function copyCodeToClipboard() {
+    const codeDisplay = document.getElementById('newInvitationCodeDisplay');
+    if (!codeDisplay) return;
+
+    const code = codeDisplay.textContent;
+    if (!code) return;
+
+    // Use the modern clipboard API if available
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code)
+            .then(() => {
+                const btn = document.getElementById('copyCodeBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check-circle"></i> Copied!';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '#b8935a';
+                }, 2000);
+            })
+            .catch(() => {
+                fallbackCopyCode(code);
+            });
+    } else {
+        fallbackCopyCode(code);
+    }
+}
+
+// ─── Fallback copy method (for older browsers) ───
+function fallbackCopyCode(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+        const btn = document.getElementById('copyCodeBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check-circle"></i> Copied!';
+        btn.style.background = '#28a745';
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '#b8935a';
+        }, 2000);
+    } catch (err) {
+        alert('Failed to copy code. Please select and copy it manually.');
+    }
+    document.body.removeChild(textarea);
+}
+
+// ─── Close the modal ───
+function closeCodeRegenerateModal() {
+    const modal = document.getElementById('codeRegenerateModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// ─── Attach event listeners after DOM load ───
+document.addEventListener('DOMContentLoaded', function() {
+    const copyBtn = document.getElementById('copyCodeBtn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', copyCodeToClipboard);
+    }
+
+    const closeBtn = document.getElementById('closeCodeModalBtn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeCodeRegenerateModal);
+    }
+
+    // Close modal on overlay click
+    const modal = document.getElementById('codeRegenerateModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeCodeRegenerateModal();
+            }
+        });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('codeRegenerateModal');
+            if (modal && modal.style.display === 'flex') {
+                closeCodeRegenerateModal();
+            }
+        }
+    });
+});
 
 // Search and Filter functionality
 function filterModules() {

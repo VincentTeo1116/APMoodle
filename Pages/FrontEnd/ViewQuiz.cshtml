@@ -6,7 +6,6 @@
     var theme = Model.CurrentQuiz?.Theme?.Trim() ?? string.Empty;
     var subject = Model.CurrentQuiz?.Subject ?? "";
 
-    // Per-theme body background so the theme reaches the shell edges
     var bodyBg = theme switch
     {
         "Midterm"    => "linear-gradient(135deg, #46178f 0%, #6b1cae 40%, #864cd1 100%)",
@@ -17,10 +16,6 @@
     };
 }
 
-@* Fullbleed shell: collapse container/navbar padding, hide title duplicate + footer,
-   stretch the themed stage to fill the viewport (minus the fixed top navbar).
-   PageTitle block is kept in markup per the layout convention but hidden visually
-   because each theme renders its own title inside the stage. *@
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -51,9 +46,6 @@
 
         @if (Model.CurrentQuiz != null && Model.Questions.Any())
         {
-            @* ============================================================== *@
-            @* THEME 1 — Midterm — Kahoot-style game show                     *@
-            @* ============================================================== *@
             if (theme == "Midterm")
             {
                 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@@700;900&display=swap" rel="stylesheet" />
@@ -307,9 +299,6 @@
                 </script>
             }
 
-            @* ============================================================== *@
-            @* THEME — Forest — calming green, eye-comfortable                *@
-            @* ============================================================== *@
             else if (theme == "Forest")
             {
                 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@@500;700&family=Inter:wght@@400;600&display=swap" rel="stylesheet" />
@@ -447,10 +436,6 @@
                     })();
                 </script>
             }
-
-            @* ============================================================== *@
-            @* THEME — Comic — pop-art comic book                             *@
-            @* ============================================================== *@
             else if (theme == "Comic")
             {
                 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Comic+Neue:wght@@400;700&display=swap" rel="stylesheet" />
@@ -652,9 +637,6 @@
                 </script>
             }
 
-            @* ============================================================== *@
-            @* THEME — Watercolor — soft painterly                            *@
-            @* ============================================================== *@
             else if (theme == "Watercolor")
             {
                 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@@400;500;600&display=swap" rel="stylesheet" />
@@ -800,9 +782,6 @@
                 </script>
             }
 
-            @* ============================================================== *@
-            @* DEFAULT — "Default" (also catches empty / unknown theme values) *@
-            @* ============================================================== *@
             else
             {
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -1031,13 +1010,34 @@
         }
     </div>
 </div>
+<!-- Quiz Warning Modal (Unanswered Questions) -->
+<div id="quizWarningModal" class="modal-overlay-full" style="display: none;">
+    <div class="modal-container" style="max-width: 420px;">
+        <div class="modal-icon warning-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <h3 class="modal-title">Incomplete Quiz</h3>
+        <p class="modal-message" id="warningMessage">
+            Please answer all questions before submitting.
+        </p>
+        <div class="modal-actions">
+            <button class="modal-btn modal-cancel" id="warningCloseBtn">
+                <i class="bi bi-x-circle"></i> Close
+            </button>
+        </div>
+    </div>
+</div>
 
 <script>
-    // Block submitting a quiz with unanswered questions — applies to every theme
-    // (they all share id="quizForm" and radio inputs named "Answer_{QuestionID}").
+    // Block submitting a quiz with unanswered questions – uses a modal instead of alert.
     (function () {
         var form = document.getElementById('quizForm');
         if (!form) return;
+
+        // Get modal elements
+        var modal = document.getElementById('quizWarningModal');
+        var messageEl = document.getElementById('warningMessage');
+
         form.addEventListener('submit', function (e) {
             var radios = form.querySelectorAll('input[type="radio"][name^="Answer_"]');
             var answered = {};
@@ -1048,15 +1048,44 @@
             });
             var questions = Object.keys(seen);
             if (questions.length === 0) return; // nothing to validate
+
             var unanswered = questions.filter(function (n) { return !answered[n]; });
             if (unanswered.length > 0) {
                 e.preventDefault();
                 e.stopPropagation();
-                alert(unanswered.length === questions.length
-                    ? 'Please answer the quiz before submitting.'
-                    : 'Please answer all questions before finishing — ' + unanswered.length + ' still unanswered.');
+
+                // Build message
+                var msg = unanswered.length === questions.length
+                    ? 'You have not answered any questions. Please answer the quiz before submitting.'
+                    : 'You have ' + unanswered.length + ' unanswered question' + (unanswered.length > 1 ? 's' : '') + '. Please complete all questions before finishing.';
+
+                messageEl.textContent = msg;
+                modal.style.display = 'flex';
+
                 return false;
             }
-        }, true); // capture phase: runs before the theme's own submit handler
+        }, true); // capture phase
+
+        // Close modal
+        var closeBtn = document.getElementById('warningCloseBtn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+        }
+
+        // Also close when clicking outside the modal container
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            }
+        });
     })();
 </script>
