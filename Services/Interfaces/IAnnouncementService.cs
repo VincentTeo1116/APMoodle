@@ -10,5 +10,9 @@ namespace APMoodle.Services.Interfaces
         Task<Announcement> UpdateAnnouncementAsync(int id, Announcement announcement, int modifiedByAdminId);
         Task<bool> DeleteAnnouncementAsync(int id, int deletedByAdminId);
         Task<int> GetTotalCountAsync();
+        Task<int> GetUnreadCountAsync(int userId);
+        Task MarkAnnouncementAsReadAsync(int userId, int announcementId);
+        Task MarkAllAnnouncementsAsReadAsync(int userId);
+        Task<bool> IsAnnouncementReadAsync(int userId, int announcementId);
     }
 }

@@ -81,5 +81,67 @@ namespace APMoodle.Services.Interfaces
         {
             return await _context.Announcements.CountAsync(a => a.Status == "Active");
         }
+
+        public async Task<int> GetUnreadCountAsync(int userId)
+        {
+            var readIds = await _context.AnnouncementReads
+                .Where(ar => ar.UserID == userId)
+                .Select(ar => ar.AnnouncementID)
+                .ToListAsync();
+
+            var allActive = await _context.Announcements
+                .Where(a => a.Status == "Active" && a.DeletedAt == null)
+                .Select(a => a.AnnouncementID)
+                .ToListAsync();
+
+            return allActive.Count(id => !readIds.Contains(id));
+        }
+
+        public async Task MarkAnnouncementAsReadAsync(int userId, int announcementId)
+        {
+            var exists = await _context.AnnouncementReads
+                .AnyAsync(ar => ar.UserID == userId && ar.AnnouncementID == announcementId);
+            if (exists) return;
+
+            _context.AnnouncementReads.Add(new AnnouncementRead
+            {
+                UserID = userId,
+                AnnouncementID = announcementId,
+                ReadAt = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task MarkAllAnnouncementsAsReadAsync(int userId)
+        {
+            var allIds = await _context.Announcements
+                .Where(a => a.Status == "Active" && a.DeletedAt == null)
+                .Select(a => a.AnnouncementID)
+                .ToListAsync();
+
+            var readIds = await _context.AnnouncementReads
+                .Where(ar => ar.UserID == userId)
+                .Select(ar => ar.AnnouncementID)
+                .ToListAsync();
+
+            var toAdd = allIds.Except(readIds).ToList();
+            if (toAdd.Any())
+            {
+                var reads = toAdd.Select(id => new AnnouncementRead
+                {
+                    UserID = userId,
+                    AnnouncementID = id,
+                    ReadAt = DateTime.UtcNow
+                });
+                await _context.AnnouncementReads.AddRangeAsync(reads);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<bool> IsAnnouncementReadAsync(int userId, int announcementId)
+        {
+            return await _context.AnnouncementReads
+                .AnyAsync(ar => ar.UserID == userId && ar.AnnouncementID == announcementId);
+        }
     }
 }

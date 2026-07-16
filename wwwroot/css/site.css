@@ -234,7 +234,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     display: inline;
 }
 
-/* Expand/Collapse Button at BOTTOM */
 .btn-expand-menu {
     background: linear-gradient(135deg, #9b8168, #a68f7a);
     width: 100%;
@@ -933,7 +932,29 @@ body:has(.expandable-vertical-menu.expanded) .container {
     }
 }
 
-/* ========== FOOTER ========== */
+.menu-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.badge-notification {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    /* left: 0px; */
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 999px;
+    line-height: 1;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4);
+    z-index: 10;
+}
+
 footer.footer {
     background: linear-gradient(135deg, #3d3027 0%, #5d4e37 50%, #3d3027 100%);
     color: #f5ebdc;

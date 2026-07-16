@@ -12,6 +12,8 @@
     Console.WriteLine($"Current login status - UserID: {userId}, Role: {userRole}, isLoggedIn: {isLoggedIn}");
 }
 
+@inject APMoodle.Services.Interfaces.IAnnouncementService AnnouncementService
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -123,7 +125,19 @@
                                 <span>View Chat</span>
                             </a>
                             <a href="/FrontEnd/ViewAnnouncements" class="menu-item">
-                                <span class="menu-icon" title="View Announcements"><i class="bi bi-megaphone-fill"></i></span>
+                                <span class="menu-icon" title="View Announcements"><i class="bi bi-megaphone-fill"></i>
+                                    @{
+                                        var userId = Context.Session.GetString("UserID");
+                                        if (!string.IsNullOrEmpty(userId))
+                                        {
+                                            var unreadCount = await AnnouncementService.GetUnreadCountAsync(int.Parse(userId));
+                                            if (unreadCount > 0)
+                                            {
+                                                <span class="badge-notification"">@unreadCount</span>
+                                            }
+                                        }
+                                    }
+                                </span>
                                 <span>Announcements</span>
                             </a>
                         }
@@ -142,7 +156,19 @@
                                 <span>Chat</span>
                             </a>
                             <a href="/FrontEnd/ViewAnnouncements" class="menu-item">
-                                <span class="menu-icon" title="View Announcements"><i class="bi bi-megaphone-fill"></i></span>
+                                <span class="menu-icon" title="View Announcements"><i class="bi bi-megaphone-fill"></i>
+                                    @{
+                                        var userId = Context.Session.GetString("UserID");
+                                        if (!string.IsNullOrEmpty(userId))
+                                        {
+                                            var unreadCount = await AnnouncementService.GetUnreadCountAsync(int.Parse(userId));
+                                            if (unreadCount > 0)
+                                            {
+                                                <span class="badge-notification"">@unreadCount</span>
+                                            }
+                                        }
+                                    }
+                                </span>
                                 <span>Announcements</span>
                             </a>
                         }
