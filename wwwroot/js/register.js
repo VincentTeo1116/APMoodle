@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-
-    // ---- DOM refs ----
     const loginTab = document.getElementById("loginTab");
     const registerTab = document.getElementById("registerTab");
     const form = document.getElementById("registerForm");
@@ -12,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const emailInput = document.getElementById("Email");
     const genderSelect = document.getElementById("Gender");
 
-    // ---- Flatpickr for DOB ----
     if (dobInput) {
         flatpickr(dobInput, {
             dateFormat: "Y-m-d",
@@ -22,18 +19,37 @@ document.addEventListener("DOMContentLoaded", function () {
             onChange: function(selectedDates) {
                 validateDOB();
                 document.getElementById('validationSummary').classList.remove('show');
+                // Re‑enable button if it was disabled due to validation
+                enableRegisterButton();
             }
         });
     }
 
-    // ---- Toggle tabs ----
     if (loginTab) {
         loginTab.addEventListener("click", function () {
             window.location.href = "/FrontEnd/Login";
         });
     }
 
-    // ---- Validation functions ----
+    function disableRegisterButton() {
+        if (registerBtn) {
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+        }
+    }
+
+    function enableRegisterButton() {
+        if (registerBtn) {
+            registerBtn.disabled = false;
+            registerBtn.innerHTML = 'REGISTER';
+        }
+    }
+
+    const serverError = document.querySelector('.alert-error:not(.dynamic)');
+    if (serverError) {
+        enableRegisterButton();
+    }
+
 
     function validateName() {
         const group = document.getElementById('nameGroup');
@@ -140,19 +156,38 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ---- Attach events ----
-    fullNameInput.addEventListener('input', validateName);
+    fullNameInput.addEventListener('input', function() {
+        validateName();
+        // Re‑enable button if it was disabled due to validation error
+        if (registerBtn && registerBtn.disabled) {
+            enableRegisterButton();
+        }
+    });
     fullNameInput.addEventListener('blur', validateName);
 
-    contactInput.addEventListener('input', validateContact);
+    contactInput.addEventListener('input', function() {
+        validateContact();
+        if (registerBtn && registerBtn.disabled) {
+            enableRegisterButton();
+        }
+    });
     contactInput.addEventListener('blur', validateContact);
 
-    emailInput.addEventListener('input', validateEmail);
+    emailInput.addEventListener('input', function() {
+        validateEmail();
+        if (registerBtn && registerBtn.disabled) {
+            enableRegisterButton();
+        }
+    });
     emailInput.addEventListener('blur', validateEmail);
 
-    genderSelect.addEventListener('change', validateGender);
+    genderSelect.addEventListener('change', function() {
+        validateGender();
+        if (registerBtn && registerBtn.disabled) {
+            enableRegisterButton();
+        }
+    });
 
-    // ---- Form submission ----
     form.addEventListener('submit', function(e) {
         const isNameValid = validateName();
         const isDOBValid = validateDOB();
@@ -179,13 +214,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 const input = firstError.querySelector('input, select');
                 if (input) input.focus();
             }
+            // Re‑enable button because validation failed
+            enableRegisterButton();
             return false;
         }
-        document.getElementById('validationSummary').classList.remove('show');
+
+        disableRegisterButton();
+
         return true;
     });
 
-    // Clear summary when user starts typing
     document.querySelectorAll('input, select').forEach(function(el) {
         el.addEventListener('input', function() {
             document.getElementById('validationSummary').classList.remove('show');
@@ -194,4 +232,5 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('validationSummary').classList.remove('show');
         });
     });
+
 });

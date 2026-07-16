@@ -9,12 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const togglePasswordBtn = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
 
+    const loginBtn = loginForm?.querySelector('button[type="submit"]');
+    const registerBtn = registerTab; 
+
     if (togglePasswordBtn && passwordInput) {
         togglePasswordBtn.addEventListener('click', function () {
-            // Toggle the type attribute
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            
             const icon = this.querySelector('i');
             if (icon) {
                 if (type === 'password') {
@@ -32,12 +33,16 @@ document.addEventListener("DOMContentLoaded", function () {
         loginTab.addEventListener("click", function () {
             loginTab.classList.add("active");
             registerTab.classList.remove("active");
-
             if (loginForm) loginForm.style.display = "block";
             if (registerForm) registerForm.style.display = "none";
         });
 
         registerTab.addEventListener("click", function () {
+            // Disable register button to prevent double clicks before redirect
+            if (registerTab) {
+                registerTab.disabled = true;
+                registerTab.textContent = 'Redirecting...';
+            }
             window.location.href = "/FrontEnd/Register";
         });
     }
@@ -45,6 +50,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (registerLink) {
         registerLink.addEventListener('click', function(e) {
             e.preventDefault();
+            if (registerTab) {
+                registerTab.disabled = true;
+                registerTab.textContent = 'Redirecting...';
+            }
             window.location.href = "/FrontEnd/Register";
         });
     }
@@ -77,48 +86,60 @@ document.addEventListener("DOMContentLoaded", function () {
             if (hasError) {
                 e.preventDefault();
                 showErrorMessage(errorMessage);
+                // Re-enable login button if it was disabled
+                if (loginBtn) {
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'LOGIN';
+                }
+                return;
+            }
+
+            if (loginBtn) {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
             }
         });
     }
-    
-    // Function to show error message
+
     function showErrorMessage(message) {
-        // Remove any existing dynamic error messages
         const existingError = document.querySelector('.alert-error.dynamic');
         if (existingError) {
             existingError.remove();
         }
-        
-        // Create new error message
         const errorDiv = document.createElement('div');
         errorDiv.className = 'alert-error dynamic';
         errorDiv.innerHTML = `❌ ${message}`;
-        
-        // Insert at the top of the form
         if (loginForm) {
             loginForm.insertBefore(errorDiv, loginForm.firstChild);
         }
-        
         setTimeout(() => {
             if (errorDiv.parentNode) {
                 errorDiv.remove();
             }
         }, 4000);
     }
-    
+
+    const serverError = document.querySelector('.alert-error:not(.dynamic)');
+    if (serverError && loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = 'LOGIN';
+    }
+
     const inputs = document.querySelectorAll('input');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {
             this.style.borderColor = '';
-            // Remove any dynamic error when user starts typing
             const dynamicError = document.querySelector('.alert-error.dynamic');
             if (dynamicError) {
                 dynamicError.remove();
             }
+            if (loginBtn && loginBtn.disabled) {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'LOGIN';
+            }
         });
     });
-    
-    // Prevent form resubmission on page refresh
+
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
