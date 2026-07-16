@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("registerForm");
     const registerLink = document.querySelector('.register-text a');
 
-    // --- PASSWORD SHOW/HIDE TOGGLE ---
     const togglePasswordBtn = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
 
@@ -16,10 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             
-            // Toggle the icon
             const icon = this.querySelector('i');
             if (icon) {
-                // Toggle between fa-eye-slash (hidden) and fa-eye (visible)
                 if (type === 'password') {
                     icon.classList.remove('fa-eye');
                     icon.classList.add('fa-eye-slash');
@@ -31,9 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Tab switching functionality
     if (loginTab && registerTab) {
-        // LOGIN CLICK
         loginTab.addEventListener("click", function () {
             loginTab.classList.add("active");
             registerTab.classList.remove("active");
@@ -42,13 +37,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (registerForm) registerForm.style.display = "none";
         });
 
-        // REGISTER CLICK → redirect to register page
         registerTab.addEventListener("click", function () {
             window.location.href = "/FrontEnd/Register";
         });
     }
 
-    // Handle "JOIN US NOW" link
     if (registerLink) {
         registerLink.addEventListener('click', function(e) {
             e.preventDefault();
@@ -56,7 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Client-side validation for login form
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             const userIdInput = loginForm.querySelector('input[name="Input.UserId"]');
@@ -107,7 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
             loginForm.insertBefore(errorDiv, loginForm.firstChild);
         }
         
-        // Auto-remove after 4 seconds
         setTimeout(() => {
             if (errorDiv.parentNode) {
                 errorDiv.remove();
@@ -115,7 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 4000);
     }
     
-    // Input cleanup on focus (remove error styling)
     const inputs = document.querySelectorAll('input');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {

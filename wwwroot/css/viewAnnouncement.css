@@ -1,0 +1,147 @@
+.va-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.5rem 0 2rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.va-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.va-head-icon {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 1rem;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 1.4rem;
+    background: linear-gradient(135deg, #b8935a 0%, #8b7355 55%, #6b5d4f 100%);
+    box-shadow: 0 8px 20px rgba(61, 48, 39, 0.32);
+}
+
+.va-head h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--dark, #1f2937);
+    margin: 0 0 0.15rem;
+}
+
+.va-head p {
+    color: var(--muted, #64748b);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.va-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.va-card {
+    display: flex;
+    gap: 1.1rem;
+    background: #fff;
+    border: 1px solid #eef0f4;
+    border-left: 4px solid #c9a24b;
+    border-radius: 1rem;
+    padding: 1.4rem 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.va-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px -12px rgba(61, 48, 39, 0.26);
+    border-left-color: #8b7355;
+}
+
+.va-card:hover .va-card-icon {
+    transform: scale(1.08) rotate(-4deg);
+    background: #ecdcbd;
+}
+
+.va-card-icon {
+    transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.va-card-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 0.75rem;
+    display: grid;
+    place-items: center;
+    color: #8b7355;
+    font-size: 1.05rem;
+    background: #f5ecd9;
+}
+
+.va-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.4rem;
+}
+
+.va-card-msg {
+    color: #4b5563;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 0.9rem;
+    white-space: pre-line;
+}
+
+.va-card-meta {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: #94a3b8;
+}
+
+.va-card-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.va-card-meta i {
+    color: #c9a24b;
+}
+
+.va-empty {
+    text-align: center;
+    padding: 4rem 1.5rem;
+    background: #fff;
+    border: 1px dashed #e8ddc9;
+    border-radius: 1.25rem;
+    color: #94a3b8;
+}
+
+.va-empty i {
+    font-size: 2.5rem;
+    color: #d9c9a3;
+    margin-bottom: 1rem;
+}
+
+.va-empty h3 {
+    color: #475569;
+    font-weight: 700;
+    margin: 0 0 0.4rem;
+}
+
+.va-empty p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 560px) {
+    .va-card { flex-direction: column; gap: 0.75rem; }
+}

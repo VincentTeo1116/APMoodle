@@ -56,7 +56,6 @@
                 {
                     if (userRole == "student")
                     {
-                        <!-- ===== One-time congrats celebration (confetti + popup) ===== -->
                         <div class="qr-celebrate" id="qrCelebrate" onclick="if(event.target===this)qrDismissCelebrate()">
                             <canvas class="qr-confetti" id="qrConfetti"></canvas>
                             <div class="qr-congrats-card">
@@ -75,7 +74,6 @@
 
                 }
 
-                <!-- ===== Score summary hero ===== -->
                 <div class="qr-hero">
                     <div class="qr-hero-glow"></div>
 
@@ -231,7 +229,7 @@
                             <i class="fas fa-clock-rotate-left"></i> Quiz History
                         </a>
                     }
-                    @* Logged-in users (student + lecturer) can jump back to the material (Vincent) *@
+                    
                     @if (!Model.IsGuest && Model.MaterialId > 0)
                     {
                         <a class="qr-btn qr-btn-ghost" href="/FrontEnd/TeachingMaterialOverview/@Model.MaterialId">
@@ -266,9 +264,6 @@
 </div>
 
 <style>
-    /* ===== APMoodle Quiz Result — design tokens mirror dashboard.css ===== */
-
-    /* Center the page title at the top (instead of left-aligned) */
     #horizontalNavbar > .PageTitle { text-align: center; }
     #horizontalNavbar > .PageTitle h1 { display: inline-block; }
 
@@ -295,7 +290,6 @@
     .qr-band-low  { --accent: #f97316; --accent-2: #fb923c; }
     .qr-band-bad  { --accent: #ef4444; --accent-2: #f87171; }
 
-    /* ---- Hero ---- */
     .qr-hero {
         position: relative;
         display: flex;
@@ -388,13 +382,11 @@
     .qr-stat-val-sm { font-size: .85rem; }
     .qr-stat-lbl { font-size: .68rem; color: var(--gray-light); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-top: .2rem; }
 
-    /* ---- Review header ---- */
     .qr-review-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 2rem .25rem 1rem; }
     .qr-review-head h3 { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: .55rem; margin: 0; }
     .qr-review-head h3 i { color: var(--primary); }
     .qr-review-sub { font-size: .8rem; color: var(--gray-light); font-weight: 600; }
 
-    /* ---- Question cards ---- */
     .qr-questions { display: flex; flex-direction: column; gap: 1rem; }
     .qr-qcard {
         background: #fff; border-radius: 1rem; padding: 1.25rem 1.4rem;
@@ -447,7 +439,6 @@
     .qr-yourpick { color: var(--gray); }
     .qr-yourpick strong { color: #dc2626; }
 
-    /* ---- Actions ---- */
     .qr-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
     .qr-btn {
         display: inline-flex; align-items: center; gap: .55rem;
@@ -460,7 +451,6 @@
     .qr-btn-ghost { background: #fff; color: var(--dark); box-shadow: inset 0 0 0 1.5px var(--line); }
     .qr-btn-ghost:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1.5px var(--primary-light); color: var(--primary); }
 
-    /* ---- Empty state ---- */
     .qr-empty { text-align: center; padding: 4rem 1rem; color: var(--gray-light); }
     .qr-empty i { font-size: 3rem; opacity: .5; margin-bottom: 1rem; display: block; }
     .qr-empty p { margin-bottom: 1.5rem; font-size: .95rem; }
@@ -468,7 +458,6 @@
     @@keyframes qrFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
     @@keyframes qrPop  { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
 
-    /* ---- Congrats celebration overlay ---- */
     .qr-celebrate {
         position: fixed; inset: 0; z-index: 1000;
         display: flex; align-items: center; justify-content: center;
