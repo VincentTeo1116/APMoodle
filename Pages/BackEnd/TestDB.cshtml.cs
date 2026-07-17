@@ -24,6 +24,7 @@ namespace APMoodle.Pages.BackEnd
         public int QuizCount { get; set; }
         public int QuestionCount { get; set; }
         public int AnnouncementCount { get; set; }
+        public int EnrollmentCount { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -50,6 +51,7 @@ namespace APMoodle.Pages.BackEnd
                 QuizCount = await _context.Quizzes!.CountAsync();
                 QuestionCount = await _context.Questions!.CountAsync();
                 AnnouncementCount = await _context.Announcements!.CountAsync();
+                EnrollmentCount = await _context.Enrollments!.CountAsync();
             }
             catch (Exception ex)
             {
@@ -112,6 +114,12 @@ namespace APMoodle.Pages.BackEnd
                         .OrderBy(a => a.AnnouncementID)
                         .Include(a => a.Creator)
                         .Select(a => new { a.AnnouncementID, a.Title, a.Message, a.CreatedAt, a.Status, CreatedByName = a.Creator != null ? a.Creator.Name : null })
+                        .ToListAsync(),
+
+                    "Enrollments" => await _context.Enrollments
+                        .OrderBy(e => e.EnrollmentID)
+                        // .Include(e => e.EnrollmentID)
+                        .Select(e => new { e.EnrollmentID, e.StudentID, e.ModuleID, e.EnrolledDate, e.Status})
                         .ToListAsync(),
 
                     _ => null
