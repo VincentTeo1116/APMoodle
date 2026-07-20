@@ -270,10 +270,10 @@ namespace APMoodle.Pages.BackEnd
             dynamic? result = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
             return result?.success == true;
         }
-            public class VerifyOtpRequest
-            {
-                public string Email { get; set; } = "";
-                public string Otp { get; set; } = "";
-            }
+        public class VerifyOtpRequest
+        {
+            public string Email { get; set; } = "";
+            public string Otp { get; set; } = "";
+        }
     }
 }

@@ -106,21 +106,6 @@ body {
     color: white !important;
 }
 
-.profile-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    transition: all 0.3s ease;
-    border: 2px solid #ffeab8;
-}
-
-.profile-icon:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-    border-color: #fff3d7;
-}
-
 .nav-item {
     font-size: 18px;
     transition: all 0.3s ease;
@@ -296,7 +281,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     display: block;
 }
 
-/* ========== RESPONSIVE STYLES ========== */
 @media (max-width: 768px) {
     body {
         padding-top: 55px;
@@ -327,8 +311,6 @@ body:has(.expandable-vertical-menu.expanded) .container {
     }
 }
 
-/* ========== REUSABLE MODAL STYLES ========== */
-/* Modal Overlay - can be used for any modal (error, confirm, success, etc.) */
 .modal-overlay-full {
     display: none;
     position: fixed;
@@ -1097,4 +1079,74 @@ footer.footer .footer-copy i {
 
 .guest-navbar .fw-bold {
     color: #1c1917;
+}
+
+.navbar-collapse {
+    display: none !important;
+}
+
+#sidebarToggle {
+    color: #3d3027;
+    padding: 0;
+    border: none;
+    background: transparent;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    body:has(.expandable-vertical-menu.mobile-open) .container {
+        margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .expandable-vertical-menu.mobile-open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        z-index: -1;
+    }
+
+    .expandable-vertical-menu.mobile-open {
+        z-index: 1050;
+    }
+}
+
+.custom-navbar .navbar-brand {
+    font-weight: 700;
+    color: #3d3027;
+}
+
+.custom-navbar .navbar-text {
+    font-weight: 600;
+    color: #5d4e37;
+    font-size: 1.1rem;
+}
+
+.profile-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffeab8;
+    transition: all 0.3s ease;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    border-color: #fff3d7;
+}
+
+@media (max-width: 768px) {
+    .expandable-vertical-menu {
+        top: 55px; 
+        height: calc(100vh - 55px);
+        z-index: 1040;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    }
 }

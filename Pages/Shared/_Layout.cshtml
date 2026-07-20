@@ -30,85 +30,56 @@
 
 <body>
     <header>
-        <nav class="custom-navbar navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 @(userRole == "Guest" ? "guest-navbar" : "")">
+        <nav class="custom-navbar navbar navbar-light border-bottom box-shadow mb-3 @(userRole == "Guest" ? "guest-navbar" : "")">
             <div class="container-fluid">
-                @if (userRole == "admin")
-                {
-                    <a class="navbar-brand" href="/FrontEnd/AdminDashboard" title="Back to main page"><span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle</a>
-                }
-                else if (userRole == "lecturer")
-                {
-                    <a class="navbar-brand" href="/FrontEnd/LecturerDashboard" title="Back to main page"><span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle</a>
-                }
-                else if (userRole == "student")
-                {
-                    <a class="navbar-brand" href="/FrontEnd/StudentDashboard" title="Back to main page"><span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle</a>
-                }
-                else
-                {
-                    <a class="navbar-brand" href="/FrontEnd/ViewAvailableQuiz" title="Back to main page"><span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle</a>
-                }
-                
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="d-flex align-items-center">
+                    <button class="btn d-md-none me-2" id="sidebarToggle" type="button" aria-label="Toggle sidebar">
+                        <i class="bi bi-list fs-2"></i>
+                    </button>
+                    <a class="navbar-brand" href="/" title="Back to main page">
+                        <span class="apm-logo"><i class="fas fa-graduation-cap"></i></span>APMoodle
+                    </a>
+                </div>
 
-                        <!-- Shows Portal Name based on role -->
-                        <li class="nav-item" style="position: absolute; left: 50%; transform: translateX(-50%);">
-                            <a class="nav-link text-dark fw-bold">
-                                @if (userRole == "admin")
-                                {
-                                    @adminLayout
-                                }
-                                else if (userRole == "lecturer")
-                                {
-                                    @lecturerLayout
-                                }
-                                else if (userRole == "student")
-                                {
-                                    @studentLayout
-                                }
-                                else
-                                {
-                                    @:Guest Portal
-                                }
-                            </a>
-                        </li>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-                            <!-- Only show Logout button -->
-                            @if (isLoggedIn)
-                            {
-                                <li class="nav-profile-item">
-                                    <a class="nav-profile" href="/FrontEnd/Profile" title="Click here to view your profile">
-                                        <img src="~/img/profileIcon.png" alt="Profile" class="profile-icon" />
-                                    </a>
-                                </li>
-                                <li class="nav-login">
-                                    <a class="nav-link-login" href="/FrontEnd/Logout" title="Click here to logout">Logout</a>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nav-login">
-                                    <a class="nav-link-login" href="/FrontEnd/Login"
-                                       title="Click here to login or register">Login/Register</a>
-                                </li>
-                            }
-                        </div>
-                    </ul>
+                <span class="navbar-text d-none d-md-block fw-bold" style="position: absolute; left: 50%; transform: translateX(-50%);">
+                    @if (userRole == "admin")
+                    {
+                        @adminLayout
+                    }
+                    else if (userRole == "lecturer")
+                    {
+                        @lecturerLayout
+                    }
+                    else if (userRole == "student")
+                    {
+                        @studentLayout
+                    }
+                    else
+                    {
+                        @:Guest Portal
+                    }
+                </span>
+
+                <div class="d-flex align-items-center gap-2">
+                    @if (isLoggedIn)
+                    {
+                        <a class="nav-profile" href="/FrontEnd/Profile" title="Profile">
+                            <img src="~/img/profileIcon.png" alt="Profile" class="profile-icon" />
+                        </a>
+                        <a class="nav-link-login" href="/FrontEnd/Logout">Logout</a>
+                    }
+                    else
+                    {
+                        <a class="nav-link-login" href="/FrontEnd/Login">Login/Register</a>
+                    }
                 </div>
             </div>
         </nav>
 
         @if (isLoggedIn)
         {
-
             <div class="expandable-vertical-menu" id="expandableMenu">
                 <div class="menu-panel">
-                    <!-- Menu Links -->
                     <div class="menu-links">
                         @if (userRole == "lecturer")
                         {
@@ -133,7 +104,7 @@
                                             var unreadCount = await AnnouncementService.GetUnreadCountAsync(int.Parse(userId));
                                             if (unreadCount > 0)
                                             {
-                                                <span class="badge-notification"">@unreadCount</span>
+                                                <span class="badge-notification">@unreadCount</span>
                                             }
                                         }
                                     }
@@ -168,7 +139,7 @@
                                             var unreadCount = await AnnouncementService.GetUnreadCountAsync(int.Parse(userId));
                                             if (unreadCount > 0)
                                             {
-                                                <span class="badge-notification"">@unreadCount</span>
+                                                <span class="badge-notification">@unreadCount</span>
                                             }
                                         }
                                     }
@@ -201,12 +172,11 @@
                         }
                     </div>
 
-                    <!-- Expand/Collapse Button at BOTTOM -->
+                    <!-- Expand/Collapse button (unchanged) -->
                     <div class="btn-expand-menu" id="menuToggle">
                         <span class="expand-icon" id="expandIcon">❯</span>
                         <span class="expand-text">Expand</span>
                     </div>
-
                 </div>
             </div>
         }
@@ -239,3 +209,25 @@
 </body>
 
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('expandableMenu');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sidebar.classList.toggle('mobile-open');
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth < 768 && sidebar.classList.contains('mobile-open')) {
+                    if (!sidebar.contains(e.target) && e.target !== sidebarToggle && !sidebarToggle.contains(e.target)) {
+                        sidebar.classList.remove('mobile-open');
+                    }
+                }
+            });
+        }
+    });
+</script>
