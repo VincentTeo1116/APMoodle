@@ -257,7 +257,7 @@
 .cq-mini-arcade .cq-mini-arc-row { background: rgba(0,255,225,.25); border: 1px solid #00ffe1; height: 8px; border-radius: 1px; }
 .cq-mini-arcade .cq-mini-arc-row.short { width: 60%; border-color: #ff5af2; background: rgba(255, 90, 242, .25); }
 
-/* ── Question cards ── */
+/* Question cards */
 .cq-count {
     display: inline-block; background: #f1f5f9; color: #44403c;
     padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 600;
@@ -346,7 +346,7 @@
 .cq-add-q:hover { border-color: #b8935a; color: #b8935a; background: #f4ecdd; }
 .cq-add-q span { font-size: 18px; margin-right: 4px; }
 
-/* ── Right rail ── */
+/* Right rail */
 .cq-rail { position: sticky; top: 80px; }
 .cq-rail-card {
     background: #fff; border: 1px solid #ece7df; border-radius: 14px;
@@ -383,7 +383,7 @@
     display: flex; align-items: center; justify-content: center;
 }
 
-/* ── Sticky bottom actions ── */
+/* Sticky bottom actions */
 .cq-actions {
     display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0 8px;
     position: sticky; bottom: 0;

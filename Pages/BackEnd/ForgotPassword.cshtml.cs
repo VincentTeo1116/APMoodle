@@ -34,6 +34,11 @@ namespace APMoodle.Pages.BackEnd
             _logger = logger;
         }
 
+        private void SetRecaptchaSiteKey()
+        {
+            ViewData["RecaptchaSiteKey"] = _config["Recaptcha:SiteKey"];
+        }
+
         [BindProperty]
         public ForgotPasswordInput Input { get; set; } = new();
 
@@ -68,14 +73,23 @@ namespace APMoodle.Pages.BackEnd
             IsOtpSent = false;
             Message = null;
             IsSuccess = false;
-            ViewData["RecaptchaSiteKey"] = _config["Recaptcha:SiteKey"];
+            SetRecaptchaSiteKey();
         }
 
         public async Task<IActionResult> OnPostSendOtpAsync()
         {
+            SetRecaptchaSiteKey();
+
             if (string.IsNullOrEmpty(Input.Email) || !IsValidEmail(Input.Email))
             {
                 Message = "Please enter a valid email address.";
+                return Page();
+            }
+
+            var recaptchaResponse = Request.Form["g-recaptcha-response"];
+            if (string.IsNullOrEmpty(recaptchaResponse) || !await VerifyRecaptchaAsync(recaptchaResponse))
+            {
+                Message = "Please complete the CAPTCHA.";
                 return Page();
             }
 
@@ -87,17 +101,6 @@ namespace APMoodle.Pages.BackEnd
                 IsOtpSent = true;
                 Email = Input.Email;
                 return Page();
-            }
-
-            // Skip reCAPTCHA on localhost
-            if (Request.Host.Host != "localhost" && Request.Host.Host != "127.0.0.1")
-            {
-                var recaptchaResponse = Request.Form["g-recaptcha-response"];
-                if (string.IsNullOrEmpty(recaptchaResponse) || !await VerifyRecaptchaAsync(recaptchaResponse))
-                {
-                    Message = "Please complete the CAPTCHA.";
-                    return Page();
-                }
             }
 
             var otp = new Random().Next(100000, 999999).ToString();
@@ -149,6 +152,8 @@ namespace APMoodle.Pages.BackEnd
 
         public async Task<IActionResult> OnPostResetPasswordAsync()
         {
+            SetRecaptchaSiteKey();
+
             // Validate OTP again (should be verified, but double-check)
             var cacheKey = $"OTP_{Input.Email}";
             if (!_cache.TryGetValue(cacheKey, out string? storedOtp) || storedOtp != Input.Otp)
