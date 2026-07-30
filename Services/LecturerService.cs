@@ -93,6 +93,7 @@ namespace APMoodle.Services
         public async Task<List<Lecturer>> GetAllLecturersAsync()
         {
             return await _context.Lecturers
+                .Where(l => l.Status == "Active")
                 .OrderBy(l => l.Name)
                 .ToListAsync();
         }
